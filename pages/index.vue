@@ -10,16 +10,32 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useHaikuStore } from '~/stores/haiku';
 
 const haikuStore = useHaikuStore();
 const haiku = ref(null);
 const loadingBg = ref(false);
+const haikuElement = ref(null);
 
-onMounted(async () => {
-  await loadHaikuFromUrl();
+onMounted(() => {
+  window.addEventListener('popstate', handlePopState);
+  loadHaikuFromUrl();
 });
+
+onBeforeUnmount(() => {
+  window.removeEventListener('popstate', handlePopState);
+});
+
+function handlePopState(event) {
+  const haikuData = event.state;
+  if (haikuData) {
+    haiku.value = haikuData;
+    updateBackground();
+  } else {
+    loadNewHaiku();
+  }
+}
 
 async function loadHaikuFromUrl() {
   const haikuId = window.location.hash.slice(1);
@@ -38,22 +54,34 @@ async function loadHaikuFromUrl() {
 }
 
 async function loadNewHaiku() {
+  if (haikuElement.value) {
+    haikuElement.value.classList.add('fade-out');
+  }
   loadingBg.value = true;
   try {
     await haikuStore.fetchHaiku();
     haiku.value = haikuStore.haiku;
     updateUrl();
     await updateBackground();
+    if (haikuElement.value) {
+      haikuElement.value.classList.remove('fade-out');
+      haikuElement.value.classList.add('fade-in');
+    }
   } catch (error) {
     console.error('Failed to load new haiku:', error);
   } finally {
     loadingBg.value = false;
+    setTimeout(() => {
+      if (haikuElement.value) {
+        haikuElement.value.classList.remove('fade-in');
+      }
+    }, 1000); // Remove fade-in after animation
   }
 }
 
 function updateUrl() {
   const haikuId = btoa(JSON.stringify(haiku.value));
-  history.pushState(null, '', `#${haikuId}`);
+  history.pushState(JSON.parse(JSON.stringify(haiku.value)), '', `#${haikuId}`);
 }
 
 async function updateBackground() {
@@ -127,6 +155,28 @@ async function fetchLexicaImage(haiku) {
 .haiku-line {
   font-size: calc(1.5vw + 1rem); /* Responsive font size */
   margin: 0.5rem 0; /* Adjust spacing between lines */
+}
+.fade-out {
+  animation: fadeOut 0.5s forwards;
+}
+.fade-in {
+  animation: fadeIn 0.5s forwards;
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 @keyframes pulsate {
   0% {
