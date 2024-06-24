@@ -3,8 +3,11 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   nitro: {
-    preset: "cloudflare-pages"
+    preset: "cloudflare-pages",
   },
 
-  modules: ["nitro-cloudflare-dev"]
-})
+  modules: ["nitro-cloudflare-dev", "@nuxtjs/tailwindcss", "@pinia/nuxt"],
+  build: {
+    transpile: ["@nuxtjs/tailwindcss", "pinia"],
+  }
+});
