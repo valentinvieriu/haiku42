@@ -5,16 +5,17 @@ export const useHaikuStore = defineStore('haiku', {
     haiku: null,
   }),
   actions: {
-    async fetchHaiku() {
+    async fetchHaiku(id = null) {
       try {
-        const response = await fetch('/api/haiku')
+        const url = id ? `/api/haiku?id=${id}` : '/api/haiku';
+        const response = await fetch(url);
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-        this.haiku = await response.json()
+        this.haiku = await response.json();
       } catch (error) {
-        console.error('Error fetching haiku:', error)
-        throw error
+        console.error('Error fetching haiku:', error);
+        throw error;
       }
     },
   },

@@ -34,24 +34,25 @@
 import { ref, onMounted, watch } from 'vue';
 import { useHaikuStore } from '~/stores/haiku';
 import HaikuDisplay from '~/components/HaikuDisplay.vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 const router = useRouter();
+const route = useRoute();
 const haikuStore = useHaikuStore();
 const haiku = ref(null);
 const loading = ref(false);
 const backgroundUrl = ref('');
 const haikuKey = ref(0);
 
-const loadNewHaiku = async () => {
+const loadNewHaiku = async (id = null) => {
   loading.value = true;
   backgroundUrl.value = '';
   try {
-    await haikuStore.fetchHaiku();
+    await haikuStore.fetchHaiku(id);
     haiku.value = haikuStore.haiku;
+    backgroundUrl.value = haiku.value.imageUrl; // Set backgroundUrl directly
     haikuKey.value++;
     updateUrl();
-    await updateBackground();
   } catch (error) {
     console.error('Error loading new haiku:', error);
   } finally {
@@ -60,46 +61,15 @@ const loadNewHaiku = async () => {
 };
 
 const updateUrl = () => {
-  if (haiku.value) {
-    const haikuString = JSON.stringify(haiku.value);
-    const haikuId = btoa(haikuString);
-    router.push({ hash: `#${haikuId}` }); // Use router.push instead of history.pushState
-  }
-};
-
-const updateBackground = async () => {
-  if (!haiku.value) return;
-
-  try {
-    const response = await fetch('/api/haiku-image', {
-      method: 'POST',
-      body: JSON.stringify({ haiku: haiku.value }),
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const blob = await response.blob();
-    backgroundUrl.value = URL.createObjectURL(blob);
-  } catch (error) {
-    console.error('Error fetching haiku image:', error);
-    backgroundUrl.value = '/default-background.jpg';
+  if (haiku.value && haiku.value.id) {
+    router.push({ path: `/haiku/${haiku.value.id}` });
   }
 };
 
 const loadHaikuFromUrl = async () => {
-  const haikuId = window.location.hash.slice(1);
+  const haikuId = route.params.id;
   if (haikuId) {
-    try {
-      const haikuString = atob(haikuId);
-      haiku.value = JSON.parse(haikuString);
-      await updateBackground();
-    } catch (error) {
-      console.error('Failed to load haiku from URL:', error);
-      await loadNewHaiku();
-    }
+    await loadNewHaiku(haikuId);
   } else {
     await loadNewHaiku();
   }
@@ -110,8 +80,8 @@ onMounted(async () => {
 });
 
 // Watch for route changes
-watch(() => router.currentRoute.value.hash, async (newHash) => {
-  if (newHash) {
+watch(() => route.params.id, async (newId) => {
+  if (newId) {
     await loadHaikuFromUrl();
   }
 });
