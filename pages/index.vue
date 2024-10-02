@@ -43,6 +43,15 @@ const loading = ref(false);
 const backgroundUrl = ref('');
 const haikuKey = ref(0);
 
+const preloadImage = (url) => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(url);
+    img.onerror = reject;
+    img.src = url;
+  });
+};
+
 const generateNewHaiku = async () => {
   loading.value = true;
   try {
@@ -51,7 +60,7 @@ const generateNewHaiku = async () => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const { id } = await response.json();
-    router.push({ path: `/haiku/${id}` });
+    await router.push({ path: `/haiku/${id}` });
   } catch (error) {
     console.error('Error generating new haiku:', error);
     loading.value = false;
@@ -62,20 +71,16 @@ const loadHaiku = async (id) => {
   loading.value = true;
   try {
     await haikuStore.fetchHaiku(id);
-    haiku.value = haikuStore.haiku;
-    
-    // Preload the new image before updating the backgroundUrl
-    const img = new Image();
-    img.onload = () => {
-      backgroundUrl.value = haiku.value.imageUrl;
-      haikuKey.value++;
-      loading.value = false;
-    };
-    img.onerror = () => {
-      console.error('Failed to load image');
-      loading.value = false;
-    };
-    img.src = haiku.value.imageUrl;
+    const newHaiku = haikuStore.haiku;
+    const imageUrl = newHaiku.imageUrl;
+
+    // Preload the new image before updating the haiku and backgroundUrl
+    await preloadImage(imageUrl);
+
+    haiku.value = newHaiku;
+    backgroundUrl.value = imageUrl;
+    haikuKey.value++;
+    loading.value = false;
   } catch (error) {
     console.error('Error loading haiku:', error);
     loading.value = false;
