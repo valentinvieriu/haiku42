@@ -11,8 +11,10 @@ export default defineEventHandler(async (event) => {
 
   try {
     const imageId = await fetchLexicaImage(body.haiku);
+    console.log('Fetched imageId:', imageId); // Added logging
     return { imageId };
   } catch (error) {
+    console.error('Error fetching Lexica image:', error.message); // Enhanced error logging
     throw createError({
       statusCode: 500,
       statusMessage: 'Error fetching Lexica image',

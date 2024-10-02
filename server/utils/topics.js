@@ -1,8 +1,8 @@
 // utils.js
-// export const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 // topicGenerator.js
-import { rand } from './utils.js';
+// import { rand } from './utils.js';
 
 // Define categories and their elements
 const categories = {

@@ -5,12 +5,15 @@
       :loading="loading" 
       @loadNew="loadNewHaiku"
     />
-    <HaikuDisplay 
-      v-if="haiku"
-      :haiku="[haiku.firstLine, haiku.secondLine, haiku.thirdLine]" 
-      @loadNew="loadNewHaiku"
-    />
-    <p v-else>Loading haiku...</p>
+    <transition name="fade" mode="out-in">
+      <HaikuDisplay 
+        v-if="haiku"
+        :key="haikuKey"
+        :haiku="[haiku.firstLine, haiku.secondLine, haiku.thirdLine]" 
+        @loadNew="loadNewHaiku"
+      />
+      <p v-else>Loading haiku...</p>
+    </transition>
   </main>
 </template>
 
@@ -24,12 +27,15 @@ const haikuStore = useHaikuStore()
 const haiku = ref(null)
 const loading = ref(false)
 const backgroundUrl = ref('')
+const haikuKey = ref(0)
 
 const loadNewHaiku = async () => {
   loading.value = true
+  backgroundUrl.value = '' // Clear the background image
   try {
     await haikuStore.fetchHaiku()
     haiku.value = haikuStore.haiku
+    haikuKey.value++ // Force re-render of HaikuDisplay
     updateUrl()
     await updateBackground()
   } catch (error) {
@@ -41,11 +47,8 @@ const loadNewHaiku = async () => {
 
 const updateUrl = () => {
   if (haiku.value) {
-    // Convert the haiku object to a string
     const haikuString = JSON.stringify(haiku.value);
-    // Encode the string to make it URL-safe
     const haikuId = btoa(haikuString);
-    // Use null as the state object instead of haiku.value
     history.pushState(null, '', `#${haikuId}`);
   }
 }
@@ -54,39 +57,58 @@ const updateBackground = async () => {
   if (!haiku.value) return
 
   try {
-    const { data } = await useFetch('/api/lexica-image', {
+    const { data, error: fetchError } = await useFetch('/api/lexica-image', {
       method: 'POST',
       body: { haiku: haiku.value }
     })
-    
+
+    if (fetchError.value) {
+      console.error('Fetch error:', fetchError.value)
+      backgroundUrl.value = '/default-background.jpg'
+      return
+    }
+
     if (data.value && data.value.imageId) {
       backgroundUrl.value = `https://image.lexica.art/full_jpg/${data.value.imageId}`
     } else {
       console.error('No image ID received from API')
+      backgroundUrl.value = '/default-background.jpg'
     }
   } catch (error) {
     console.error('Error fetching Lexica image:', error)
+    backgroundUrl.value = '/default-background.jpg'
   }
 }
 
-// Corresponding loadHaikuFromUrl function
-const loadHaikuFromUrl = () => {
+const loadHaikuFromUrl = async () => {
   const haikuId = window.location.hash.slice(1);
   if (haikuId) {
     try {
       const haikuString = atob(haikuId);
       haiku.value = JSON.parse(haikuString);
-      updateBackground();
+      await updateBackground();
     } catch (error) {
       console.error('Failed to load haiku from URL:', error);
-      loadNewHaiku();
+      await loadNewHaiku();
     }
   } else {
-    loadNewHaiku();
+    await loadNewHaiku();
   }
 }
 
-onMounted(() => {
-  loadHaikuFromUrl()
+onMounted(async () => {
+  await loadHaikuFromUrl()
 })
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
