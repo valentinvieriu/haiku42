@@ -78,7 +78,7 @@ const loadHaiku = async (id) => {
   try {
     await haikuStore.fetchHaiku(id);
     const newHaiku = haikuStore.haiku;
-    const imageUrl = newHaiku.imageUrl;
+    const imageUrl = `/api/haiku-image?id=${id}`;
 
     // Preload the new image before updating the haiku and backgroundUrl
     await preloadImage(imageUrl);
