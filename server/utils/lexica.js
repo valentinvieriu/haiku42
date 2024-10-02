@@ -1,5 +1,6 @@
 export async function fetchLexicaImage(haiku) {
-    let textResponse = `${haiku.firstLine} / ${haiku.secondLine} / ${haiku.thirdLine}`;
+    const textResponse = `${haiku.firstLine} / ${haiku.secondLine} / ${haiku.thirdLine}`;
+    
     const lexicaInit = {
         method: 'POST',
         headers: {
@@ -10,25 +11,24 @@ export async function fetchLexicaImage(haiku) {
             source: 'search',
             cursor: 0,
             model: 'lexica-aperture-v3.5',
-            searchMode:'images'
+            searchMode: 'images',
         }),
     };
-    
+
     try {
         const response = await fetch('https://lexica.art/api/infinite-prompts', lexicaInit);
         const responseData = await response.json();
-        
-        // console.log('Lexica API Response:', responseData); // Added logging
 
         if (responseData && responseData.images && responseData.images.length > 0) {
-            console.log('Image found:', responseData.images[0].id); // Log the found image ID
-            return responseData.images[0].id;
+            const imageId = responseData.images[0].id;
+            console.log('Image ID obtained:', imageId); // Optional: Retain or remove logging
+            return imageId;
         } else {
-            console.error('No images found in Lexica response'); // Enhanced error logging
+            console.error('No images found in Lexica response');
             throw new Error('No images found in Lexica response');
         }
     } catch (error) {
-        console.error('Failed to Call Lexica API:', error.message); // Enhanced error logging
-        throw new Error('Failed to Call Lexica API: ' + error.message);
+        console.error('Failed to call Lexica API:', error.message);
+        throw new Error('Failed to call Lexica API: ' + error.message);
     }
 }
