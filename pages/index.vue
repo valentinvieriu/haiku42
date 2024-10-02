@@ -52,7 +52,7 @@ const preloadImage = (url) => {
   });
 };
 
-const generateNewHaiku = async () => {
+const generateNewHaiku = async (retryCount = 3) => {
   loading.value = true;
   try {
     const response = await fetch('/api/haiku', { method: 'POST' });
@@ -63,7 +63,13 @@ const generateNewHaiku = async () => {
     await router.push({ path: `/haiku/${id}` });
   } catch (error) {
     console.error('Error generating new haiku:', error);
-    loading.value = false;
+    if (retryCount > 0) {
+      console.log(`Retrying... Attempts left: ${retryCount - 1}`);
+      await generateNewHaiku(retryCount - 1);
+    } else {
+      loading.value = false;
+      console.error('Failed to generate a valid haiku after multiple attempts.');
+    }
   }
 };
 
