@@ -18,7 +18,7 @@ export async function fetchLexicaImage(haiku) {
         const response = await fetch('https://lexica.art/api/infinite-prompts', lexicaInit);
         const responseData = await response.json();
         
-        console.log('Lexica API Response:', responseData); // Added logging
+        // console.log('Lexica API Response:', responseData); // Added logging
 
         if (responseData && responseData.images && responseData.images.length > 0) {
             console.log('Image found:', responseData.images[0].id); // Log the found image ID

@@ -1,12 +1,21 @@
 <template>
-  <main class="flex flex-col md:flex-row min-h-screen bg-gray-100">
-    <BackgroundImage 
-      :imageUrl="backgroundUrl" 
-      :loading="loading" 
-      @loadNew="loadNewHaiku"
-      class="w-full md:w-1/2 h-60 md:h-screen"
-    />
-    <div class="w-full md:w-1/2 flex items-center justify-center p-4 md:p-8">
+  <div class="h-screen overflow-hidden">
+    <div 
+      id="zoom_bg" 
+      :class="{ loading }"
+      class="h-3/5 w-full fixed top-0 left-0 bg-no-repeat bg-cover bg-center overflow-hidden"
+      @click="loadNewHaiku"
+    >
+      <transition name="fade" mode="out-in">
+        <div 
+          v-if="backgroundUrl" 
+          :key="backgroundUrl"
+          class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
+          :style="{ backgroundImage: `url('${backgroundUrl}')` }"
+        ></div>
+      </transition>
+    </div>
+    <main class="absolute bottom-[13%] left-0 right-0 p-8 bg-white">
       <transition name="fade" mode="out-in">
         <HaikuDisplay 
           v-if="haiku"
@@ -17,14 +26,13 @@
         />
         <p v-else>Loading haiku...</p>
       </transition>
-    </div>
-  </main>
+    </main>
+  </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useHaikuStore } from '~/stores/haiku'
-import BackgroundImage from '~/components/BackgroundImage.vue'
 import HaikuDisplay from '~/components/HaikuDisplay.vue'
 
 const haikuStore = useHaikuStore()
@@ -106,6 +114,32 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+#zoom_bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: 30%;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-image: url('/loading.svg');
+  animation: pulsate 1.5s ease-in-out infinite;
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}
+
+#zoom_bg.loading::before {
+  opacity: 1;
+}
+
+@keyframes pulsate {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s ease;

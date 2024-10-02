@@ -17,7 +17,7 @@ export default class GroqLlama3Service {
       stream: false,
       n: 1,
       temperature: 0.7,
-      max_tokens: this.modelName.includes('70b') ? 100 : 180,
+      max_tokens: 180,
       top_p: 0.7,
     });
 

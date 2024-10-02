@@ -103,7 +103,7 @@ function sanitizeResponse(response) {
 
 	// Final check to ensure the response has the expected structure
 	if (!JSONResponse.firstLine || !JSONResponse.secondLine || !JSONResponse.thirdLine) {
-		console.warn('Invalid haiku structure, using default haiku.');
+		console.warn('Invalid haiku structure, using default haiku.',response);
 		JSONResponse = defaultHaiku; // Ensure fallback to default haiku if structure is invalid
 	}
 	console.log('Generated Haiku:', JSONResponse);
