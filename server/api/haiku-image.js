@@ -1,6 +1,6 @@
 import { fetchLexicaImage } from '../utils/lexica';
 import { sendRedirect } from 'h3';
-import pako from 'pako';
+import { decompressHaiku } from '../utils/compression';
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
@@ -12,11 +12,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    // Decode and decompress the haiku ID
-    const base64 = query.id.replace(/-/g, '+').replace(/_/g, '/').padEnd(query.id.length + (4 - query.id.length % 4) % 4, '=');
-    const compressed = Buffer.from(base64, 'base64');
-    const decompressed = pako.inflate(compressed, { to: 'string' });
-    const haiku = JSON.parse(decompressed);
+    const haiku = decompressHaiku(query.id);
 
     const imageId = await fetchLexicaImage(haiku);
     const imageUrl = `https://image.lexica.art/full_jpg/${imageId}`;

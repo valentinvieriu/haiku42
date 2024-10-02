@@ -1,6 +1,6 @@
 import { generateHaiku } from '../utils/haikuGenerator';
-import pako from 'pako';
 import { fetchLexicaImage } from '../utils/lexica';
+import { compressHaiku, decompressHaiku } from '../utils/compression';
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
@@ -8,34 +8,7 @@ export default defineEventHandler(async (event) => {
   
   if (event.node.req.method === 'GET' && query.id) {
     try {
-      // Decode the base64 URL-safe string
-      const base64 = query.id.replace(/-/g, '+').replace(/_/g, '/').padEnd(query.id.length + (4 - query.id.length % 4) % 4, '=');
-      const compressed = Buffer.from(base64, 'base64');
-      
-      // Attempt to decompress the data
-      let decompressed;
-      try {
-        decompressed = pako.inflate(compressed, { to: 'string' });
-      } catch (inflateError) {
-        console.error('Pako inflation error:', inflateError);
-        // If inflation fails, try decoding as UTF-8 without decompression
-        decompressed = new TextDecoder().decode(compressed);
-      }
-      
-      console.log('Decompressed data:', decompressed);
-
-      // Parse the JSON
-      let haiku;
-      try {
-        haiku = JSON.parse(decompressed);
-      } catch (parseError) {
-        console.error('JSON parse error:', parseError);
-        throw createError({
-          statusCode: 400,
-          statusMessage: 'Invalid haiku data',
-          message: 'The haiku data is not in the correct JSON format.'
-        });
-      }
+      const haiku = decompressHaiku(query.id);
       
       // Fetch imageId
       const imageId = await fetchLexicaImage(haiku);
@@ -49,16 +22,11 @@ export default defineEventHandler(async (event) => {
     } catch (error) {
       console.error('Error processing haiku ID:', error);
       
-      // Provide more specific error messages
-      if (error.statusCode === 400) {
-        throw error; // Re-throw the custom error we created
-      } else {
-        throw createError({
-          statusCode: 500,
-          statusMessage: 'Internal Server Error',
-          message: 'An unexpected error occurred while processing the haiku ID.'
-        });
-      }
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Invalid haiku data',
+        message: 'The haiku data could not be processed.'
+      });
     }
   }
 
@@ -66,12 +34,7 @@ export default defineEventHandler(async (event) => {
     const haiku = await generateHaiku(cloudflare.env, query)
     
     // Compress the haiku data
-    const haikuString = JSON.stringify(haiku);
-    console.log('Original haiku string:', haikuString);
-    
-    const compressed = pako.deflate(haikuString);
-    const haikuId = Buffer.from(compressed).toString('base64')
-      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    const haikuId = compressHaiku(haiku);
     
     console.log('Generated haikuId:', haikuId);
     
