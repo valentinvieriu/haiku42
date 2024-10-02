@@ -11,8 +11,13 @@ export async function generateHaiku(env, query) {
   const chat = generateChatRequest(topic)
 
   console.log('Topic: ', topic, '\nModel: ', model)
+  console.log('Environment:', env); // Log the environment variables
+
   try {
     let response = await aiService.run(chat)
+    if (!response) {
+      throw new Error('AI service returned an empty response')
+    }
     return sanitizeResponse(response)
   } catch (error) {
     console.error(`Error in generateHaiku: ${error.message}`)

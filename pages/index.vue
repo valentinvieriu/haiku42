@@ -4,7 +4,7 @@
       id="zoom_bg" 
       :class="{ loading }"
       class="h-3/5 w-full fixed top-0 left-0 bg-no-repeat bg-cover bg-center overflow-hidden"
-      @click="loadNewHaiku"
+      @click="generateNewHaiku"
     >
       <transition name="fade" mode="out-in">
         <div 
@@ -21,10 +21,9 @@
           v-if="haiku"
           :key="haikuKey"
           :haiku="[haiku.firstLine, haiku.secondLine, haiku.thirdLine]" 
-          @loadNew="loadNewHaiku"
+          @loadNew="generateNewHaiku"
           class="text-2xl md:text-4xl"
         />
-        <p v-else>Loading haiku...</p>
       </transition>
     </main>
   </div>
@@ -44,45 +43,58 @@ const loading = ref(false);
 const backgroundUrl = ref('');
 const haikuKey = ref(0);
 
-const loadNewHaiku = async (id = null) => {
+const generateNewHaiku = async () => {
   loading.value = true;
-  backgroundUrl.value = '';
   try {
-    await haikuStore.fetchHaiku(id);
-    haiku.value = haikuStore.haiku;
-    backgroundUrl.value = haiku.value.imageUrl; // Set backgroundUrl directly
-    haikuKey.value++;
-    updateUrl();
+    const response = await fetch('/api/haiku', { method: 'POST' });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const { id } = await response.json();
+    router.push({ path: `/haiku/${id}` });
   } catch (error) {
-    console.error('Error loading new haiku:', error);
-  } finally {
+    console.error('Error generating new haiku:', error);
     loading.value = false;
   }
 };
 
-const updateUrl = () => {
-  if (haiku.value && haiku.value.id) {
-    router.push({ path: `/haiku/${haiku.value.id}` });
-  }
-};
-
-const loadHaikuFromUrl = async () => {
-  const haikuId = route.params.id;
-  if (haikuId) {
-    await loadNewHaiku(haikuId);
-  } else {
-    await loadNewHaiku();
+const loadHaiku = async (id) => {
+  loading.value = true;
+  try {
+    await haikuStore.fetchHaiku(id);
+    haiku.value = haikuStore.haiku;
+    
+    // Preload the new image before updating the backgroundUrl
+    const img = new Image();
+    img.onload = () => {
+      backgroundUrl.value = haiku.value.imageUrl;
+      haikuKey.value++;
+      loading.value = false;
+    };
+    img.onerror = () => {
+      console.error('Failed to load image');
+      loading.value = false;
+    };
+    img.src = haiku.value.imageUrl;
+  } catch (error) {
+    console.error('Error loading haiku:', error);
+    loading.value = false;
   }
 };
 
 onMounted(async () => {
-  await loadHaikuFromUrl();
+  const haikuId = route.params.id;
+  if (haikuId) {
+    await loadHaiku(haikuId);
+  } else {
+    await generateNewHaiku();
+  }
 });
 
 // Watch for route changes
 watch(() => route.params.id, async (newId) => {
   if (newId) {
-    await loadHaikuFromUrl();
+    await loadHaiku(newId);
   }
 });
 </script>
