@@ -1,19 +1,23 @@
 <template>
-  <main class="flex flex-col items-center min-h-screen bg-gray-100">
+  <main class="flex flex-col md:flex-row min-h-screen bg-gray-100">
     <BackgroundImage 
       :imageUrl="backgroundUrl" 
       :loading="loading" 
       @loadNew="loadNewHaiku"
+      class="w-full md:w-1/2 h-60 md:h-screen"
     />
-    <transition name="fade" mode="out-in">
-      <HaikuDisplay 
-        v-if="haiku"
-        :key="haikuKey"
-        :haiku="[haiku.firstLine, haiku.secondLine, haiku.thirdLine]" 
-        @loadNew="loadNewHaiku"
-      />
-      <p v-else>Loading haiku...</p>
-    </transition>
+    <div class="w-full md:w-1/2 flex items-center justify-center p-4 md:p-8">
+      <transition name="fade" mode="out-in">
+        <HaikuDisplay 
+          v-if="haiku"
+          :key="haikuKey"
+          :haiku="[haiku.firstLine, haiku.secondLine, haiku.thirdLine]" 
+          @loadNew="loadNewHaiku"
+          class="text-lg md:text-2xl"
+        />
+        <p v-else>Loading haiku...</p>
+      </transition>
+    </div>
   </main>
 </template>
 
