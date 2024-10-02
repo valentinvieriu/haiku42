@@ -1,18 +1,16 @@
 import { fetchLexicaImage } from '../utils/lexica';
 
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event);
-  const haikuText = query.haiku;
-
-  if (!haikuText) {
+  const body = await readBody(event);
+  if (!body || !body.haiku) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Missing haiku parameter'
+      statusMessage: 'Missing haiku in request body'
     });
   }
 
   try {
-    const imageId = await fetchLexicaImage(JSON.parse(haikuText));
+    const imageId = await fetchLexicaImage(body.haiku);
     return { imageId };
   } catch (error) {
     throw createError({

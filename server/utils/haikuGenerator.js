@@ -1,21 +1,22 @@
-import getRandomTopic from './topics';
+import getRandomTopic from './topics'
 
-export async function generateHaiku(env, searchParams) {
-	const model = searchParams.get('model') || 'groq-llama3-70b'; // Default to Cloudflare AI
-	const topic = searchParams.get('topic') || getRandomTopic();
-	// Select API based on the model parameter
-	const aiService = selectAIService(model, env);
+export async function generateHaiku(env, query) {
+  const model = query.model || 'groq-llama3-70b' // Default to Cloudflare AI
+  const topic = query.topic || getRandomTopic()
+  
+  // Select API based on the model parameter
+  const aiService = selectAIService(model, env)
 
-	const chat = generateChatRequest(topic);
+  const chat = generateChatRequest(topic)
 
-	console.log('Topic: ', topic, '\nModel: ', model);
-	try {
-		let response = await aiService.run(chat);
-		return sanitizeResponse(response);
-	} catch (error) {
-		console.error(`Error in generateHaiku: ${error.message}`);
-		// Return a default haiku or handle error as appropriate
-	}
+  console.log('Topic: ', topic, '\nModel: ', model)
+  try {
+    let response = await aiService.run(chat)
+    return sanitizeResponse(response)
+  } catch (error) {
+    console.error(`Error in generateHaiku: ${error.message}`)
+    throw error // Rethrow the error to be handled in the API route
+  }
 }
 
 function selectAIService(model, env) {

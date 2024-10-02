@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
 
 export const useHaikuStore = defineStore('haiku', {
   state: () => ({
@@ -7,11 +7,15 @@ export const useHaikuStore = defineStore('haiku', {
   actions: {
     async fetchHaiku() {
       try {
-        const response = await fetch('/api/haiku');
-        this.haiku = await response.json();
+        const response = await fetch('/api/haiku')
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        this.haiku = await response.json()
       } catch (error) {
-        console.error('Error fetching haiku:', error);
+        console.error('Error fetching haiku:', error)
+        throw error
       }
     },
   },
-});
+})

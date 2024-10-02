@@ -1,10 +1,3 @@
-async function gatherResponse(response) {
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
-    return response.json();
-}
-
 export async function fetchLexicaImage(haiku) {
     let textResponse = `${haiku.firstLine} / ${haiku.secondLine} / ${haiku.thirdLine}`;
     const lexicaInit = {
@@ -20,6 +13,7 @@ export async function fetchLexicaImage(haiku) {
             searchMode:'images'
         }),
     };
+    
     try {
         const response = await fetch('https://lexica.art/api/infinite-prompts', lexicaInit);
         const responseData = await response.json();
