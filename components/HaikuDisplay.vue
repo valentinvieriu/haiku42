@@ -1,6 +1,6 @@
 <template>
   <div id="haiku" class="p-4 text-center cursor-pointer" @click="$emit('loadNew')">
-    <p v-for="(line, index) in haiku" :key="index" class="haiku-line mb-2">{{ line }}</p>
+    <p v-for="(line, index) in haiku" :key="index" class="haiku-line mb-4">{{ line }}</p>
   </div>
 </template>
 

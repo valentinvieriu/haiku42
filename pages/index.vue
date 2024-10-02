@@ -22,7 +22,7 @@
           :key="haikuKey"
           :haiku="[haiku.firstLine, haiku.secondLine, haiku.thirdLine]" 
           @loadNew="loadNewHaiku"
-          class="text-lg md:text-2xl"
+          class="text-2xl md:text-4xl"
         />
         <p v-else>Loading haiku...</p>
       </transition>
@@ -31,10 +31,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useHaikuStore } from '~/stores/haiku';
 import HaikuDisplay from '~/components/HaikuDisplay.vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const haikuStore = useHaikuStore();
 const haiku = ref(null);
 const loading = ref(false);
@@ -61,7 +63,7 @@ const updateUrl = () => {
   if (haiku.value) {
     const haikuString = JSON.stringify(haiku.value);
     const haikuId = btoa(haikuString);
-    history.pushState(null, '', `#${haikuId}`);
+    router.push({ hash: `#${haikuId}` }); // Use router.push instead of history.pushState
   }
 };
 
@@ -105,6 +107,13 @@ const loadHaikuFromUrl = async () => {
 
 onMounted(async () => {
   await loadHaikuFromUrl();
+});
+
+// Watch for route changes
+watch(() => router.currentRoute.value.hash, async (newHash) => {
+  if (newHash) {
+    await loadHaikuFromUrl();
+  }
 });
 </script>
 
