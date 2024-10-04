@@ -4,17 +4,15 @@
       class="relative w-full h-screen cursor-pointer"
       @click="$emit('loadNew')"
     >
+      <div class="absolute inset-0 bg-gradient-to-b from-white to-gray-300"></div>
       <transition name="fade" mode="out-in">
         <img
-          v-if="isClient && imageUrl && !loading"
+          v-if="isClient && imageUrl && !loading && isLoaded"
           :key="imageUrl"
           :src="imageUrl"
           alt="Background"
           class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
         />
-        <div v-else key="loading" class="absolute inset-0 flex items-center justify-center bg-gray-200">
-          <div class="loader"></div>
-        </div>
       </transition>
     </div>
 </template>
@@ -26,15 +24,15 @@ const props = defineProps(['imageUrl', 'loading'])
 defineEmits(['loadNew'])
 
 const isClient = ref(false)
+const isLoaded = ref(false)
 
 onMounted(() => {
   isClient.value = true
 })
 
-const isLoaded = ref(false)
-
 watch(() => props.imageUrl, (newUrl) => {
   if (newUrl) {
+    isLoaded.value = false
     const img = new Image()
     img.onload = () => {
       isLoaded.value = true
@@ -47,15 +45,13 @@ watch(() => props.imageUrl, (newUrl) => {
 </script>
 
 <style scoped>
-.loader {
-  border: 4px solid #f3f3f3; /* Example border */
-  border-top-color: #3498db; /* Example color */
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
 }
-@keyframes spin {
-  to { transform: rotate(360deg); }
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
