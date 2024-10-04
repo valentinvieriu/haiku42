@@ -1,5 +1,4 @@
 import { generateHaiku } from '../utils/haikuGenerator';
-import { fetchLexicaImage } from '../utils/lexica';
 import { compressHaiku, decompressHaiku } from '../utils/compression';
 
 export default defineEventHandler(async (event) => {
@@ -11,15 +10,11 @@ export default defineEventHandler(async (event) => {
     try {
       const haiku = decompressHaiku(query.id);
 
-      // Fetch imageId
-      const imageId = await fetchLexicaImage(haiku);
-      const imageUrl = `https://image.lexica.art/full_jpg/${imageId}`;
-
       // Set cache headers
       event.node.res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 1 day
 
-      // Return haiku with imageUrl
-      return { ...haiku }; // Removed imageUrl from the response
+      // Return haiku
+      return { ...haiku };
     } catch (error) {
       console.error('Error processing haiku ID:', error);
 

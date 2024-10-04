@@ -3,16 +3,17 @@
     <div 
       id="zoom_bg" 
       :class="{ loading }"
-      class="h-3/5 w-full fixed top-0 left-0 bg-no-repeat bg-cover bg-center overflow-hidden"
+      class="h-3/5 w-full fixed top-0 left-0 overflow-hidden"
       @click="generateNewHaiku"
     >
       <transition name="fade" mode="out-in">
-        <div 
-          v-if="backgroundUrl" 
-          :key="backgroundUrl"
-          class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
-          :style="{ backgroundImage: `url('${backgroundUrl}')` }"
-        ></div>
+        <img
+          v-if="backgroundUrl"
+          :src="backgroundUrl"
+          alt="Haiku Background"
+          loading="lazy"
+          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+        />
       </transition>
     </div>
     <main class="absolute bottom-[13%] left-0 right-0 p-8 bg-white">
@@ -43,15 +44,6 @@ const loading = ref(false);
 const backgroundUrl = ref('');
 const haikuKey = ref(0);
 
-const preloadImage = (url) => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(url);
-    img.onerror = reject;
-    img.src = url;
-  });
-};
-
 const generateNewHaiku = async (retryCount = 3) => {
   loading.value = true;
   try {
@@ -78,20 +70,26 @@ const loadHaiku = async (id) => {
   try {
     await haikuStore.fetchHaiku(id);
     const newHaiku = haikuStore.haiku;
-    const imageUrl = `/api/haiku-image?id=${id}`;
 
-    // Preload the new image before updating the haiku and backgroundUrl
-    await preloadImage(imageUrl);
-
+    // Set the haiku and update the key immediately
     haiku.value = newHaiku;
-    backgroundUrl.value = imageUrl;
     haikuKey.value++;
+
+    // Set the background URL directly
+    backgroundUrl.value = `/api/haiku-image?id=${id}`;
     loading.value = false;
   } catch (error) {
     console.error('Error loading haiku:', error);
     loading.value = false;
   }
 };
+
+// Add this computed property
+const backgroundStyle = computed(() => {
+  return backgroundUrl.value
+    ? { backgroundImage: `url('${backgroundUrl.value}')` }
+    : {};
+});
 
 onMounted(async () => {
   const haikuId = route.params.id;
