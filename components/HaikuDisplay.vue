@@ -6,7 +6,7 @@
       </div>
       <div v-else>
         <p v-for="(line, index) in haiku" :key="index" class="haiku-line mb-4">
-          <span ref="lineRefs">{{ typedLines[index] }}</span>
+          <span>{{ typedLines[index] }}</span>
         </p>
       </div>
     </transition>
@@ -14,38 +14,48 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import SkeletonHaiku from './SkeletonHaiku.vue'
 
 const props = defineProps(['haiku', 'loading'])
 defineEmits(['loadNew'])
 
 const typedLines = ref(['', '', ''])
-const lineRefs = ref([])
+const animationFrames = ref([])
+let isAnimating = false
 
 const typeEffect = (text, lineIndex, speed = 50) => {
   return new Promise((resolve) => {
     let index = 0
-    const timer = setInterval(() => {
-      if (index < text.length) {
-        typedLines.value[lineIndex] += text[index]
+    const typeChar = () => {
+      if (index < text.length && isAnimating) {
+        typedLines.value[lineIndex] += text.charAt(index)
         index++
+        animationFrames.value[lineIndex] = requestAnimationFrame(typeChar)
       } else {
-        clearInterval(timer)
+        cancelAnimationFrame(animationFrames.value[lineIndex])
         resolve()
       }
-    }, speed)
+    }
+    typeChar()
   })
 }
 
 const animateHaiku = async () => {
+  isAnimating = false
+  await new Promise(resolve => setTimeout(resolve, 50)) // Small delay to ensure previous animation stops
+  
+  isAnimating = true
+  animationFrames.value.forEach(frame => cancelAnimationFrame(frame))
+  typedLines.value = ['', '', '']
+
   for (let i = 0; i < props.haiku.length; i++) {
+    if (!isAnimating) break
     await typeEffect(props.haiku[i], i)
   }
 }
 
 watch(() => props.haiku, () => {
-  typedLines.value = ['', '', '']
   if (!props.loading) {
     animateHaiku()
   }
@@ -55,6 +65,11 @@ onMounted(() => {
   if (!props.loading) {
     animateHaiku()
   }
+})
+
+onBeforeUnmount(() => {
+  isAnimating = false
+  animationFrames.value.forEach(frame => cancelAnimationFrame(frame))
 })
 </script>
 

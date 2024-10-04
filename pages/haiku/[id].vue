@@ -5,7 +5,7 @@
       :loading="haikuStore.imageLoading"
       @loadNew="generateNewHaiku"
     />
-    <main class="absolute bottom-[13%] left-0 right-0 p-8 bg-white">
+    <main class="absolute bottom-[13%] left-0 right-0 p-8 bg-white bg-opacity-95">
       <transition name="fade" mode="out-in">
         <HaikuDisplay 
           v-if="haikuStore.haiku"
