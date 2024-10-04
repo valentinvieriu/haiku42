@@ -7,18 +7,22 @@
       <div class="absolute inset-0 bg-gradient-to-b from-white to-gray-300"></div>
       <transition name="fade" mode="out-in">
         <img
-          v-if="isClient && imageUrl && !loading && isLoaded"
+          v-if="isClient && imageUrl && !loading"
           :key="imageUrl"
           :src="imageUrl"
+          @load="onImageLoad"
           alt="Background"
-          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+          :class="[
+            'absolute inset-0 w-full h-full object-cover transition-opacity duration-1000',
+            { 'opacity-0': !isLoaded }
+          ]"
         />
       </transition>
     </div>
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 
 const props = defineProps(['imageUrl', 'loading'])
 defineEmits(['loadNew'])
@@ -30,18 +34,14 @@ onMounted(() => {
   isClient.value = true
 })
 
-watch(() => props.imageUrl, (newUrl) => {
-  if (newUrl) {
-    isLoaded.value = false
-    const img = new Image()
-    img.onload = () => {
-      isLoaded.value = true
-    }
-    img.src = newUrl
-  } else {
-    isLoaded.value = false
-  }
-}, { immediate: true })
+const onImageLoad = () => {
+  isLoaded.value = true
+}
+
+// Reset isLoaded when imageUrl changes
+watch(() => props.imageUrl, () => {
+  isLoaded.value = false
+})
 </script>
 
 <style scoped>
