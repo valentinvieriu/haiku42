@@ -1,11 +1,19 @@
 <template>
-  <div id="haiku" class="p-4 text-center cursor-pointer" @click="$emit('loadNew')">
+  <div
+    id="haiku"
+    class="p-4 text-center cursor-pointer"
+    @click="$emit('loadNew')"
+  >
     <transition name="fade" mode="out-in">
       <div v-if="loading">
         <SkeletonHaiku />
       </div>
       <div v-else>
-        <p v-for="(line, index) in haiku" :key="index" class="haiku-line mb-4">
+        <p
+          v-for="(line, index) in haiku"
+          :key="index"
+          class="haiku-line mb-4"
+        >
           <span>{{ typedLines[index] }}</span>
         </p>
       </div>
@@ -21,15 +29,15 @@ const props = defineProps(['haiku', 'loading'])
 defineEmits(['loadNew'])
 
 const typedLines = ref(['', '', ''])
-const animationFrames = ref([])
-let isAnimating = false
+const animationFrames = ref([]) // To keep track of animation frames
 
 const typeEffect = (text, lineIndex, speed = 42) => {
   return new Promise((resolve) => {
     let index = 0
-    let lastTime = 0
+    let lastTime = performance.now()
+
     const typeChar = (currentTime) => {
-      if (index < text.length && isAnimating) {
+      if (index < text.length) {
         if (currentTime - lastTime >= speed) {
           typedLines.value[lineIndex] += text.charAt(index)
           index++
@@ -46,24 +54,26 @@ const typeEffect = (text, lineIndex, speed = 42) => {
 }
 
 const animateHaiku = async () => {
-  isAnimating = false
-  await new Promise(resolve => setTimeout(resolve, 50)) // Small delay to ensure previous animation stops
-  
-  isAnimating = true
-  animationFrames.value.forEach(frame => cancelAnimationFrame(frame))
-  typedLines.value = ['', '', '']
+  // Cancel any ongoing animations
+  animationFrames.value.forEach((frame) => {
+    cancelAnimationFrame(frame)
+  })
+  typedLines.value = ['', '', ''] // Reset typed lines
 
   for (let i = 0; i < props.haiku.length; i++) {
-    if (!isAnimating) break
     await typeEffect(props.haiku[i], i)
   }
 }
 
-watch(() => props.haiku, () => {
-  if (!props.loading) {
-    animateHaiku()
-  }
-}, { immediate: true })
+watch(
+  () => props.haiku,
+  () => {
+    if (!props.loading) {
+      animateHaiku()
+    }
+  },
+  { immediate: true }
+)
 
 onMounted(() => {
   if (!props.loading) {
@@ -72,8 +82,10 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  isAnimating = false
-  animationFrames.value.forEach(frame => cancelAnimationFrame(frame))
+  // Clean up animation frames
+  animationFrames.value.forEach((frame) => {
+    cancelAnimationFrame(frame)
+  })
 })
 </script>
 
