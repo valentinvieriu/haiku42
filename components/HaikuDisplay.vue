@@ -24,7 +24,7 @@ const typedLines = ref(['', '', ''])
 const animationFrames = ref([])
 let isAnimating = false
 
-const typeEffect = (text, lineIndex, speed = 60) => {
+const typeEffect = (text, lineIndex, speed = 42) => {
   return new Promise((resolve) => {
     let index = 0
     let lastTime = 0
