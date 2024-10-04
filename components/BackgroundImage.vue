@@ -1,22 +1,21 @@
 <template>
     <div 
       id="zoom_bg" 
-      :class="{ loading }" 
-      class="relative w-full h-60 md:h-screen cursor-pointer transition-transform duration-500 ease-in-out"
+      class="relative w-full h-screen cursor-pointer"
       @click="$emit('loadNew')"
     >
       <transition name="fade" mode="out-in">
-        <div 
-          v-if="imageUrl" 
+        <img
+          v-if="isClient && imageUrl && !loading"
           :key="imageUrl"
-          class="bg-cover bg-center absolute inset-0 opacity-0 transition-opacity duration-500"
-          :class="{ 'opacity-100': !loading }"
-          :style="{ backgroundImage: `url('${imageUrl}')` }"
-        ></div>
+          :src="imageUrl"
+          alt="Background"
+          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+        />
+        <div v-else key="loading" class="absolute inset-0 flex items-center justify-center bg-gray-200">
+          <div class="loader"></div>
+        </div>
       </transition>
-      <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-gray-200 opacity-75">
-        <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-900 h-12 w-12"></div>
-      </div>
     </div>
 </template>
 
@@ -24,45 +23,38 @@
 import { ref, watch, onMounted } from 'vue'
 
 const props = defineProps(['imageUrl', 'loading'])
-const emit = defineEmits(['loadNew'])
+defineEmits(['loadNew'])
 
-const bgImage = ref(null)
-
-const loadImage = (url) => {
-  if (url && bgImage.value) {
-    const img = new Image()
-    img.onload = () => {
-      bgImage.value.classList.add('opacity-100')
-    }
-    img.src = url
-  }
-}
-
-watch(() => props.imageUrl, (newUrl) => {
-  loadImage(newUrl)
-})
+const isClient = ref(false)
 
 onMounted(() => {
-  loadImage(props.imageUrl)
+  isClient.value = true
 })
+
+const isLoaded = ref(false)
+
+watch(() => props.imageUrl, (newUrl) => {
+  if (newUrl) {
+    const img = new Image()
+    img.onload = () => {
+      isLoaded.value = true
+    }
+    img.src = newUrl
+  } else {
+    isLoaded.value = false
+  }
+}, { immediate: true })
 </script>
 
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
 .loader {
-  border-top-color: transparent;
+  border: 4px solid #f3f3f3; /* Example border */
+  border-top-color: #3498db; /* Example color */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
   animation: spin 1s linear infinite;
 }
-
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
