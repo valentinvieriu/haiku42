@@ -50,5 +50,6 @@
     "tertiary": "#e74c3c",
     "background": "#ffffff",
     "text": "#2c3e50"
-  }
+  },
+  "display_override": ["window-controls-overlay"]
 }
