@@ -24,20 +24,24 @@ const typedLines = ref(['', '', ''])
 const animationFrames = ref([])
 let isAnimating = false
 
-const typeEffect = (text, lineIndex, speed = 50) => {
+const typeEffect = (text, lineIndex, speed = 60) => {
   return new Promise((resolve) => {
     let index = 0
-    const typeChar = () => {
+    let lastTime = 0
+    const typeChar = (currentTime) => {
       if (index < text.length && isAnimating) {
-        typedLines.value[lineIndex] += text.charAt(index)
-        index++
+        if (currentTime - lastTime >= speed) {
+          typedLines.value[lineIndex] += text.charAt(index)
+          index++
+          lastTime = currentTime
+        }
         animationFrames.value[lineIndex] = requestAnimationFrame(typeChar)
       } else {
         cancelAnimationFrame(animationFrames.value[lineIndex])
         resolve()
       }
     }
-    typeChar()
+    animationFrames.value[lineIndex] = requestAnimationFrame(typeChar)
   })
 }
 
