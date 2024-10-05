@@ -1,5 +1,5 @@
-export async function fetchLexicaImage(haiku) {
-    const textResponse = `${haiku.firstLine} / ${haiku.secondLine} / ${haiku.thirdLine}`;
+export async function fetchLexicaImage(haiku, topic) {
+    const textResponse = `${topic}    ${haiku.firstLine}    ${haiku.secondLine}    ${haiku.thirdLine}`;
     
     const lexicaInit = {
         method: 'POST',

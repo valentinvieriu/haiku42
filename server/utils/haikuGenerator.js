@@ -11,7 +11,7 @@ export async function generateHaiku(env, query) {
   const chat = generateChatRequest(topic)
 
   console.log('Topic: ', topic, '\nModel: ', model)
-  console.log('Environment:', env); // Log the environment variables
+//   console.log('Environment:', env); // Log the environment variables
 
   try {
     let response = await aiService.run(chat)

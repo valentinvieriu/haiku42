@@ -4,16 +4,16 @@ import { decompressHaiku } from '../utils/compression';
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
-  if (!query.id) {
+  if (!query.id || !query.topic) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Missing haiku ID in query',
+      statusMessage: 'Missing haiku ID or topic in query',
     });
   }
 
   try {
     const haiku = decompressHaiku(query.id);
-    const imageId = await fetchLexicaImage(haiku);
+    const imageId = await fetchLexicaImage(haiku, query.topic);
     const imageUrl = `https://image.lexica.art/full_jpg/${imageId}`;
 
     // Fetch the image and stream it to the client
