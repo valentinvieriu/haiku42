@@ -3,7 +3,7 @@
     <BackgroundImage
       :image-url="backgroundUrl"
       :loading="imageLoading"
-      @loadNew="generateNewHaiku"
+      @loadNew="handleGenerateNewHaiku"
     />
     <main class="absolute bottom-[13%] left-0 right-0 p-8 bg-white bg-opacity-95">
       <transition name="fade" mode="out-in">
@@ -12,7 +12,7 @@
           :key="haiku.id"
           :haiku="[haiku.firstLine, haiku.secondLine, haiku.thirdLine]" 
           :loading="haikuLoading"
-          @loadNew="generateNewHaiku"
+          @loadNew="handleGenerateNewHaiku"
           class="text-2xl md:text-4xl"
         />
       </transition>

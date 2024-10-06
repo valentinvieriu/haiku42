@@ -27,7 +27,7 @@ import { onNuxtReady } from '#app'
 import SkeletonHaiku from './SkeletonHaiku.vue'
 
 const props = defineProps(['haiku', 'loading'])
-defineEmits(['loadNew'])
+const emit = defineEmits(['loadNew'])
 
 const typedLines = ref(['', '', ''])
 const animationFrames = ref([])

@@ -2,7 +2,11 @@
     <div 
       id="zoom_bg" 
       class="relative w-full h-screen cursor-pointer overflow-hidden"
-      @click="$emit('loadNew')"
+      @click="handleClick"
+      @keydown.enter="handleClick"
+      tabindex="0"
+      role="button"
+      aria-label="Load new background image"
     >
       <div class="absolute inset-0 bg-gradient-to-b from-white to-gray-300"></div>
       <transition name="fade" mode="out-in">
@@ -23,10 +27,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, computed } from 'vue'
-
 const props = defineProps(['imageUrl', 'loading'])
-defineEmits(['loadNew'])
+const emit = defineEmits(['loadNew'])
 
 const isClient = ref(false)
 const isLoaded = ref(false)
@@ -55,6 +57,10 @@ watch(() => props.imageUrl, () => {
   isLoaded.value = false
   setRandomAnimation()
 })
+
+const handleClick = () => {
+  emit('loadNew')
+}
 </script>
 
 <style scoped>
