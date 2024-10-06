@@ -6,9 +6,17 @@ const router = useRouter()
 const haikuStore = useHaikuStore()
 
 onMounted(async () => {
-  const id = await haikuStore.generateNewHaiku()
-  if (id) {
-    await router.push({ path: `/haiku/${id}` })
+  try {
+    const id = await haikuStore.generateNewHaiku()
+    if (id) {
+      await router.push({ path: `/haiku/${id}` })
+    } else {
+      console.error('No haiku ID returned')
+      // Handle the error, maybe show an error message to the user
+    }
+  } catch (error) {
+    console.error('Failed to generate new haiku:', error)
+    // Handle the error, maybe show an error message to the user
   }
 })
 </script>

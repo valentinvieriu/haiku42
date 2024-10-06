@@ -1,55 +1,77 @@
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
-export const useHaikuStore = defineStore('haiku', {
-  state: () => ({
-    haiku: null,
-    haikuLoading: false,
-    imageLoading: false,
-    backgroundUrl: '',
-  }),
-  actions: {
-    async fetchHaiku(id = null) {
-      this.haikuLoading = true
-      try {
-        const url = id ? `/api/haiku?id=${id}` : '/api/haiku'
-        const response = await fetch(url)
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
-        this.haiku = await response.json()
-      } catch (error) {
-        console.error('Error fetching haiku:', error)
-      } finally {
-        this.haikuLoading = false
+export const useHaikuStore = defineStore('haiku', () => {
+  const haiku = ref(null)
+  const haikuLoading = ref(false)
+  const imageLoading = ref(false)
+  const backgroundUrl = ref('')
+
+  const fetchHaiku = async (id = null) => {
+    haikuLoading.value = true
+    const { data, error } = await useFetch('/api/haiku', {
+      query: id ? { id } : {},
+      key: id ? `haiku-${id}` : 'haiku',
+    })
+
+    if (error.value) {
+      console.error('Error fetching haiku:', error.value)
+    } else {
+      haiku.value = data.value
+    }
+
+    haikuLoading.value = false
+  }
+
+  const fetchBackgroundImage = async (id) => {
+    imageLoading.value = true
+    backgroundUrl.value = ''
+
+    const imageUrl = `/api/haiku-image?id=${id || haiku.value?.id}`
+    backgroundUrl.value = imageUrl
+
+    imageLoading.value = false
+  }
+
+  const generateNewHaiku = async () => {
+    haikuLoading.value = true
+    imageLoading.value = true
+
+    try {
+      const { data, error } = await useFetch('/api/haiku', {
+        method: 'POST',
+        key: 'generate-haiku',
+      })
+
+      if (error.value) {
+        console.error('Error generating new haiku:', error.value)
+        throw error.value
       }
-    },
-    async fetchBackgroundImage(id) {
-      this.imageLoading = true
-      try {
-        this.backgroundUrl = '' // Reset the background URL
-        const imageUrl = `/api/haiku-image?id=${id || this.haiku.id}`
-        this.backgroundUrl = imageUrl
-      } catch (error) {
-        console.error('Error fetching background image:', error)
-        this.backgroundUrl = '' // Reset on error
-      } finally {
-        this.imageLoading = false
+
+      if (!data.value || !data.value.id) {
+        throw new Error('No haiku ID returned from the server')
       }
-    },
-    async generateNewHaiku() {
-      this.haikuLoading = true
-      this.imageLoading = true
-      try {
-        const response = await fetch('/api/haiku', { method: 'POST' })
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
-        const { id } = await response.json()
-        await this.fetchHaiku(id)
-        await this.fetchBackgroundImage(id)
-        return id
-      } catch (error) {
-        console.error('Error generating new haiku:', error)
-      } finally {
-        this.haikuLoading = false
-        // imageLoading will be set to false in fetchBackgroundImage
-      }
-    },
-  },
+
+      const id = data.value.id
+      await fetchHaiku(id)
+      await fetchBackgroundImage(id)
+      return id
+    } catch (error) {
+      console.error('Failed to generate new haiku:', error)
+      // You might want to set an error state here
+    } finally {
+      haikuLoading.value = false
+      imageLoading.value = false
+    }
+  }
+
+  return {
+    haiku,
+    haikuLoading,
+    imageLoading,
+    backgroundUrl,
+    fetchHaiku,
+    fetchBackgroundImage,
+    generateNewHaiku,
+  }
 })

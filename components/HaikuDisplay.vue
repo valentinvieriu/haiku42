@@ -22,46 +22,58 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, watch, onBeforeUnmount } from 'vue'
+import { onNuxtReady } from '#app'
 import SkeletonHaiku from './SkeletonHaiku.vue'
 
 const props = defineProps(['haiku', 'loading'])
 defineEmits(['loadNew'])
 
 const typedLines = ref(['', '', ''])
-const animationFrames = ref([]) // To keep track of animation frames
+const animationFrames = ref([])
 
 const typeEffect = (text, lineIndex, speed = 42) => {
-  return new Promise((resolve) => {
-    let index = 0
-    let lastTime = performance.now()
+  if (import.meta.client) {
+    return new Promise((resolve) => {
+      let index = 0
+      let lastTime = performance.now()
 
-    const typeChar = (currentTime) => {
-      if (index < text.length) {
-        if (currentTime - lastTime >= speed) {
-          typedLines.value[lineIndex] += text.charAt(index)
-          index++
-          lastTime = currentTime
+      const typeChar = (currentTime) => {
+        if (index < text.length) {
+          if (currentTime - lastTime >= speed) {
+            typedLines.value[lineIndex] += text.charAt(index)
+            index++
+            lastTime = currentTime
+          }
+          animationFrames.value[lineIndex] = requestAnimationFrame(typeChar)
+        } else {
+          cancelAnimationFrame(animationFrames.value[lineIndex])
+          resolve()
         }
-        animationFrames.value[lineIndex] = requestAnimationFrame(typeChar)
-      } else {
-        cancelAnimationFrame(animationFrames.value[lineIndex])
-        resolve()
       }
-    }
-    animationFrames.value[lineIndex] = requestAnimationFrame(typeChar)
-  })
+      animationFrames.value[lineIndex] = requestAnimationFrame(typeChar)
+    })
+  } else {
+    // Server-side fallback: instantly set the full line
+    typedLines.value[lineIndex] = text
+    return Promise.resolve()
+  }
 }
 
 const animateHaiku = async () => {
-  // Cancel any ongoing animations
-  animationFrames.value.forEach((frame) => {
-    cancelAnimationFrame(frame)
-  })
-  typedLines.value = ['', '', ''] // Reset typed lines
+  if (import.meta.client) {
+    // Cancel any ongoing animations
+    animationFrames.value.forEach((frame) => {
+      cancelAnimationFrame(frame)
+    })
+    typedLines.value = ['', '', ''] // Reset typed lines
 
-  for (let i = 0; i < props.haiku.length; i++) {
-    await typeEffect(props.haiku[i], i)
+    for (let i = 0; i < props.haiku.length; i++) {
+      await typeEffect(props.haiku[i], i)
+    }
+  } else {
+    // Server-side fallback: instantly set all lines
+    typedLines.value = [...props.haiku]
   }
 }
 
@@ -75,22 +87,27 @@ watch(
   { immediate: true }
 )
 
-onMounted(() => {
+onNuxtReady(() => {
   if (!props.loading) {
     animateHaiku()
   }
 })
 
 onBeforeUnmount(() => {
-  // Clean up animation frames
-  animationFrames.value.forEach((frame) => {
-    cancelAnimationFrame(frame)
-  })
+  if (import.meta.client) {
+    // Clean up animation frames
+    animationFrames.value.forEach((frame) => {
+      cancelAnimationFrame(frame)
+    })
+  }
 })
 </script>
 
 <style scoped>
-.haiku-line {
+.haiku-display {
   @apply font-serif text-gray-800;
+}
+.haiku-line {
+  @apply mb-4;
 }
 </style>
