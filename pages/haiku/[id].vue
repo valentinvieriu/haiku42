@@ -58,4 +58,12 @@ watch(
   },
   { immediate: true }
 )
+
+useSeoMeta({
+  title: () => `Haiku: ${haiku.value?.topic || 'Inspiring Words'}`,
+  description: () => haiku.value 
+    ? `Experience a moment of zen with this haiku about ${haiku.value.topic}: "${haiku.value.firstLine} / ${haiku.value.secondLine} / ${haiku.value.thirdLine}". Discover more poetic inspirations on our site.`
+    : 'Discover inspiring haikus paired with beautiful images. A new poetic experience awaits you.',
+  ogImage: () => backgroundUrl.value
+})
 </script>
