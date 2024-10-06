@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
       event.node.res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 1 day
 
       // Return haiku
-      return { ...haiku };
+      return haiku;
     } catch (error) {
       console.error('Error processing haiku ID:', error);
 

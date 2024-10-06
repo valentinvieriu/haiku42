@@ -25,7 +25,7 @@ export const useHaikuStore = defineStore('haiku', {
       this.imageLoading = true
       try {
         this.backgroundUrl = '' // Reset the background URL
-        const imageUrl = `/api/haiku-image?id=${id || this.haiku.id}&topic=${encodeURIComponent(this.haiku.topic)}`
+        const imageUrl = `/api/haiku-image?id=${id || this.haiku.id}`
         this.backgroundUrl = imageUrl
       } catch (error) {
         console.error('Error fetching background image:', error)
