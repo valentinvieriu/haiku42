@@ -14,5 +14,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>Loading...</div>
+  <div class="flex items-center justify-center h-full">
+    <p>Loading...</p>
+  </div>
 </template>

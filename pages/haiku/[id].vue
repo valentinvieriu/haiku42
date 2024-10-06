@@ -37,7 +37,9 @@ const generateNewHaiku = async () => {
     await router.push({ path: `/haiku/${id}` })
   }
 }
-
+definePageMeta({
+  layout: 'default'
+})
 watch(
   () => route.params.id,
   async (newId, oldId) => {
