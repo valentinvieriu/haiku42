@@ -1,5 +1,12 @@
 <template>
-    <div class="h-screen overflow-hidden">
-      <slot />
+    <div>
+      <Suspense>
+        <template #default>
+          <slot />
+        </template>
+        <template #fallback>
+          <div>Loading...</div>
+        </template>
+      </Suspense>
     </div>
 </template>
