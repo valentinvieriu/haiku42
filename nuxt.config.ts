@@ -12,9 +12,9 @@ export default defineNuxtConfig({
     preset: "cloudflare-pages",
   },
 
-  modules: ["nitro-cloudflare-dev", "@nuxtjs/tailwindcss", "@pinia/nuxt"],
+  modules: ["nitro-cloudflare-dev", "@nuxtjs/tailwindcss"],
   build: {
-    transpile: ["@nuxtjs/tailwindcss", "pinia"],
+    transpile: ["@nuxtjs/tailwindcss"],
   },
   runtimeConfig: {
     public: {

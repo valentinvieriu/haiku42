@@ -69,56 +69,48 @@ watch(() => props.imageUrl, () => {
 }
 
 @keyframes zoomIn {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.15); }
+  0% { transform: scale(1.1); }
+  100% { transform: scale(1.25); }
 }
 
 @keyframes zoomOut {
-  0% { transform: scale(1.15); }
-  100% { transform: scale(1); }
+  0% { transform: scale(1.25); }
+  100% { transform: scale(1.1); }
 }
 
 @keyframes panTop {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-7%); }
+  0% { transform: scale(1.1) translateY(0); }
+  100% { transform: scale(1.1) translateY(-5%); }
 }
 
 @keyframes panBottom {
-  0% { transform: translateY(-7%); }
-  100% { transform: translateY(0); }
+  0% { transform: scale(1.1) translateY(-5%); }
+  100% { transform: scale(1.1) translateY(0); }
 }
 
 @keyframes panLeft {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-7%); }
+  0% { transform: scale(1.1) translateX(0); }
+  100% { transform: scale(1.1) translateX(-5%); }
 }
 
 @keyframes panRight {
-  0% { transform: translateX(-7%); }
-  100% { transform: translateX(0); }
+  0% { transform: scale(1.1) translateX(-5%); }
+  100% { transform: scale(1.1) translateX(0); }
 }
 
-.animate-zoom-in {
-  animation: zoomIn 20s ease-in-out infinite alternate;
-}
-
-.animate-zoom-out {
-  animation: zoomOut 20s ease-in-out infinite alternate;
-}
-
-.animate-pan-top {
-  animation: panTop 20s ease-in-out infinite alternate;
-}
-
-.animate-pan-bottom {
-  animation: panBottom 20s ease-in-out infinite alternate;
-}
-
-.animate-pan-left {
-  animation: panLeft 20s ease-in-out infinite alternate;
-}
-
+.animate-zoom-in,
+.animate-zoom-out,
+.animate-pan-top,
+.animate-pan-bottom,
+.animate-pan-left,
 .animate-pan-right {
-  animation: panRight 20s ease-in-out infinite alternate;
+  animation: 20s ease-in-out infinite alternate;
 }
+
+.animate-zoom-in { animation-name: zoomIn; }
+.animate-zoom-out { animation-name: zoomOut; }
+.animate-pan-top { animation-name: panTop; }
+.animate-pan-bottom { animation-name: panBottom; }
+.animate-pan-left { animation-name: panLeft; }
+.animate-pan-right { animation-name: panRight; }
 </style>

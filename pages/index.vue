@@ -1,13 +1,13 @@
 <script setup>
 import { useRouter } from 'vue-router'
-import { useHaikuStore } from '~/stores/haiku'
+import { useHaiku } from '~/composables/useHaiku'
 
 const router = useRouter()
-const haikuStore = useHaikuStore()
+const { generateNewHaiku } = useHaiku()
 
 onMounted(async () => {
   try {
-    const id = await haikuStore.generateNewHaiku()
+    const id = await generateNewHaiku()
     if (id) {
       await router.push({ path: `/haiku/${id}` })
     } else {

@@ -1,17 +1,17 @@
 <template>
   <div class="h-screen overflow-hidden">
     <BackgroundImage
-      :image-url="haikuStore.backgroundUrl"
-      :loading="haikuStore.imageLoading"
+      :image-url="backgroundUrl"
+      :loading="imageLoading"
       @loadNew="generateNewHaiku"
     />
     <main class="absolute bottom-[13%] left-0 right-0 p-8 bg-white bg-opacity-95">
       <transition name="fade" mode="out-in">
         <HaikuDisplay 
-          v-if="haikuStore.haiku"
-          :key="haikuStore.haiku.id"
-          :haiku="[haikuStore.haiku.firstLine, haikuStore.haiku.secondLine, haikuStore.haiku.thirdLine]" 
-          :loading="haikuStore.haikuLoading"
+          v-if="haiku"
+          :key="haiku.id"
+          :haiku="[haiku.firstLine, haiku.secondLine, haiku.thirdLine]" 
+          :loading="haikuLoading"
           @loadNew="generateNewHaiku"
           class="text-2xl md:text-4xl"
         />
@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-import { useHaikuStore } from '~/stores/haiku'
+import { useHaiku } from '~/composables/useHaiku'
 import HaikuDisplay from '~/components/HaikuDisplay.vue'
 import BackgroundImage from '~/components/BackgroundImage.vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -29,10 +29,15 @@ import { watch } from 'vue'
 
 const route = useRoute()
 const router = useRouter()
-const haikuStore = useHaikuStore()
+const { haiku, haikuLoading, imageLoading, backgroundUrl, fetchHaiku, fetchBackgroundImage, generateNewHaiku } = useHaiku()
 
-const generateNewHaiku = async () => {
-  const id = await haikuStore.generateNewHaiku()
+const loadHaiku = async (id) => {
+  await fetchHaiku(id)
+  await fetchBackgroundImage(id)
+}
+
+const handleGenerateNewHaiku = async () => {
+  const id = await generateNewHaiku()
   if (id) {
     await router.push({ path: `/haiku/${id}` })
   }
@@ -46,10 +51,9 @@ watch(
   () => route.params.id,
   async (newId, oldId) => {
     if (newId && (!oldId || newId !== oldId)) {
-      await haikuStore.fetchHaiku(newId)
-      await haikuStore.fetchBackgroundImage(newId)
+      await loadHaiku(newId)
     } else if (!newId) {
-      await generateNewHaiku()
+      await handleGenerateNewHaiku()
     }
   },
   { immediate: true }
