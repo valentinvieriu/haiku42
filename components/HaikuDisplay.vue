@@ -23,7 +23,6 @@
 
 <script setup>
 import { ref, watch, onBeforeUnmount } from 'vue'
-import { onNuxtReady } from '#app'
 import SkeletonHaiku from './SkeletonHaiku.vue'
 
 const props = defineProps(['haiku', 'loading'])
@@ -31,6 +30,10 @@ const emit = defineEmits(['loadNew'])
 
 const typedLines = ref(['', '', ''])
 const animationFrames = ref([])
+
+const handleLoadNew = () => {
+  emit('loadNew')
+}
 
 const typeEffect = (text, lineIndex, speed = 42) => {
   if (import.meta.client) {
