@@ -5,6 +5,11 @@ pages_build_output_dir = "./dist"
 routes = [
   { pattern = "haiku42.net", custom_domain = true }
 ]
+
+# Specify the Node.js version
+[build.environment]
+NODE_VERSION = "22.4.1"
+
 # Automatically place your workloads in an optimal location to minimize latency.
 # If you are running back-end logic in a Pages Function, running it closer to your back-end infrastructure
 # rather than the end user may result in better performance.
