@@ -25,13 +25,12 @@ A modern, visually engaging Haiku Generator application built using **Nuxt.js**,
 - **Server-side Rendering (SSR)**: Utilizes Nuxt.js capabilities to improve loading times and SEO.
 
 ## Technologies Used
-- **Nuxt.js** (with SSR support)
-- **Vue 3** (Composition API and Single File Components)
-- **Pinia** (State Management)
+- **Nuxt 3** (with SSR support)
+- **Vue 3** (Composition API and `<script setup>`)
 - **TailwindCSS** (Styling)
 - **Cloudflare Pages** (Deployment)
 - **Lexica API** (Background Images)
-- **Multiple AI Services** (Claude, GPT-4o, etc.) for generating haikus
+- **Multiple AI Services** for generating haikus (as reflected in the topics.js file)
 
 ## Getting Started
 Follow these instructions to get a local copy of the project up and running, including setting up dependencies and configuring environment variables. Then, launch the development server to get a complete local experience.
@@ -110,7 +109,6 @@ haiku-generator/
 ├── server/              # API routes and utilities for fetching haikus and images
 │   ├── api/             # Haiku API and image streaming logic
 │   └── utils/           # AI services and helper utilities
-├── stores/              # Pinia store (`haiku.js`) for managing haiku state
 ├── public/              # Static assets
 ├── nuxt.config.ts       # Nuxt.js configuration
 └── README.md            # Documentation for the repository
