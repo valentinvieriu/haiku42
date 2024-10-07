@@ -2,7 +2,9 @@
 name = "haiku42"
 compatibility_date = "2024-10-01"
 pages_build_output_dir = "./dist"
-
+routes = [
+  { pattern = "haiku42.net", custom_domain = true }
+]
 # Automatically place your workloads in an optimal location to minimize latency.
 # If you are running back-end logic in a Pages Function, running it closer to your back-end infrastructure
 # rather than the end user may result in better performance.
@@ -82,14 +84,28 @@ pages_build_output_dir = "./dist"
 
   # Enable caching for the haiku-image API route
   [[env.production.route]]
-  pattern = "https://yourdomain.com/api/haiku-image*"
+  pattern = "https://haiku42.net/api/haiku-image*"
   cache = {
-    # Cache the response at edge
     cache_level = "cache_everything"
-    # Set edge cache expiry to 1 day to match server cache headers
     edge_cache_ttl = 86400
-    # Browser cache expiry (optional)
     browser_cache_ttl = 86400
+  }
+
+  # Enable caching for the haiku API route (GET requests)
+  [[env.production.route]]
+  pattern = "https://haiku42.net/api/haiku?id=*"
+  cache = {
+    cache_level = "cache_everything"
+    edge_cache_ttl = 86400
+    browser_cache_ttl = 86400
+  }
+
+  # Disable caching for POST requests to the haiku API route
+  [[env.production.route]]
+  pattern = "https://haiku42.net/api/haiku"
+  method = "POST"
+  cache = {
+    cache_level = "bypass"
   }
 
   # [env.production.vars]
