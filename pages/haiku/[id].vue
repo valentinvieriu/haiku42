@@ -32,8 +32,8 @@ const router = useRouter()
 const { haiku, haikuLoading, imageLoading, backgroundUrl, fetchHaiku, fetchBackgroundImage, generateNewHaiku } = useHaiku()
 
 const loadHaiku = async (id) => {
-  await fetchHaiku(id)
-  await fetchBackgroundImage(id)
+  fetchHaiku(id)
+  fetchBackgroundImage(id)
 }
 
 const handleGenerateNewHaiku = async () => {

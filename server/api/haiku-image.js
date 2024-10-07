@@ -17,16 +17,16 @@ export default defineEventHandler(async (event) => {
     const imageId = await fetchLexicaImage(haiku, haiku.topic);
     const imageUrl = `https://image.lexica.art/full_jpg/${imageId}`;
 
-    // Fetch the image and stream it to the client
+    // Update cache headers to prevent caching issues
+    event.node.res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate'); // Prevent caching
+
+    // Fetch the image without awaiting the entire response
     const response = await fetch(imageUrl);
     if (!response.ok) {
       throw new Error(`Failed to fetch image: ${response.statusText}`);
     }
 
-    // Set cache headers
-    event.node.res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 1 day
-
-    // Stream the image to the client
+    // Stream the image to the client as it downloads
     return sendStream(event, response.body, response.headers.get('Content-Type'));
   } catch (error) {
     console.error('Error fetching Lexica image:', error.message);

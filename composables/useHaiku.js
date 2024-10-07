@@ -33,22 +33,17 @@ export const useHaiku = () => {
     }
   
     const generateNewHaiku = async () => {
-      haikuLoading.value = true
-      imageLoading.value = true
-  
+      haikuLoading.value = true  
       try {
         const { data } = await useFetch('/api/haiku', { method: 'POST' })
         if (data.value && data.value.id) {
           const id = data.value.id
-          await fetchHaiku(id)
-          await fetchBackgroundImage(id)
           return id
         }
       } catch (error) {
         console.error('Failed to generate new haiku:', error)
       } finally {
         haikuLoading.value = false
-        imageLoading.value = false
       }
     }
   
