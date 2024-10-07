@@ -17,8 +17,8 @@ export default defineEventHandler(async (event) => {
     const imageId = await fetchLexicaImage(haiku, haiku.topic);
     const imageUrl = `https://image.lexica.art/full_jpg/${imageId}`;
 
-    // Update cache headers to prevent caching issues
-    event.node.res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate'); // Prevent caching
+    // Revert cache headers to allow caching for 1 day
+    event.node.res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 1 day
 
     // Fetch the image without awaiting the entire response
     const response = await fetch(imageUrl);

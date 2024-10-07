@@ -77,9 +77,26 @@ pages_build_output_dir = "./dist"
 
 ######## PRODUCTION environment config ########
 
-# [env.production.vars]
-# API_KEY = "abc123"
+[env.production]
+  name = "production"
 
-# [[env.production.kv_namespaces]]
-# binding = "MY_KV_NAMESPACE"
-# id = "<PRODUCTION_NAMESPACE_ID>"
+  # Enable caching for the haiku-image API route
+  [[env.production.route]]
+  pattern = "https://yourdomain.com/api/haiku-image*"
+  cache = {
+    # Cache the response at edge
+    cache_level = "cache_everything"
+    # Set edge cache expiry to 1 day to match server cache headers
+    edge_cache_ttl = 86400
+    # Browser cache expiry (optional)
+    browser_cache_ttl = 86400
+  }
+
+  # [env.production.vars]
+  # API_KEY = "abc123"
+
+  # [[env.production.kv_namespaces]]
+  # binding = "MY_KV_NAMESPACE"
+  # id = "<PRODUCTION_NAMESPACE_ID>"
+
+  # ... other environment configurations ...
