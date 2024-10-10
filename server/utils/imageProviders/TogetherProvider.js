@@ -1,10 +1,6 @@
 export default class TogetherProvider {
-    constructor(env) {
-        this.env = env;
-        this.apiUrl = 'https://api.together.xyz/v1/images/generations';
-    }
-    
-    async getImage(haiku) {
+    static async getImage(haiku, env) {
+        const apiUrl = 'https://api.together.xyz/v1/images/generations';
         const prompt = `Create a visually striking image that blends traditional and futuristic elements. Incorporate unexpected juxtapositions of everyday objects and surreal concepts. Use a color palette that evokes strong emotions and sensory responses. Balance minimalism with complexity, leaving room for multiple interpretations. Include subtle references to contemporary culture and technology. The composition should reflect the following contemporary haiku: ${haiku.firstLine}    ${haiku.secondLine}    ${haiku.thirdLine}`;
 
         const requestBody = {
@@ -18,10 +14,10 @@ export default class TogetherProvider {
         };
 
         try {
-            const response = await $fetch(this.apiUrl, {
+            const response = await $fetch(apiUrl, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${this.env.TOGETHER_API_KEY}`,
+                    'Authorization': `Bearer ${env.TOGETHER_API_KEY}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(requestBody),

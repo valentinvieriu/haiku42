@@ -2,14 +2,14 @@ import LexicaProvider from './LexicaProvider';
 import DefaultProvider from './DefaultProvider';
 import TogetherProvider from './TogetherProvider';
 
-export function getImageProvider(provider = 'together', env) {
+export function getImageProvider(provider = 'together') {
   switch (provider.toLowerCase()) {
     case 'lexica':
-      return new LexicaProvider();
+      return LexicaProvider;
     case 'default':
-      return new DefaultProvider();
+      return DefaultProvider;
     case 'together':
     default:
-      return new TogetherProvider(env);
+      return TogetherProvider;
   }
 }

@@ -33,14 +33,14 @@ export default defineEventHandler(async (event) => {
     const haiku = decompressHaiku(query.id);
     console.log('Image query:', `${haiku.topic}    ${haiku.firstLine}    ${haiku.secondLine}    ${haiku.thirdLine}`);
 
-    const ImageProvider = getImageProvider(query.provider, event.context.cloudflare.env);
+    const ImageProvider = getImageProvider(query.provider);
     let imageData;
 
     try {
-      imageData = await ImageProvider.getImage(haiku);
+      imageData = await ImageProvider.getImage(haiku, event.context.cloudflare.env);
     } catch (imageProviderError) {
       console.error('Failed to fetch image:', imageProviderError.message);
-      imageData = await getImageProvider('default', event.context.cloudflare.env).getImage(baseUrl);
+      imageData = await getImageProvider('default').getImage(baseUrl, event.context.cloudflare.env);
     }
 
     // Revert cache headers to allow caching for 1 day
