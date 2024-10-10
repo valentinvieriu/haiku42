@@ -13,11 +13,11 @@ export async function fetchLexicaImage(haiku, topic) {
             model: 'lexica-aperture-v3.5',
             searchMode: 'images',
         }),
+        timeout: 1000, // 1 second timeout
     };
 
     try {
-        const response = await fetch('https://lexica.art/api/infinite-prompts', lexicaInit);
-        const responseData = await response.json();
+        const responseData = await $fetch('https://lexica.art/api/infinite-prompts', lexicaInit);
 
         if (responseData && responseData.images && responseData.images.length > 0) {
             const imageId = responseData.images[0].id;

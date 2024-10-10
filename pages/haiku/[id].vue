@@ -33,7 +33,7 @@ const { haiku, haikuLoading, imageLoading, backgroundUrl, fetchHaiku, fetchBackg
 
 const loadHaiku = async (id) => {
   fetchHaiku(id)
-  fetchBackgroundImage(id)
+  fetchBackgroundImage(id, 'together')
 }
 
 const handleGenerateNewHaiku = async () => {

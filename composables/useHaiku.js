@@ -22,13 +22,13 @@ export const useHaiku = () => {
       }
     }
   
-    const fetchBackgroundImage = async (id) => {
+    const fetchBackgroundImage = async (id, provider = 'lexica') => {
       imageLoading.value = true
       backgroundUrl.value = ''
-  
-      const imageUrl = `/api/haiku-image?id=${id || haiku.value?.id}`
+
+      const imageUrl = `/api/haiku-image?id=${id || haiku.value?.id}&provider=${provider}`
       backgroundUrl.value = imageUrl
-  
+
       imageLoading.value = false
     }
   
