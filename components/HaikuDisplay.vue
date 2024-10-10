@@ -1,7 +1,7 @@
 <template>
   <div
     id="haiku"
-    class="p-4 text-center cursor-pointer"
+    class="text-center cursor-pointer"
     @click="$emit('loadNew')"
   >
     <transition name="fade" mode="out-in">

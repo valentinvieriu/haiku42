@@ -83,38 +83,69 @@ export default class TogetherProvider {
 
 const haikuImagePrompts = [
     // Contemporary and Futuristic
-    "Inspired by the haiku '{{haiku}}': Cyberpunk cityscape with holographic elements. Retro-futuristic and organic shapes blend. Digital dreamscape atmosphere.",
-    "Visualizing the essence of '{{haiku}}': Virtual reality interface overlaying a natural landscape. Abstract data visualizations intertwine with organic elements.",
-    "Interpreting '{{haiku}}' as a surreal digital collage mixing modern and classical elements. Glitchy textures and vibrant colors in a renaissance-style composition.",
-    "Based on the haiku '{{haiku}}': AI-generated fractal patterns forming impossible architecture. Hidden cultural references scattered throughout.",
-    "Inspired by '{{haiku}}': Minimalist tech-noir scene with stark contrasts and deep shadows. Neon elements hint at the haiku's first line.",
-    "Representing '{{haiku}}': Augmented reality nature scene. Digital and natural elements blend seamlessly.",
-    "Visualizing the sentiment of '{{haiku}}': Social media aesthetics as abstract art. Profile elements form a complex tapestry. Emotions conveyed through color theory.",
+    "Cyberpunk cityscape inspired by '{{haiku}}'. Retro-futuristic and organic shapes blend. Digital dreamscape atmosphere.",
+    "Virtual reality interface overlaying a natural landscape. Abstract data visualizations intertwine with organic elements inspired by '{{haiku}}'.",
+    "A surreal digital collage inspired by '{{haiku}}' mixing modern and classical elements. Glitchy textures and vibrant colors in a renaissance-style composition.",
+    "AI-generated fractal patterns forming impossible architecture, influenced by '{{haiku}}'. Hidden cultural references scattered throughout.",
+    "Minimalist tech-noir scene with stark contrasts and deep shadows. Neon elements hint at underlying themes inspired by '{{haiku}}'.",
+    "Augmented reality nature scene inspired by '{{haiku}}'. Digital and natural elements blend seamlessly.",
+    "Social media aesthetics as abstract art, reflecting the essence of '{{haiku}}'. Profile elements form a complex tapestry. Emotions conveyed through color theory.",
   
     // Surreal and Unexpected
-    "Interpreting '{{haiku}}' in an impossible space setting: Everyday objects take on cosmic significance. Subtle distortions create intrigue.",
-    "Playful visualization of '{{haiku}}': Scale distortions with miniature and giant elements. Unexpected textures capture the haiku's essence.",
-    "Inspired by the structure of '{{haiku}}': Impossible architecture with a modern twist. Abstract elements form visual puzzles.",
-    "Climate change surrealism based on '{{haiku}}': Melting familiar objects juxtaposed with natural elements. Balance beauty and concern.",
+    "An impossible space setting inspired by '{{haiku}}' where everyday objects take on cosmic significance. Subtle distortions create intrigue.",
+    "Scale distortions with miniature and giant elements, inspired by '{{haiku}}'. Unexpected textures capture the essence.",
+    "Impossible architecture with a modern twist, influenced by '{{haiku}}'. Abstract elements form visual puzzles.",
+    "Climate change surrealism based on '{{haiku}}' with melting familiar objects juxtaposed with natural elements. Balancing beauty and concern.",
   
     // Emotional and Sensory
-    "Synesthesia-inspired composition of '{{haiku}}': Colors represent sounds, textures evoke tastes. A sensory interpretation of the haiku.",
-    "Extreme close-up reflecting '{{haiku}}': Hyper-detailed and emotionally charged scene with complex reflections, illustrating the haiku's core.",
-    "Abstract emotional landscape of '{{haiku}}': Using color field techniques. Turbulent brushstrokes represent complex feelings expressed in the haiku.",
+    "Synesthesia-inspired composition based on '{{haiku}}': Colors represent sounds, textures evoke tastes. A sensory interpretation.",
+    "Extreme close-up, hyper-detailed and emotionally charged scene inspired by '{{haiku}}' with complex reflections.",
+    "Abstract emotional landscape using color field techniques inspired by '{{haiku}}'. Turbulent brushstrokes represent complex feelings.",
   
     // Pop Culture and Contemporary
-    "Movie poster style composition featuring '{{haiku}}': Visual style derived from the haiku's theme with unexpected elements.",
-    "Crowd scene inspired by '{{haiku}}': Individuals represented by symbolic elements. Stage and performers created from abstract concepts in the haiku.",
-    "Classical art reimagined with '{{haiku}}': Traditional style with modern elements. Subtle contemporary references hidden throughout, based on the haiku's juxtaposition of ideas.",
+    "Movie poster style composition inspired by '{{haiku}}' with visual elements derived from thematic concepts.",
+    "Crowd scene inspired by '{{haiku}}' with individuals represented by symbolic elements. Stage and performers created from abstract concepts.",
+    "Classical art reimagined with modern elements, inspired by '{{haiku}}'. Subtle contemporary references hidden throughout.",
   
     // Innovative and Experimental
-    "Text-based visual art using only the words from '{{haiku}}': Letters and punctuation form abstract shapes and patterns.",
-    "Glitch art interpretation of '{{haiku}}': Distortions reveal layers of meaning. Visual elements represent the haiku's multiple interpretations.",
-    "3D-rendered impossible object inspired by '{{haiku}}': Optical illusion effects based on the contradictions or surprises in the haiku.",
+    "Glitch art interpretation inspired by '{{haiku}}' with distortions revealing layers of meaning. Visual elements represent multiple interpretations.",
+    "3D-rendered impossible object inspired by '{{haiku}}' with optical illusion effects based on contradictions or surprises.",
   
     // Traditional with a Modern Twist
-    "Ink wash landscape inspired by '{{haiku}}': Traditional scene with subtle contemporary elements blending old and new.",
-    "Traditional wave style representing '{{haiku}}': Modern elements caught in its form, blending natural and human-made concepts.",
-    "Zen garden aesthetic based on '{{haiku}}': Traditional elements replaced by modern symbols. Patterns evoke both tradition and innovation.",
-    "Seasonal imagery inspired by '{{haiku}}': Traditional style composed of unexpected materials. Delicate beauty meets contemporary consciousness."
+    "Ink wash landscape inspired by '{{haiku}}' with subtle contemporary elements blending old and new.",
+    "Traditional wave style representing concepts from '{{haiku}}' with modern elements caught in its form, blending natural and human-made ideas.",
+    "Zen garden aesthetic inspired by '{{haiku}}' with traditional elements replaced by modern symbols. Patterns evoke both tradition and innovation.",
+    "Seasonal imagery inspired by '{{haiku}}' with traditional style composed of unexpected materials. Delicate beauty meets contemporary consciousness.",
+  
+    // New Contemporary and Futuristic Prompts
+    "Neon-lit skyline reflecting the mood of '{{haiku}}', blending technology with natural elements.",
+    "Futuristic marketplace inspired by '{{haiku}}', featuring diverse cultures and advanced gadgets.",
+    "Smart cityscape influenced by '{{haiku}}', showcasing sustainable architecture and vibrant streets.",
+
+    // New Surreal and Unexpected Prompts
+    "Dreamlike forest scene inspired by '{{haiku}}', where trees morph into abstract shapes.",
+    "Surreal underwater city reflecting the essence of '{{haiku}}', with ethereal lighting and fluid movements.",
+    "Floating islands inspired by '{{haiku}}', interconnected by whimsical bridges and mystical flora.",
+
+    // New Emotional and Sensory Prompts
+    "Twilight landscape capturing the serenity of '{{haiku}}', with soft hues and gentle silhouettes.",
+    "Emotionally charged storm scene inspired by '{{haiku}}', featuring dynamic clouds and intense colors.",
+    "Calm lakeside view reflecting the tranquility of '{{haiku}}', with mirrored water and subtle lighting.",
+
+    // New Pop Culture and Contemporary Prompts
+    "Urban street art inspired by '{{haiku}}', blending graffiti styles with poetic elements.",
+    "Concert scene reflecting the energy of '{{haiku}}', with vibrant lights and dynamic movements.",
+    "Modern workspace inspired by '{{haiku}}', showcasing innovative designs and collaborative spaces.",
+
+    // New Innovative and Experimental Prompts
+    "Abstract geometric patterns inspired by '{{haiku}}', creating a visually engaging composition.",
+    "Experimental light play reflecting the themes of '{{haiku}}', with shadows and vibrant beams.",
+    "Mixed media collage inspired by '{{haiku}}', combining digital and traditional art elements.",
+
+    // New Traditional with a Modern Twist Prompts
+    "Traditional tea ceremony scene infused with modern aesthetics inspired by '{{haiku}}'.",
+    "Classic garden landscape reimagined with contemporary art elements reflecting '{{haiku}}'.",
+    "Heritage architecture blended with futuristic designs inspired by '{{haiku}}'.",
+
+    // Add more prompts as needed...
 ];

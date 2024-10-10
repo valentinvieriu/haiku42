@@ -18,6 +18,7 @@ html, body {
 }
 body {
   padding: 0;
+  font-family: 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif;
 }
 
 .content {
