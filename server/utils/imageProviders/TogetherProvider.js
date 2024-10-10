@@ -4,9 +4,9 @@ export default class TogetherProvider {
         const prompt = `Create a visually striking image that blends traditional and futuristic elements. Incorporate unexpected juxtapositions of everyday objects and surreal concepts. Use a color palette that evokes strong emotions and sensory responses. Balance minimalism with complexity, leaving room for multiple interpretations. Include subtle references to contemporary culture and technology. The composition should reflect the following contemporary haiku: ${haiku.firstLine}    ${haiku.secondLine}    ${haiku.thirdLine}`;
 
         const requestBody = {
-            model: "black-forest-labs/FLUX.1-schnell",
+            model: "black-forest-labs/FLUX.1-schnell-Free",
             prompt: prompt,
-            width: 800,
+            width: 960,
             height: 1440,
             steps: 4,
             n: 1,
