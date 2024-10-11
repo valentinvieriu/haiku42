@@ -46,7 +46,7 @@ const error = ref(null)
 const imageProviders = ['together', 'cloudflare', 'default']
 
 // Define the list of haiku models in order of preference
-const haikuModels = ['claude-3-5-sonnet-20240620','llama-3.2-11b-text-preview', 'gpt-4o-mini', 'gpt-4o']
+const haikuModels = ['llama-3.1-70b-versatile','llama-3.2-11b-text-preview','gemma2-9b-it','llama-3.1-8b-instant'] //, 'gpt-4o-mini', 'gpt-4o', 'claude-3-5-sonnet-20240620']
 
 // Fetch Haiku
 const fetchHaiku = async (id = null) => {
