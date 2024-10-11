@@ -45,9 +45,9 @@ export default defineEventHandler(async (event) => {
     for (const providerName of providers) {
       const ImageProvider = getImageProvider(providerName);
       try {
-        console.log(`[haiku-image] Attempting to generate image with ${providerName} provider for haiku: ${query.id}`);
+        console.log(`[haiku-image] Attempting to generate image with ${providerName} provider for haiku: ${query.id.slice(0, 10)}...`);
         imageData = await ImageProvider.getImage(haiku, event.context.cloudflare.env, width, height);
-        console.log(`[haiku-image] Image generated successfully with ${providerName} provider for haiku: ${query.id}`);
+        console.log(`[haiku-image] Image generated successfully with ${providerName} provider for haiku: ${query.id.slice(0, 10)}...`);
         break; // Exit the loop if image generation is successful
       } catch (error) {
         console.error(`[haiku-image] Failed to generate image with ${providerName} provider:`, error.message);

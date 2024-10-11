@@ -1,14 +1,21 @@
+import { haikuImagePrompts } from './sharedPrompts.js';
+import { getPromptTemplate, generatePrompt, generateSeed } from './imageProviderUtils.js';
+
 export default class CloudflareAIProvider {
     static async getImage(haiku, env, width, height) {
         console.log('[CloudflareAIProvider] Starting image generation for imagePrompt:', haiku.imagePrompt);
-        const prompt = this.generatePrompt(haiku);
+        const promptTemplate = getPromptTemplate(haiku, haikuImagePrompts);
+        const prompt = generatePrompt(promptTemplate, haiku);
+        const seed = generateSeed(promptTemplate, haiku);
 
         console.log('[CloudflareAIProvider] Generated prompt:', prompt);
+        console.log('[CloudflareAIProvider] Generated seed:', seed);
 
         try {
             const response = await env.AI.run('@cf/black-forest-labs/flux-1-schnell', {
                 prompt: prompt,
                 num_steps: 8,
+                seed: seed,
             });
 
             if (response?.image) {
@@ -24,13 +31,5 @@ export default class CloudflareAIProvider {
             console.error('[CloudflareAIProvider] Failed to generate image:', error.message);
             throw new Error('Failed to generate image: ' + error.message);
         }
-    }
-
-    static generatePrompt(haiku) {
-        const haikuText = `${haiku.firstLine} ${haiku.secondLine} ${haiku.thirdLine}`;
-        const topic = haiku.topic || '';
-        return `Create a serene and artistic image inspired by this haiku about ${topic}:
-        "${haikuText}"
-        The image should capture the essence and mood of the haiku, using subtle symbolism and elegant composition.`;
     }
 }

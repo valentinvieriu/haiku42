@@ -71,4 +71,6 @@ Follow these rules when you write code:
 
 15. Make use of Nuxt's auto-imported components feature by placing components in the `components/` directory.
 
+16. Use modern JavaScript features like optional chaining, nullish coalescing, and template literals.
+
 Remember to adhere to Nuxt 3's conventions and best practices throughout the development process.
