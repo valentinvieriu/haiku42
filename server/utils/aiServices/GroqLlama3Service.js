@@ -2,7 +2,7 @@ export default class GroqLlama3Service {
   constructor(env, modelName) {
     this.env = env;
     this.modelName = modelName;
-    this.apiUrl = 'https://api.groq.com/openai/v1/chat/completions';
+    this.apiUrl = 'https://gateway.ai.cloudflare.com/v1/b704c2550c9082fb06e9796e7c042412/haiku42/groq/openai/v1/chat/completions';
   }
 
   async run(chat) {

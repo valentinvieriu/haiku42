@@ -2,7 +2,7 @@ export default class ClaudeService {
   constructor(env, model = 'claude-3-5-sonnet-20240620') {
     this.env = env;
     this.model = model;
-    this.apiUrl = 'https://api.anthropic.com/v1/messages';
+    this.apiUrl = 'https://gateway.ai.cloudflare.com/v1/b704c2550c9082fb06e9796e7c042412/haiku42/anthropic/v1/messages';
   }
 
   async run(chat) {

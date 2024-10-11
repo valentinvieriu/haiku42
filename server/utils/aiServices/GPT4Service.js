@@ -2,7 +2,7 @@ export default class GPT4Service {
   constructor(env, model) {
     this.env = env;
     this.model = model;
-    this.apiUrl = 'https://api.openai.com/v1/chat/completions';
+    this.apiUrl = 'https://gateway.ai.cloudflare.com/v1/b704c2550c9082fb06e9796e7c042412/haiku42/openai/v1/chat/completions';
   }
 
   async run(chat) {
