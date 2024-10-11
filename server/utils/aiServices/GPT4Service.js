@@ -1,6 +1,7 @@
-export default class GPT4oMiniService {
-  constructor(env) {
+export default class GPT4Service {
+  constructor(env, model) {
     this.env = env;
+    this.model = model;
     this.apiUrl = 'https://api.openai.com/v1/chat/completions';
   }
 
@@ -10,12 +11,12 @@ export default class GPT4oMiniService {
       Authorization: `Bearer ${this.env.OPENAI_API_KEY}`,
     };
     const body = JSON.stringify({
-      model: 'gpt-4o-mini',
+      model: this.model,
       messages: chat.messages,
       stream: false,
       n: 1,
       temperature: 2,
-      max_tokens: 64,
+      max_tokens: 1024,
       top_p: 0.8,
       frequency_penalty: 0.5,
       presence_penalty: 0.5,
@@ -28,10 +29,10 @@ export default class GPT4oMiniService {
         body,
       });
       const data = await response.json();
-      console.log('GPT-4o-mini Response:', data);
+      console.log(`${this.model} Response:`, data);
       return data?.choices[0]?.message?.content;
     } catch (error) {
-      console.error(`Error in GPT4oMiniService.run: ${error.message}`);
+      console.error(`Error in GPT4Service.run: ${error.message}`);
       throw error;
     }
   }

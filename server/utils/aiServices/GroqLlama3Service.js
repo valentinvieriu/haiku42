@@ -13,11 +13,11 @@ export default class GroqLlama3Service {
     const body = JSON.stringify({
       model: this.modelName,
       messages: chat.messages,
-      response_format: { type: 'json_object' },
+    //   response_format: { type: 'json_object' },
       stream: false,
       n: 1,
       temperature: 0.7,
-      max_tokens: 180,
+      max_tokens: 1024,
       top_p: 0.7,
     });
 

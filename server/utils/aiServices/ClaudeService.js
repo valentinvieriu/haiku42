@@ -1,6 +1,7 @@
 export default class ClaudeService {
-  constructor(env) {
+  constructor(env, model = 'claude-3-5-sonnet-20240620') {
     this.env = env;
+    this.model = model;
     this.apiUrl = 'https://api.anthropic.com/v1/messages';
   }
 
@@ -11,12 +12,12 @@ export default class ClaudeService {
       'anthropic-version': '2023-06-01',
     };
     const body = JSON.stringify({
-      model: 'claude-3-5-sonnet-20240620',
+      model: this.model,
       messages: [chat.messages[1]],
       system: chat.messages[0].content,
       stream: false,
       temperature: 0.7,
-      max_tokens: 100,
+      max_tokens: 1024,
       top_p: 0.7,
     });
 
@@ -27,7 +28,7 @@ export default class ClaudeService {
         body,
       });
       const data = await response.json();
-      console.log('ClaudeService Response:', data);
+      console.log(`${this.model} Response:`, data);
       return data?.content[0]?.text;
     } catch (error) {
       console.error(`Error in ClaudeService.run: ${error.message}`);

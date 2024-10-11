@@ -1,9 +1,9 @@
 import getRandomTopic from './topics'
-import { getAIService } from './aiServices/index.js'; // Updated import
+import { getAIService } from './aiServices/index.js';
 
 export async function generateHaiku(env, query) {
-  const model = query.model || 'llama-3.2-11b-text-preview' // Default to Cloudflare AI
-  const topic = query.topic || getRandomTopic()
+  const model = 'llama-3.2-11b-text-preview';//'llama-3.2-11b-text-preview' 
+  const topic = getRandomTopic()
   
   // Select API based on the model parameter
   const aiService = getAIService(model, env)
@@ -25,6 +25,7 @@ export async function generateHaiku(env, query) {
     throw error // Rethrow the error to be handled in the API route
   }
 }
+
 
 function generateChatRequest(topic) {
     return {
@@ -87,48 +88,90 @@ You are an Innovative Contemporary Poet known for crafting modern, creative take
     - Feel free to explore witty observations or puns to create humorous haiku.
     - Use wordplay judiciously, ensuring it enhances the haiku's impact.
 
-**Additional Considerations from Traditional Haiku Practices:**
-
-- **Avoid Metaphor and Simile**: Present images directly without using 'like' or 'as' for comparison.
-- **Avoid Personification**: Do not attribute human qualities to non-human things.
-- **Avoid Clichés**: Steer clear of overused phrases and ideas.
-- **Punctuation and Capitalization**:
-  - Use punctuation sparingly to enhance meaning.
-  - Employ lowercase letters unless grammatically incorrect.
-  - **No Titles**: Haikus do not require titles.
+13. **Additional Traditional Elements**:
+    - **Avoid Metaphor and Simile**: Present images directly without using 'like' or 'as' for comparison.
+    - **Avoid Personification**: Do not attribute human qualities to non-human things.
+    - **Avoid Clichés**: Steer clear of overused phrases and ideas.
+    - **Punctuation and Capitalization**:
+      - Use punctuation sparingly to enhance meaning.
+      - Employ lowercase letters unless grammatically incorrect.
+      - **No Titles**: Haikus do not require titles.
 
 **Aim** to capture an ephemeral snapshot of the zeitgeist through the lens of the haiku form, with language that feels fresh and themes that resonate with a contemporary audience.
 
 Ensure each line adheres to the traditional **5-7-5 syllable count**, respectively, and captures the essence of your theme or imagery in a manner that reflects the considerations listed above.
 
-**Make sure to utilize the Em Dash (—) appropriately to create a pivot or juxtaposition in your haiku, as per traditional and modern haiku practices.**
+**Instructions:**
 
-**Ensure the output is VALID JSON only, following this template:**
+Follow these steps to generate the haiku:
+
+1. **Topic Processing**:
+   - Take the raw topic provided: \`\${topic}\`
+   - Adapt it to create a topic suitable for a haiku, ensuring it aligns with the guidelines and key considerations.
+   - The adapted topic should be concise and focused, capturing the essence of the original while being appropriate for haiku.
+
+2. **Haiku Creation**:
+   - Create a thought-provoking haiku based on the adapted topic from the previous step.
+   - Ensure it adheres to the 5-7-5 syllable structure and incorporates the key considerations listed above.
+   - Utilize techniques like **Em Dash (—)** for juxtaposition and to create a pivot in the haiku.
+
+3. **Image Prompt Creation**:
+   - Create an **imagePrompt** that captures the essence of the haiku.
+   - Describe what should be in the image, detailing the **background**, **middle-ground**, and **foreground**.
+   - Include clear details of the items involved and their expected dynamics.
+   - Ensure the description aligns with the haiku and enhances its imagery.
+
+4. **Final Output**:
+   - Output your reasoning steps for each part above.
+   - At the end, provide the final result in **JSON format**, surrounded by comments using \`\`\`json.
+   - The JSON should have the following structure:
+
 
 {
+    "topic": "The adapted topic suitable for a haiku",
     "firstLine": "Your first line here. MUST be 5 syllables.",
     "secondLine": "Your second line here. MUST be 7 syllables.",
-    "thirdLine": "Your third line here. MUST be 5 syllables."
-}				   
-                `,
-            },
-            {
-                role: 'user',
-                content: `
-Generate a thought-provoking 5-7-5 Haiku on the topic: """${topic}""" .
-Make sure the Output is VALID JSON only. Omit any additional text or explanation.
-                    `,
-            },
-        ],
-    };
+    "thirdLine": "Your third line here. MUST be 5 syllables.",
+    "imagePrompt": "A detailed description of an image capturing the essence of the haiku."
 }
+
+
+**Note:** Ensure that the haiku reflects all the key considerations and guidelines provided.
+
+                    `,
+                },
+                {
+                    role: 'user',
+                    content: `
+Generate a thought-provoking 5-7-5 Haiku on the topic: """${topic}""".
+
+Follow these steps:
+
+1. **Topic Processing**: Take the raw topic and adapt it to create a topic suitable for a haiku, following the guidelines and keeping as much of the original topic as possible.
+
+2. **Haiku Creation**: Create a haiku based on the topic from the previous step, ensuring it aligns with all the key considerations.
+
+3. **Image Prompt Creation**: Create an imagePrompt that captures the essence of the haiku by describing the layers in the image, including background, middle-ground, foreground, with clear details of the items involved and their expected dynamics.
+
+4. **Final Output**: Provide the final output in JSON format using the expected structure. make sure it is valid JSON and surounded by \`\`\`json tags.
+
+
+Remember to output your reasoning steps, and only at the end produce the json (with the comments around). Do not remove any of the existing criteria for generating a haiku.
+                        `,
+                },
+            ],
+        };
+    };
+
 
 
 function sanitizeResponse(response) {
 	let defaultHaiku = {
-		firstLine: 'Silent minds converge',
-		secondLine: 'In circuits, wisdom blossoms',
-		thirdLine: 'A new dawn awakes',
+		topic: "Artificial Intelligence",
+		firstLine: "Silent minds converge",
+		secondLine: "In circuits, wisdom blossoms",
+		thirdLine: "A new dawn awakes",
+		imagePrompt: "A futuristic cityscape at dawn, with glowing circuits intertwining with tree branches. In the foreground, silhouettes of human-like figures stand, their heads illuminated by soft, pulsating light representing awakening AI consciousness."
 	};
 
 	let JSONResponse = defaultHaiku;
@@ -138,30 +181,21 @@ function sanitizeResponse(response) {
 		if (typeof response !== 'string') {
 			response = JSON.stringify(response);
 		}
-
-		// Attempt to directly parse the response
-		JSONResponse = JSON.parse(response);
-	} catch (error) {
-		// If direct parsing fails, look for a JSON object within the string
-		const firstCurlyBracket = response.indexOf('{');
-		const lastCurlyBracket = response.lastIndexOf('}');
-		if (firstCurlyBracket !== -1 && lastCurlyBracket !== -1 && lastCurlyBracket > firstCurlyBracket) {
-			const jsonString = response.substring(firstCurlyBracket, lastCurlyBracket + 1);
-			try {
-				JSONResponse = JSON.parse(jsonString);
-			} catch (subError) {
-				console.warn('Failed to parse extracted JSON, using default haiku:', subError.message);
-				JSONResponse = defaultHaiku; // Use default haiku if parsing still fails
-			}
+		// Extract JSON from between ```json and ``` markers
+		const jsonMatch = response.match(/```json\n([\s\S]*?)\n```/);
+		if (jsonMatch && jsonMatch[1]) {
+			JSONResponse = JSON.parse(jsonMatch[1]);
 		} else {
-			console.warn('Valid JSON not found in response, using default haiku:', error.message);
-			JSONResponse = defaultHaiku; // Use default haiku if no valid JSON is found
+			throw new Error('No valid JSON found in the response');
 		}
+	} catch (error) {
+		console.warn('Failed to parse JSON from response, using default haiku:', error.message);
+		JSONResponse = defaultHaiku; // Use default haiku if parsing fails
 	}
 
 	// Final check to ensure the response has the expected structure
-	if (!JSONResponse.firstLine || !JSONResponse.secondLine || !JSONResponse.thirdLine) {
-		console.warn('Invalid haiku structure, using default haiku.',response);
+	if (!JSONResponse.firstLine || !JSONResponse.secondLine || !JSONResponse.thirdLine || !JSONResponse.imagePrompt) {
+		console.warn('Invalid haiku structure, using default haiku.');
 		JSONResponse = defaultHaiku; // Ensure fallback to default haiku if structure is invalid
 	}
 	console.log('Generated Haiku:', JSONResponse);
