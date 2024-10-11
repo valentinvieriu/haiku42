@@ -45,6 +45,9 @@ const error = ref(null)
 // Define the list of image providers in order of preference
 const imageProviders = ['together', 'cloudflare', 'default']
 
+// Define the list of haiku models in order of preference
+const haikuModels = ['claude-3-5-sonnet-20240620','llama-3.2-11b-text-preview', 'gpt-4o-mini', 'gpt-4o']
+
 // Fetch Haiku
 const fetchHaiku = async (id = null) => {
   haikuLoading.value = true
@@ -73,7 +76,8 @@ const setBackgroundImage = async (id) => {
 const generateNewHaiku = async () => {
   haikuLoading.value = true  
   try {
-    const data = await $fetch('/api/haiku', { method: 'POST' })
+    const models = encodeURIComponent(haikuModels.join(','))
+    const data = await $fetch(`/api/haiku?models=${models}`, { method: 'POST' })
     if (data && data.id) {
       return data.id
     }

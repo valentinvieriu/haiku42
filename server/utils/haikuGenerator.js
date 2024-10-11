@@ -1,31 +1,38 @@
 import getRandomTopic from './topics'
 import { getAIService } from './aiServices/index.js';
 
-export async function generateHaiku(env, query) {
-  const model = 'llama-3.2-11b-text-preview';//'llama-3.2-11b-text-preview' 
+export async function generateHaiku(env, query, models) {
   const topic = getRandomTopic()
   
-  // Select API based on the model parameter
-  const aiService = getAIService(model, env)
+  let response = null;
+  let error = null;
 
-  const chat = generateChatRequest(topic)
+  for (const model of models) {
+    try {
+      // Select API based on the model parameter
+      const aiService = getAIService(model, env)
 
-  console.log('Topic: ', topic, '\nModel: ', model)
-//   console.log('Environment:', env); // Log the environment variables
+      const chat = generateChatRequest(topic)
 
-  try {
-    let response = await aiService.run(chat)
-    if (!response) {
-      throw new Error('AI service returned an empty response')
+      console.log('Topic: ', topic, '\nModel: ', model)
+
+      response = await aiService.run(chat)
+      if (response) {
+        break; // If we get a valid response, exit the loop
+      }
+    } catch (err) {
+      console.error(`Error with model ${model}:`, err.message)
+      error = err
     }
-    const sanitizedResponse = sanitizeResponse(response)
-    return { ...sanitizedResponse, topic } ?? defaultHaiku;  // Include the topic in the returned object
-  } catch (error) {
-    console.error(`Error in generateHaiku: ${error.message}`)
-    throw error // Rethrow the error to be handled in the API route
   }
-}
 
+  if (!response) {
+    throw error || new Error('All AI services failed to generate a response')
+  }
+
+  const sanitizedResponse = sanitizeResponse(response)
+  return { ...sanitizedResponse, topic } ?? defaultHaiku;  // Include the topic in the returned object
+}
 
 function generateChatRequest(topic) {
     return {

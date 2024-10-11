@@ -29,7 +29,8 @@ export default defineEventHandler(async (event) => {
   // Handle POST requests (generating new haiku)
   if (event.node.req.method === 'POST') {
     try {
-      const haiku = await generateHaiku(cloudflare.env, query);
+      const models = query.models ? query.models.split(',') : ['llama-3.2-11b-text-preview'];
+      const haiku = await generateHaiku(cloudflare.env, query, models);
 
       if (!haiku) {
         throw new Error('Generated haiku is undefined');
