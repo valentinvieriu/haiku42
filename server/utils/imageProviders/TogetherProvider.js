@@ -13,13 +13,13 @@ export default class TogetherProvider {
         //black-forest-labs/FLUX.1.1-pro
         const requestBody = {
             model: "black-forest-labs/FLUX.1-schnell-Free",
-            prompt: prompt,
+            prompt,
             width: 960,
             height: 1440,
             steps: 4,
             n: 1,
             response_format: "b64_json",
-            seed: seed
+            seed
         };
 
         try {
@@ -31,17 +31,16 @@ export default class TogetherProvider {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(requestBody),
-                timeout: 30000 // 30 seconds timeout
+                // timeout: 30000 // 30 seconds timeout
             });
 
-            if (response && response.data && response.data[0] && response.data[0].b64_json) {
+            if (response?.data?.[0]?.b64_json) {
                 console.log('[TogetherProvider] Successfully generated image');
                 return {
                     type: 'base64',
                     data: response.data[0].b64_json
                 };
             } else {
-                console.error('[TogetherProvider] Invalid response structure from Together API');
                 throw new Error('Invalid response from Together API');
             }
         } catch (error) {
@@ -53,22 +52,18 @@ export default class TogetherProvider {
     static getPromptTemplate(haiku) {
         const haikuText = `${haiku.firstLine}${haiku.secondLine}${haiku.thirdLine}`;
         const hash = this.hashString(haikuText);
-        const index = hash % haikuImagePrompts.length;
-        const template = haikuImagePrompts[index];
+        const template = haikuImagePrompts[hash % haikuImagePrompts.length];
         console.log('[TogetherProvider] Selected prompt template:', template);
         return template;
     }
 
     static generatePrompt(template, haiku) {
-        const prompt = template.replace('{{imagePrompt}}', haiku.imagePrompt);
-        return prompt;
+        return template.replace('{{imagePrompt}}', haiku.imagePrompt);
     }
 
     static generateSeed(template, haiku) {
         const combinedString = template + haiku.imagePrompt;
-        const hash = this.hashString(combinedString);
-        // Ensure the seed is between 1 and 10000
-        return (hash % 10000) + 1;
+        return (this.hashString(combinedString) % 10000) + 1;
     }
 
     static hashString(str) {

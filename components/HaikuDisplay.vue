@@ -5,9 +5,7 @@
     @click="$emit('loadNew')"
   >
     <transition name="fade" mode="out-in">
-      <div v-if="loading">
-        <SkeletonHaiku />
-      </div>
+      <SkeletonHaiku v-if="loading" />
       <div v-else>
         <p
           v-for="(line, index) in haiku"
@@ -31,10 +29,6 @@ const emit = defineEmits(['loadNew'])
 const typedLines = ref(['', '', ''])
 const animationFrames = ref([])
 
-const handleLoadNew = () => {
-  emit('loadNew')
-}
-
 const typeEffect = (text, lineIndex, speed = 42) => {
   if (import.meta.client) {
     return new Promise((resolve) => {
@@ -57,7 +51,6 @@ const typeEffect = (text, lineIndex, speed = 42) => {
       animationFrames.value[lineIndex] = requestAnimationFrame(typeChar)
     })
   } else {
-    // Server-side fallback: instantly set the full line
     typedLines.value[lineIndex] = text
     return Promise.resolve()
   }
@@ -65,17 +58,13 @@ const typeEffect = (text, lineIndex, speed = 42) => {
 
 const animateHaiku = async () => {
   if (import.meta.client) {
-    // Cancel any ongoing animations
-    animationFrames.value.forEach((frame) => {
-      cancelAnimationFrame(frame)
-    })
-    typedLines.value = ['', '', ''] // Reset typed lines
+    animationFrames.value.forEach(cancelAnimationFrame)
+    typedLines.value = ['', '', '']
 
     for (let i = 0; i < props.haiku.length; i++) {
       await typeEffect(props.haiku[i], i)
     }
   } else {
-    // Server-side fallback: instantly set all lines
     typedLines.value = [...props.haiku]
   }
 }
@@ -98,18 +87,12 @@ onNuxtReady(() => {
 
 onBeforeUnmount(() => {
   if (import.meta.client) {
-    // Clean up animation frames
-    animationFrames.value.forEach((frame) => {
-      cancelAnimationFrame(frame)
-    })
+    animationFrames.value.forEach(cancelAnimationFrame)
   }
 })
 </script>
 
 <style scoped>
-.haiku-display {
-  @apply font-serif text-gray-800;
-}
 .haiku-line {
   @apply mb-4;
 }

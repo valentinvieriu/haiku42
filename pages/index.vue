@@ -1,28 +1,34 @@
 <script setup>
 import { useRouter } from 'vue-router'
-import { useHaiku } from '~/composables/useHaiku'
 import { ref } from 'vue'
 
 const router = useRouter()
-const { generateNewHaiku, error } = useHaiku()
+
+// Local state
 const generationError = ref(null)
 
-const generateAndRedirect = async () => {
+// Generate New Haiku
+const generateNewHaiku = async () => {
   try {
-    const id = await generateNewHaiku()
-    if (id) {
-      await router.push({ path: `/haiku/${id}` })
+    const data = await $fetch('/api/haiku', { method: 'POST' })
+    if (data && data.id) {
+      await router.push({ path: `/haiku/${data.id}` })
     } else {
       throw new Error('Failed to generate new haiku')
     }
   } catch (err) {
     console.error('Failed to generate new haiku:', err)
-    generationError.value = error.value || 'An unexpected error occurred'
+    generationError.value = err.message || 'An unexpected error occurred'
   }
 }
 
+// Handle Generate and Redirect
+const generateAndRedirect = async () => {
+  await generateNewHaiku()
+}
+
 // Use onMounted to ensure this runs on the client-side
-onNuxtReady(() => {
+onMounted(() => {
   generateAndRedirect()
 })
 </script>

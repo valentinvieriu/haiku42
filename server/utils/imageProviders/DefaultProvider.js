@@ -1,8 +1,8 @@
 export default class DefaultProvider {
-  static async getImage(baseUrl) {
+  static async getImage() {
     return {
       type: 'url',
-      data: `${baseUrl}/default-background.jpg`
+      data: `https://haiku42.net/default-background.jpg`
     };
   }
 }

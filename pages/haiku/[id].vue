@@ -2,40 +2,87 @@
   <div class="h-screen overflow-hidden">
     <BackgroundImage
       :image-url="backgroundUrl"
-      :loading="imageLoading"
       @loadNew="handleGenerateNewHaiku"
     />
     <main class="absolute bottom-[13%] left-0 right-0 p-8 bg-white bg-opacity-95">
-      <transition name="fade" mode="out-in">
-        <HaikuDisplay 
-          v-if="haiku"
-          :key="haiku.id"
-          :haiku="[haiku.firstLine, haiku.secondLine, haiku.thirdLine]" 
-          :loading="haikuLoading"
-          @loadNew="handleGenerateNewHaiku"
-          class="text-2xl md:text-4xl"
-        />
-      </transition>
+      <ClientOnly>
+        <Suspense>
+          <HaikuDisplay 
+            v-if="haiku"
+            :key="haiku.id"
+            :haiku="[haiku.firstLine, haiku.secondLine, haiku.thirdLine]" 
+            :loading="haikuLoading"
+            @loadNew="handleGenerateNewHaiku"
+            class="text-2xl md:text-4xl"
+          />
+          <template #fallback>
+            <div class="text-2xl md:text-4xl text-gray-500">
+              Loading haiku...
+            </div>
+          </template>
+        </Suspense>
+      </ClientOnly>
     </main>
   </div>
 </template>
 
 <script setup>
-import { useHaiku } from '~/composables/useHaiku'
+import { ref, watch, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import HaikuDisplay from '~/components/HaikuDisplay.vue'
 import BackgroundImage from '~/components/BackgroundImage.vue'
-import { useRoute, useRouter } from 'vue-router'
-import { watch } from 'vue'
 
 const route = useRoute()
 const router = useRouter()
-const { haiku, haikuLoading, imageLoading, backgroundUrl, fetchHaiku, fetchBackgroundImage, generateNewHaiku } = useHaiku()
 
-const loadHaiku = async (id) => {
-  fetchHaiku(id)
-  fetchBackgroundImage(id, 'together')
+// Local state
+const haiku = ref(null)
+const haikuLoading = ref(false)
+const backgroundUrl = ref('')
+const error = ref(null)
+
+// Fetch Haiku
+const fetchHaiku = async (id = null) => {
+  haikuLoading.value = true
+  try {
+    const data = await $fetch(`/api/haiku${id ? `?id=${id}` : ''}`)
+    haiku.value = data
+  } catch (err) {
+    console.error('Error fetching haiku:', err)
+    error.value = err
+  } finally {
+    haikuLoading.value = false
+  }
 }
 
+// Set Background Image
+const setBackgroundImage = async (id, provider = 'lexica') => {
+  backgroundUrl.value = `/api/haiku-image?id=${id}&provider=${provider}`
+}
+
+// Generate New Haiku
+const generateNewHaiku = async () => {
+  haikuLoading.value = true  
+  try {
+    const data = await $fetch('/api/haiku', { method: 'POST' })
+    if (data && data.id) {
+      return data.id
+    }
+  } catch (err) {
+    console.error('Failed to generate new haiku:', err)
+    error.value = err
+  } finally {
+    haikuLoading.value = false
+  }
+}
+
+// Load Haiku
+const loadHaiku = async (id) => {
+  await fetchHaiku(id)
+  setBackgroundImage(id, 'together')
+}
+
+// Handle Generate New Haiku
 const handleGenerateNewHaiku = async () => {
   const id = await generateNewHaiku()
   if (id) {
@@ -47,19 +94,18 @@ definePageMeta({
   layout: 'default'
 })
 
+// Watch for route changes
 watch(
   () => route.params.id,
   async (newId, oldId) => {
-    if (newId && (!oldId || newId !== oldId)) {
+    if (newId && newId !== oldId) {
       await loadHaiku(newId)
-    } else if (!newId) {
-      await handleGenerateNewHaiku()
     }
   },
   { immediate: true }
 )
 
-useSeoMeta({
+useHead({
   title: () => `Haiku: ${haiku.value?.topic || 'Inspiring Words'}`,
   description: () => haiku.value 
     ? `Experience a moment of zen with this haiku about ${haiku.value.topic}: "${haiku.value.firstLine} / ${haiku.value.secondLine} / ${haiku.value.thirdLine}". Discover more poetic inspirations on our site.`

@@ -11,7 +11,7 @@
       <div class="absolute inset-0 bg-gradient-to-b from-white to-gray-300"></div>
       <transition name="fade" mode="out-in">
         <img
-          v-if="isClient && imageUrl && !loading"
+          v-if="imageUrl"
           :key="imageUrl"
           :src="imageUrl"
           @load="onImageLoad"
@@ -27,10 +27,9 @@
 </template>
 
 <script setup>
-const props = defineProps(['imageUrl', 'loading'])
+const props = defineProps(['imageUrl'])
 const emit = defineEmits(['loadNew'])
 
-const isClient = ref(false)
 const isLoaded = ref(false)
 const animationDirection = ref('')
 
@@ -39,7 +38,6 @@ const animationClass = computed(() => {
 })
 
 onMounted(() => {
-  isClient.value = true
   setRandomAnimation()
 })
 
