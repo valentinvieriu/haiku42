@@ -42,6 +42,9 @@ const haikuLoading = ref(false)
 const backgroundUrl = ref('')
 const error = ref(null)
 
+// Define the list of image providers in order of preference
+const imageProviders = ['together', 'cloudflare', 'default']
+
 // Fetch Haiku
 const fetchHaiku = async (id = null) => {
   haikuLoading.value = true
@@ -57,9 +60,10 @@ const fetchHaiku = async (id = null) => {
 }
 
 // Set Background Image
-const setBackgroundImage = async (id, provider = 'together') => {
+const setBackgroundImage = async (id) => {
   if (!haikuLoading.value) {
-    backgroundUrl.value = `/api/haiku-image?id=${id}&provider=${provider}`
+    const providers = encodeURIComponent(imageProviders.join(','))
+    backgroundUrl.value = `/api/haiku-image?id=${id}&providers=${providers}`
   } else {
     backgroundUrl.value = ''
   }
@@ -84,7 +88,7 @@ const generateNewHaiku = async () => {
 // Load Haiku
 const loadHaiku = async (id) => {
   await fetchHaiku(id)
-  setBackgroundImage(id, 'together')
+  setBackgroundImage(id)
 }
 
 // Handle Generate New Haiku

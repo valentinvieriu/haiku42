@@ -30,6 +30,9 @@ export default defineEventHandler(async (event) => {
   const width = parseInt(query.width) || 960;
   const height = parseInt(query.height) || 1440;
 
+  // Get the list of providers from the query parameters
+  const providers = query.providers ? query.providers.split(',') : ['together', 'cloudflare', 'default'];
+
   // Get the base URL from the request
   const baseUrl = `${event.node.req.headers['x-forwarded-proto'] || 'http'}://${event.node.req.headers.host}`;
 
@@ -37,14 +40,21 @@ export default defineEventHandler(async (event) => {
     const haiku = decompressHaiku(query.id);
     console.log('Image query:', `${haiku.topic}    ${haiku.firstLine}    ${haiku.secondLine}    ${haiku.thirdLine}`);
 
-    const ImageProvider = getImageProvider(query.provider);
     let imageData;
 
-    try {
-      imageData = await ImageProvider.getImage(haiku, event.context.cloudflare.env, width, height);
-    } catch (imageProviderError) {
-      console.error('Failed to fetch image:', imageProviderError.message);
-      imageData = await getImageProvider('default').getImage(width, height);
+    for (const providerName of providers) {
+      const ImageProvider = getImageProvider(providerName);
+      try {
+        console.log(`[haiku-image] Attempting to generate image with ${providerName} provider for haiku: ${query.id}`);
+        imageData = await ImageProvider.getImage(haiku, event.context.cloudflare.env, width, height);
+        console.log(`[haiku-image] Image generated successfully with ${providerName} provider for haiku: ${query.id}`);
+        break; // Exit the loop if image generation is successful
+      } catch (error) {
+        console.error(`[haiku-image] Failed to generate image with ${providerName} provider:`, error.message);
+        if (providerName === providers[providers.length - 1]) {
+          throw error; // If the last provider fails, throw the error
+        }
+      }
     }
 
     // Revert cache headers to allow caching for 1 day
