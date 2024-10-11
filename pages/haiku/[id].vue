@@ -2,6 +2,7 @@
   <div class="h-screen overflow-hidden">
     <BackgroundImage
       :image-url="backgroundUrl"
+      :loading="haikuLoading"
       @loadNew="handleGenerateNewHaiku"
     />
     <main class="absolute bottom-[13%] left-0 right-0 p-8 bg-white bg-opacity-95">
@@ -57,7 +58,11 @@ const fetchHaiku = async (id = null) => {
 
 // Set Background Image
 const setBackgroundImage = async (id, provider = 'lexica') => {
-  backgroundUrl.value = `/api/haiku-image?id=${id}&provider=${provider}`
+  if (!haikuLoading.value) {
+    backgroundUrl.value = `/api/haiku-image?id=${id}&provider=${provider}`
+  } else {
+    backgroundUrl.value = ''
+  }
 }
 
 // Generate New Haiku

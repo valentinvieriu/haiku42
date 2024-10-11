@@ -11,7 +11,7 @@
       <div class="absolute inset-0 bg-gradient-to-b from-white to-gray-300"></div>
       <transition name="fade" mode="out-in">
         <img
-          v-if="imageUrl"
+          v-if="imageUrl && !loading"
           :key="imageUrl"
           :src="imageUrl"
           @load="onImageLoad"
@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-const props = defineProps(['imageUrl'])
+const props = defineProps(['imageUrl', 'loading'])
 const emit = defineEmits(['loadNew'])
 
 const isLoaded = ref(false)
@@ -50,8 +50,8 @@ const setRandomAnimation = () => {
   animationDirection.value = animations[Math.floor(Math.random() * animations.length)]
 }
 
-// Reset isLoaded and set new random animation when imageUrl changes
-watch(() => props.imageUrl, () => {
+// Reset isLoaded and set new random animation when imageUrl changes or loading state changes
+watch([() => props.imageUrl, () => props.loading], () => {
   isLoaded.value = false
   setRandomAnimation()
 })
