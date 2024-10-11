@@ -57,7 +57,7 @@ const fetchHaiku = async (id = null) => {
 }
 
 // Set Background Image
-const setBackgroundImage = async (id, provider = 'lexica') => {
+const setBackgroundImage = async (id, provider = 'together') => {
   if (!haikuLoading.value) {
     backgroundUrl.value = `/api/haiku-image?id=${id}&provider=${provider}`
   } else {
