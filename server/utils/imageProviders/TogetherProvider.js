@@ -34,7 +34,7 @@ export default class TogetherProvider {
             prompt,
             width: adjustedWidth,
             height: adjustedHeight,
-            steps: 4,
+            steps: 10,
             n: 1,
             response_format: "b64_json",
             seed
