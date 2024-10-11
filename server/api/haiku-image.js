@@ -26,6 +26,10 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  // Get width and height from query parameters, or use defaults
+  const width = parseInt(query.width) || 960;
+  const height = parseInt(query.height) || 1440;
+
   // Get the base URL from the request
   const baseUrl = `${event.node.req.headers['x-forwarded-proto'] || 'http'}://${event.node.req.headers.host}`;
 
@@ -37,10 +41,10 @@ export default defineEventHandler(async (event) => {
     let imageData;
 
     try {
-      imageData = await ImageProvider.getImage(haiku, event.context.cloudflare.env);
+      imageData = await ImageProvider.getImage(haiku, event.context.cloudflare.env, width, height);
     } catch (imageProviderError) {
       console.error('Failed to fetch image:', imageProviderError.message);
-      imageData = await getImageProvider('default').getImage(baseUrl, event.context.cloudflare.env);
+      imageData = await getImageProvider('default').getImage(width, height);
     }
 
     // Revert cache headers to allow caching for 1 day

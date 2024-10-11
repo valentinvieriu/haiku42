@@ -1,5 +1,5 @@
 export default class TogetherProvider {
-    static async getImage(haiku, env) {
+    static async getImage(haiku, env, width, height) {
         const apiUrl = 'https://api.together.xyz/v1/images/generations';
         const promptTemplate = this.getPromptTemplate(haiku);
         const prompt = this.generatePrompt(promptTemplate, haiku);
@@ -8,14 +8,32 @@ export default class TogetherProvider {
         console.log('[TogetherProvider] Generated prompt:', prompt);
         console.log('[TogetherProvider] Generated seed:', seed);
 
-        //black-forest-labs/FLUX.1-schnell
-        //black-forest-labs/FLUX.1-schnell-Free
-        //black-forest-labs/FLUX.1.1-pro
+        // Calculate aspect ratio
+        const aspectRatio = width / height;
+
+        // Adjust dimensions while maintaining aspect ratio
+        let adjustedWidth, adjustedHeight;
+        if (width > height) {
+            adjustedWidth = Math.min(width, 1440);
+            adjustedHeight = Math.round(adjustedWidth / aspectRatio);
+            if (adjustedHeight > 1440) {
+                adjustedHeight = 1440;
+                adjustedWidth = Math.round(adjustedHeight * aspectRatio);
+            }
+        } else {
+            adjustedHeight = Math.min(height, 1440);
+            adjustedWidth = Math.round(adjustedHeight * aspectRatio);
+            if (adjustedWidth > 1440) {
+                adjustedWidth = 1440;
+                adjustedHeight = Math.round(adjustedWidth / aspectRatio);
+            }
+        }
+
         const requestBody = {
             model: "black-forest-labs/FLUX.1-schnell-Free",
             prompt,
-            width: 960,
-            height: 1440,
+            width: adjustedWidth,
+            height: adjustedHeight,
             steps: 4,
             n: 1,
             response_format: "b64_json",
@@ -31,7 +49,6 @@ export default class TogetherProvider {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(requestBody),
-                // timeout: 30000 // 30 seconds timeout
             });
 
             if (response?.data?.[0]?.b64_json) {

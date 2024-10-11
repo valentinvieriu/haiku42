@@ -1,5 +1,5 @@
 export default class LexicaProvider {
-  static async getImage(haiku, topic) {
+  static async getImage(haiku, topic, width, height) {
     const textResponse = `${topic}    ${haiku.firstLine}    ${haiku.secondLine}    ${haiku.thirdLine}`;
     
     const lexicaInit = {
