@@ -1,7 +1,7 @@
 <template>
     <div 
       id="zoom_bg" 
-      class="relative w-full h-screen cursor-pointer overflow-hidden"
+      class="fixed top-0 left-0 w-full h-screen cursor-pointer overflow-hidden"
       @click="handleClick"
       @keydown.enter="handleClick"
       tabindex="0"
