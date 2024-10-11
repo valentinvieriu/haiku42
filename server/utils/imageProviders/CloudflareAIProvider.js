@@ -11,7 +11,7 @@ export default class CloudflareAIProvider {
                 num_steps: 8,
             });
 
-            if (response && response.image) {
+            if (response?.image) {
                 console.log('[CloudflareAIProvider] Successfully generated image for imagePrompt:', haiku.imagePrompt);
                 return {
                     type: 'base64',

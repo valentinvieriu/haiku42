@@ -20,8 +20,8 @@ export default class LexicaProvider {
     try {
       const responseData = await $fetch('https://lexica.art/api/infinite-prompts', lexicaInit);
 
-      if (responseData && responseData.images && responseData.images.length > 0) {
-        const imageId = responseData.images[0].id;
+      const imageId = responseData?.images?.[0]?.id ?? 'default-image-id';
+      if (imageId !== 'default-image-id') {
         console.log('Image ID obtained:', imageId);
         return {
           type: 'url',

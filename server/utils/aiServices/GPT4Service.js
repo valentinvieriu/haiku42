@@ -15,7 +15,7 @@ export default class GPT4Service {
       messages: chat.messages,
       stream: false,
       n: 1,
-      temperature: 2,
+      temperature: 0.7,
       max_tokens: 1024,
       top_p: 0.8,
       frequency_penalty: 0.5,
@@ -30,7 +30,7 @@ export default class GPT4Service {
       });
       const data = await response.json();
       console.log(`${this.model} Response:`, data);
-      return data?.choices[0]?.message?.content;
+      return data?.choices?.[0]?.message?.content ?? '';
     } catch (error) {
       console.error(`Error in GPT4Service.run: ${error.message}`);
       throw error;

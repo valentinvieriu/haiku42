@@ -19,7 +19,7 @@ export async function generateHaiku(env, query) {
       throw new Error('AI service returned an empty response')
     }
     const sanitizedResponse = sanitizeResponse(response)
-    return { ...sanitizedResponse, topic }  // Include the topic in the returned object
+    return { ...sanitizedResponse, topic } ?? defaultHaiku;  // Include the topic in the returned object
   } catch (error) {
     console.error(`Error in generateHaiku: ${error.message}`)
     throw error // Rethrow the error to be handled in the API route

@@ -36,17 +36,16 @@ export default defineEventHandler(async (event) => {
       }
 
       // Compress the haiku data
-      const haikuId = compressHaiku(haiku);
+      const haikuId = compressHaiku(haiku) ?? 'default-haiku-id';
 
       // Return only the id for redirection
       return { id: haikuId };
     } catch (error) {
       console.error('Error generating haiku:', error);
-      console.error('Error stack:', error.stack);
       throw createError({
         statusCode: 500,
         statusMessage: 'Error generating haiku',
-        message: error.message,
+        message: error.message ?? 'Unknown error',
       });
     }
   }
