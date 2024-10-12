@@ -14,7 +14,7 @@ export default class CloudflareAIProvider {
         try {
             const response = await env.AI.run('@cf/black-forest-labs/flux-1-schnell', {
                 prompt: prompt,
-                num_steps: 8,
+                num_steps: 4,
                 seed: seed,
             });
 

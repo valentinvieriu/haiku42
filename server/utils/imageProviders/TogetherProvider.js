@@ -33,11 +33,11 @@ export default class TogetherProvider {
         }
 
         const requestBody = {
-            model: "black-forest-labs/FLUX.1-schnell-Free",
+            model: "black-forest-labs/FLUX.1-schnell",//"black-forest-labs/FLUX.1-schnell-Free",
             prompt,
             width: adjustedWidth,
             height: adjustedHeight,
-            steps: 10,
+            steps: 4,
             n: 1,
             response_format: "b64_json",
             seed
