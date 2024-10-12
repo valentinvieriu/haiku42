@@ -1,6 +1,9 @@
 import { generateHaiku } from '../utils/haikuGenerator';
 import { compressHaiku, decompressHaiku } from '../utils/compression';
 
+// Define the models array at the top of the file
+const models = ['llama-3.1-70b-versatile','llama-3.2-11b-text-preview','gemma2-9b-it','llama-3.1-8b-instant'];
+
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
   const { cloudflare } = event.context;
@@ -29,7 +32,6 @@ export default defineEventHandler(async (event) => {
   // Handle POST requests (generating new haiku)
   if (event.node.req.method === 'POST') {
     try {
-      const models = query.models ? query.models.split(',') : ['llama-3.2-11b-text-preview'];
       const haiku = await generateHaiku(cloudflare.env, query, models);
 
       if (!haiku) {

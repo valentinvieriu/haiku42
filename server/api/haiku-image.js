@@ -2,6 +2,9 @@ import { sendStream } from 'h3';
 import { decompressHaiku } from '../utils/compression';
 import { getImageProvider } from '../utils/imageProviders';
 
+// Define the providers array at the top of the file
+const providers = ['together', 'cloudflare', 'default'];
+
 // Helper function to fetch and stream image
 const fetchAndStreamImage = async (event, url) => {
   try {
@@ -29,9 +32,6 @@ export default defineEventHandler(async (event) => {
   // Get width and height from query parameters, or use defaults
   const width = parseInt(query.width) || 960;
   const height = parseInt(query.height) || 1440;
-
-  // Get the list of providers from the query parameters
-  const providers = query.providers ? query.providers.split(',') : ['together', 'cloudflare', 'default'];
 
   // Get the base URL from the request
   const baseUrl = `${event.node.req.headers['x-forwarded-proto'] || 'http'}://${event.node.req.headers.host}`;

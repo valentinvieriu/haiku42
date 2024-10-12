@@ -1,21 +1,30 @@
-import { Buffer } from 'buffer';
+import LZString from 'lz-string';
 
+/**
+ * Compresses the haiku object using LZ-String.
+ * @param {Object} haiku - The haiku object to compress.
+ * @returns {string} - The compressed haiku ID.
+ */
 export function compressHaiku(haiku) {
   const haikuString = JSON.stringify(haiku);
-  const buffer = Buffer.from(haikuString, 'utf-8');
-  return buffer.toString('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '');
+  return LZString.compressToEncodedURIComponent(haikuString);
 }
 
+/**
+ * Decompresses the haiku ID using LZ-String.
+ * @param {string} compressedHaiku - The compressed haiku ID.
+ * @returns {Object} - The decompressed haiku object.
+ * @throws Will throw an error if decompression fails.
+ */
 export function decompressHaiku(compressedHaiku) {
-  const base64 = compressedHaiku
-    .replace(/-/g, '+')
-    .replace(/_/g, '/')
-    .padEnd(compressedHaiku.length + (4 - compressedHaiku.length % 4) % 4, '=');
-  
-  const buffer = Buffer.from(base64, 'base64');
-  const decompressed = buffer.toString('utf-8');
-  return JSON.parse(decompressed);
+  try {
+    const decompressed = LZString.decompressFromEncodedURIComponent(compressedHaiku);
+    if (!decompressed) {
+      throw new Error('Decompression returned null');
+    }
+    return JSON.parse(decompressed);
+  } catch (error) {
+    console.error('Failed to decompress haiku:', error.message);
+    throw new Error('Failed to decompress haiku');
+  }
 }
