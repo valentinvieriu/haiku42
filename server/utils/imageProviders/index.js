@@ -2,6 +2,7 @@ import LexicaProvider from './LexicaProvider';
 import DefaultProvider from './DefaultProvider';
 import TogetherProvider from './TogetherProvider';
 import CloudflareAIProvider from './CloudflareAIProvider';
+import FluxRedCinemaProvider from './FluxRedCinemaProvider';
 
 export function getImageProvider(provider = 'cloudflare') {
   switch (provider.toLowerCase()) {
@@ -11,6 +12,8 @@ export function getImageProvider(provider = 'cloudflare') {
       return DefaultProvider;
     case 'together':
       return TogetherProvider;
+    case 'flux-red-cinema':
+      return FluxRedCinemaProvider;
     case 'cloudflare':
     default:
       return CloudflareAIProvider;

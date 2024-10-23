@@ -13,7 +13,7 @@ export function getAIService(model, env) {
     case 'llama-3.1-8b-instant':
     case 'gemma2-9b-it':
       return new GroqLlama3Service(env, model);
-    case 'claude-3-5-sonnet-20240620':
+    case 'claude-3-5-sonnet-20241022':
     case 'claude-3-opus-20240229':
     case 'claude-3-sonnet-20240229':
     case 'claude-3-haiku-20240307':
