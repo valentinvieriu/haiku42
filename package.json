@@ -12,15 +12,15 @@
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
-    "@nuxtjs/tailwindcss": "^6.12.1",
+    "@nuxtjs/tailwindcss": "^6.12.2",
     "lz-string": "^1.5.0",
     "nuxt": "^3.13.2",
-    "vue": "^3.5.11",
+    "vue": "^3.5.12",
     "vue-router": "^4.4.5"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20241004.0",
-    "nitro-cloudflare-dev": "^0.2.0",
-    "wrangler": "^3.80.3"
+    "@cloudflare/workers-types": "^4.20241022.0",
+    "nitro-cloudflare-dev": "^0.2.1",
+    "wrangler": "^3.82.0"
   }
 }
