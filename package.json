@@ -9,7 +9,8 @@
     "preview": "npm run build && wrangler pages dev",
     "postinstall": "nuxt prepare",
     "deploy": "npm run build && wrangler pages deploy",
-    "cf-typegen": "wrangler types"
+    "cf-typegen": "wrangler types",
+    "generate-topics": "node scripts/generate-topics.js"
   },
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.12.2",
