@@ -14,13 +14,13 @@
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.12.2",
     "lz-string": "^1.5.0",
-    "nuxt": "^3.13.2",
-    "vue": "^3.5.12",
-    "vue-router": "^4.4.5"
+    "nuxt": "^3.14.1592",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20241022.0",
+    "@cloudflare/workers-types": "^4.20241205.0",
     "nitro-cloudflare-dev": "^0.2.1",
-    "wrangler": "^3.82.0"
+    "wrangler": "^3.95.0"
   }
 }

@@ -2,7 +2,7 @@ import { generateHaiku } from '../utils/haikuGenerator';
 import { compressHaiku, decompressHaiku } from '../utils/compression';
 
 // Define the models array at the top of the file
-const models = ['llama-3.1-70b-versatile','llama-3.2-11b-text-preview','gemma2-9b-it','llama-3.1-8b-instant','claude-3-5-sonnet-20241022'];
+const models = ['gpt-4.5-preview','llama-3.3-70b-versatile','llama-3.1-70b-versatile','gemma2-9b-it','llama-3.1-8b-instant','claude-3-5-sonnet-20241022'];
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
