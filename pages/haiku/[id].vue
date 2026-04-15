@@ -17,7 +17,13 @@
             @loadNew="handleGenerateNewHaiku"
             class="text-2xl md:text-4xl"
           />
-          <SkeletonHaiku v-else />
+          <div v-else>
+            <SkeletonHaiku />
+            <ThinkingDisplay
+              :text="thinkingText"
+              :visible="isThinking"
+            />
+          </div>
           <template #fallback>
             <SkeletonHaiku />
           </template>
@@ -33,6 +39,7 @@ import { useRoute, useRouter } from 'vue-router'
 import HaikuDisplay from '~/components/HaikuDisplay.vue'
 import BackgroundImage from '~/components/BackgroundImage.vue'
 import SkeletonHaiku from '~/components/SkeletonHaiku.vue'
+import ThinkingDisplay from '~/components/ThinkingDisplay.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -56,20 +63,80 @@ const backgroundUrl = computed(() => {
 
 // Generating state
 const generating = ref(false)
+const thinkingText = ref('')
+const isThinking = ref(false)
 
 // Handle Generate New Haiku
 const handleGenerateNewHaiku = async () => {
   generating.value = true
+  thinkingText.value = ''
+  isThinking.value = false
+
   try {
-    const data = await $fetch('/api/haiku', { method: 'POST' })
-    if (data?.id) {
-      await router.push({ path: `/haiku/${data.id}` })
-    }
+    await new Promise((resolve, reject) => {
+      const evtSource = new EventSource('/api/haiku-stream')
+      let stallTimer = null
+      let settled = false
+
+      const resetStallTimer = () => {
+        clearTimeout(stallTimer)
+        stallTimer = setTimeout(() => {
+          if (settled) return
+          settled = true
+          evtSource.close()
+          fallbackGenerate().then(resolve).catch(reject)
+        }, 120000)
+      }
+
+      resetStallTimer()
+
+      evtSource.onmessage = async (event) => {
+        resetStallTimer()
+        let data
+        try { data = JSON.parse(event.data) } catch { return }
+
+        switch (data.type) {
+          case 'thinking':
+            isThinking.value = true
+            thinkingText.value += data.text
+            break
+          case 'complete':
+            if (settled) return
+            settled = true
+            clearTimeout(stallTimer)
+            evtSource.close()
+            if (data.id) await router.push({ path: `/haiku/${data.id}` })
+            resolve()
+            break
+          case 'error':
+            if (settled) return
+            settled = true
+            clearTimeout(stallTimer)
+            evtSource.close()
+            reject(new Error(data.message))
+            break
+        }
+      }
+
+      evtSource.onerror = () => {
+        if (settled) return
+        settled = true
+        clearTimeout(stallTimer)
+        evtSource.close()
+        fallbackGenerate().then(resolve).catch(reject)
+      }
+    })
   } catch (err) {
     console.error('Failed to generate new haiku:', err)
   } finally {
     generating.value = false
+    isThinking.value = false
   }
+}
+
+const fallbackGenerate = async () => {
+  const data = await $fetch('/api/haiku', { method: 'POST' })
+  if (data?.id) await router.push({ path: `/haiku/${data.id}` })
 }
 
 useHead({

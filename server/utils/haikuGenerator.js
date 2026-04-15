@@ -73,6 +73,51 @@ Use the seed as source material, not as a theme to explain. If it contains sever
     };
 }
 
+export async function generateHaikuStreaming(env, query, models, callbacks) {
+  const topic = getRandomTopic();
+  let error = null;
+
+  for (const model of models) {
+    try {
+      const aiService = getAIService(model, env);
+      const chat = generateChatRequest(topic);
+
+      console.log('Streaming — Topic:', topic, '\nModel:', model);
+
+      if (typeof aiService.runStream === 'function') {
+        let accumulated = '';
+        for await (const event of aiService.runStream(chat)) {
+          if (event.type === 'thinking') {
+            await callbacks.onThinking(event.text);
+          } else if (event.type === 'content') {
+            accumulated += event.text;
+            await callbacks.onContent(event.text);
+          }
+        }
+
+        if (accumulated) {
+          const haiku = sanitizeResponse(accumulated);
+          await callbacks.onComplete({ ...haiku, topic });
+          return;
+        }
+      } else {
+        // Fallback to blocking run() for services without streaming
+        const response = await aiService.run(chat);
+        if (response) {
+          const haiku = sanitizeResponse(response);
+          await callbacks.onComplete({ ...haiku, topic });
+          return;
+        }
+      }
+    } catch (err) {
+      console.error(`Streaming error with model ${model}:`, err.message);
+      error = err;
+    }
+  }
+
+  await callbacks.onError(error || new Error('All AI services failed to generate a response'));
+}
+
 function sanitizeResponse(response) {
 	let defaultHaiku = {
 		topic: "Artificial Intelligence",

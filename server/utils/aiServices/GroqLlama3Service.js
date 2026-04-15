@@ -1,3 +1,5 @@
+import { parseOpenAIStream } from './streamParser.js';
+
 export default class GroqLlama3Service {
   constructor(env, modelName) {
     this.env = env;
@@ -34,5 +36,33 @@ export default class GroqLlama3Service {
       console.error(`Error in GroqLlama3Service.run: ${error.message}`);
       throw error;
     }
+  }
+
+  async *runStream(chat) {
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.env.GROQ_API_KEY}`,
+    };
+    const body = JSON.stringify({
+      model: this.modelName,
+      messages: chat.messages,
+      stream: true,
+      n: 1,
+      temperature: 0.7,
+      max_tokens: 1024,
+      top_p: 0.7,
+    });
+
+    const response = await fetch(this.apiUrl, {
+      method: 'POST',
+      headers,
+      body,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Groq stream error: ${response.status} ${response.statusText}`);
+    }
+
+    yield* parseOpenAIStream(response);
   }
 }
