@@ -45,7 +45,7 @@ server/utils/
 
 server/utils/aiServices/
   index.js               # Factory: getAIService(model, env) -> service
-  ClaudeService.js       # Anthropic Claude API
+  ClaudeService.js       # Anthropic Codex API
   GPT4Service.js         # OpenAI API
   GroqLlama3Service.js   # Groq API (Llama, Qwen, DeepSeek models)
   OllamaService.js       # Local Ollama API (OpenAI-compatible, no auth)
@@ -73,7 +73,7 @@ server/utils/imageProviders/
 
 Both AI text and image generation use sequential fallback — try providers in order, use the first that succeeds:
 
-- **Haiku generation:** Ollama (local) -> Groq models (Llama/Qwen) -> Claude -> GPT-4 -> Cloudflare Workers AI
+- **Haiku generation:** Ollama (local) -> Groq models (Llama/Qwen) -> Codex -> GPT-4 -> Cloudflare Workers AI
 - **Image generation:** Ollama (local) -> Replicate/Together/Cloudflare cloud providers -> static fallback
 
 ### Stateless URL Sharing
@@ -96,7 +96,7 @@ OLLAMA_IMAGE_MODEL    # Ollama image model (default: x/z-image-turbo:fp8)
 Cloud providers (`.dev.vars` or Cloudflare dashboard):
 ```
 GROQ_API_KEY          # Groq API
-ANTHROPIC_API_KEY     # Claude API
+ANTHROPIC_API_KEY     # Codex API
 OPENAI_API_KEY        # OpenAI API
 REPLICATE_API_KEY     # Replicate (Flux, Imagen image providers)
 TOGETHER_API_KEY      # Together.ai image provider

@@ -1,13 +1,15 @@
 <script setup>
 import { useRouter } from 'vue-router'
-import { ref } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { getRandomVerb } from '~/utils/funVerbs'
 
 const router = useRouter()
 
-// Local state
 const generationError = ref(null)
+const currentVerb = ref('Generating')
 
-// Generate New Haiku
+let verbInterval = null
+
 const generateNewHaiku = async () => {
   try {
     const data = await $fetch('/api/haiku', { method: 'POST' })
@@ -22,20 +24,29 @@ const generateNewHaiku = async () => {
   }
 }
 
-// Handle Generate and Redirect
 const generateAndRedirect = async () => {
+  generationError.value = null
+  currentVerb.value = 'Generating'
   await generateNewHaiku()
 }
 
-// Use onMounted to ensure this runs on the client-side
 onMounted(() => {
+  verbInterval = setInterval(() => { currentVerb.value = getRandomVerb() }, 2000)
   generateAndRedirect()
+})
+
+onBeforeUnmount(() => {
+  if (verbInterval) clearInterval(verbInterval)
 })
 </script>
 
 <template>
   <div class="flex flex-col items-center justify-center h-screen bg-gray-100">
-    <p v-if="!generationError" class="text-xl text-gray-600">Generating a new haiku...</p>
+    <div v-if="!generationError" class="text-center">
+      <p class="text-xl text-gray-600 transition-opacity duration-300">
+        {{ currentVerb }} a new haiku...
+      </p>
+    </div>
     <div v-else class="text-center">
       <p class="text-xl text-red-600 mb-4">{{ generationError }}</p>
       <button @click="generateAndRedirect" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">

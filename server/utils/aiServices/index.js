@@ -2,9 +2,15 @@ import GPT4Service from './GPT4Service.js';
 import GroqLlama3Service from './GroqLlama3Service.js';
 import ClaudeService from './ClaudeService.js';
 import DefaultCloudflareAIService from './DefaultCloudflareAIService.js';
+import OllamaService from './OllamaService.js';
 
 export function getAIService(model, env) {
   switch (model) {
+    case 'gemma4:26b-mxfp8':
+    case 'qwen3.5:27b-mxfp8':
+    case 'gemma4:31b-mxfp8':
+    case 'qwen3.5:122b-a10b-q4_K_M':
+      return new OllamaService(env, model);
     case 'gpt-4.5-preview':
     case 'gpt-4o':
     case 'gpt-4o-mini':

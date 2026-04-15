@@ -7,9 +7,12 @@ import FluxRedCinemaProvider from './FluxRedCinemaProvider';
 import FluxSchnellProvider from './FluxSchnellProvider';
 import FluxProProvider from './FluxProProvider';
 import GoogleImagen3Provider from './GoogleImagen3Provider';
+import OllamaImageProvider from './OllamaImageProvider';
 
 export function getImageProvider(provider = 'cloudflare') {
   switch (provider.toLowerCase()) {
+    case 'ollama':
+      return OllamaImageProvider;
     case 'lexica':
       return LexicaProvider;
     case 'default':
