@@ -14,8 +14,10 @@ export function getAIService(model, env) {
     case 'llama-3.1-8b-instant':
     case 'deepseek-r1-distill-llama-70b':
     case 'deepseek-r1-distill-qwen-32b':
-    case 'gemma2-9b-it':
+    case 'qwen-qwq-32b':
+    case 'qwen-2.5-32b':
     case 'mistral-saba-24b':
+    case 'meta-llama/llama-4-scout-17b-16e-instruct':
       return new GroqLlama3Service(env, model);
     case 'claude-3-7-sonnet-20250219':
     case 'claude-3-5-sonnet-20241022':

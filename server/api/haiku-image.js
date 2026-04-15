@@ -3,7 +3,7 @@ import { decompressHaiku } from '../utils/compression';
 import { getImageProvider } from '../utils/imageProviders';
 
 // Define the providers array at the top of the file
-const providers = ['google-imagen','flux-pro','flux-schnell','cloudflare', 'default', 'together','together-free','flux-red-cinema'];
+const providers = ['flux-schnell','google-imagen','together-free','flux-pro','cloudflare', 'default', 'together','together-free','flux-red-cinema'];
 
 // Helper function to fetch and stream image
 const fetchAndStreamImage = async (event, url) => {

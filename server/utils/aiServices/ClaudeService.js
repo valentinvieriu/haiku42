@@ -2,7 +2,7 @@ export default class ClaudeService {
   constructor(env, model = 'claude-3-5-sonnet-20240620') {
     this.env = env;
     this.model = model;
-    this.apiUrl = 'https://gateway.ai.cloudflare.com/v1/b704c2550c9082fb06e9796e7c042412/haiku42/anthropic/v1/messages';
+    this.apiUrl = 'https://api.anthropic.com/v1/messages';
   }
 
   async run(chat) {
@@ -16,9 +16,8 @@ export default class ClaudeService {
       messages: [chat.messages[1]],
       system: chat.messages[0].content,
       stream: false,
-      temperature: 0.7,
-      max_tokens: 1024,
-      top_p: 0.7,
+      temperature: 0.8,
+      max_tokens: 2048,
     });
 
     try {
