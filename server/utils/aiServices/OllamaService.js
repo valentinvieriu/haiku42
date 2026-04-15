@@ -22,6 +22,7 @@ export default class OllamaService {
         method: 'POST',
         headers,
         body,
+        signal: AbortSignal.timeout(10 * 60 * 1000),
       });
       const data = await response.json();
       console.log('OllamaService Response:', data);

@@ -72,18 +72,12 @@ const animateHaiku = async () => {
 watch(
   () => props.haiku,
   () => {
-    if (!props.loading) {
+    if (props.haiku && !props.loading) {
       animateHaiku()
     }
   },
   { immediate: true }
 )
-
-onNuxtReady(() => {
-  if (!props.loading) {
-    animateHaiku()
-  }
-})
 
 onBeforeUnmount(() => {
   if (import.meta.client) {

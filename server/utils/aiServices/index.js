@@ -6,6 +6,7 @@ import OllamaService from './OllamaService.js';
 
 export function getAIService(model, env) {
   switch (model) {
+    case 'gemma4:e2b-it-q8_0':
     case 'gemma4:26b-mxfp8':
     case 'qwen3.5:27b-mxfp8':
     case 'gemma4:31b-mxfp8':

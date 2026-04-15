@@ -15,6 +15,7 @@
           :key="imageUrl"
           :src="imageUrl"
           @load="onImageLoad"
+          @error="onImageError"
           alt="Background"
           :class="[
             'absolute inset-0 w-full h-full object-cover transition-opacity duration-1000',
@@ -31,6 +32,7 @@ const props = defineProps(['imageUrl', 'loading'])
 const emit = defineEmits(['loadNew'])
 
 const isLoaded = ref(false)
+const imageError = ref(false)
 const animationDirection = ref('')
 
 const animationClass = computed(() => {
@@ -45,14 +47,21 @@ const onImageLoad = () => {
   isLoaded.value = true
 }
 
+const onImageError = () => {
+  console.error('Failed to load background image')
+  imageError.value = true
+  isLoaded.value = true
+}
+
 const setRandomAnimation = () => {
   const animations = ['zoom-in', 'zoom-out', 'pan-top', 'pan-bottom', 'pan-left', 'pan-right']
   animationDirection.value = animations[Math.floor(Math.random() * animations.length)]
 }
 
-// Reset isLoaded and set new random animation when imageUrl changes or loading state changes
-watch([() => props.imageUrl, () => props.loading], () => {
+// Reset state when imageUrl changes
+watch(() => props.imageUrl, () => {
   isLoaded.value = false
+  imageError.value = false
   setRandomAnimation()
 })
 

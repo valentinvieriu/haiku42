@@ -1,10 +1,9 @@
-import { haikuImagePrompts } from './sharedPrompts.js';
 import { getPromptTemplate, generatePrompt, generateSeed } from './imageProviderUtils.js';
 
 export default class TogetherProvider {
     static async getImage(haiku, env, width, height) {
         const apiUrl = 'https://api.together.xyz/v1/images/generations';
-        const promptTemplate = getPromptTemplate(haiku, haikuImagePrompts);
+        const promptTemplate = getPromptTemplate(haiku);
         const prompt = generatePrompt(promptTemplate, haiku);
         const seed = generateSeed(promptTemplate, haiku);
 

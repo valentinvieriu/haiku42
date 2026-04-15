@@ -40,7 +40,7 @@ server/api/
 
 server/utils/
   haikuGenerator.js      # Core prompt + generation logic
-  topics.js              # Weighted random topic generation (20+ categories)
+  topics.js              # Scene seed builder (8 modes, concrete micro-moments)
   compression.js         # LZ-String compress/decompress for URL sharing
 
 server/utils/aiServices/
@@ -109,6 +109,19 @@ OPENROUTER_API_KEY
 NUXT_PUBLIC_TURNSTILE_SITE_KEY
 NUXT_TURNSTILE_SECRET_KEY
 ```
+
+### Topic Generation (Scene Seed Builder)
+
+`server/utils/topics.js` generates "scene seeds" — concrete, imageable micro-moments the LLM inhabits to write haiku. Key design decisions:
+
+- **Modes, not categories**: 8 weighted families of moments (observation 30%, urban-nature 20%, human-trace 20%, domestic-turn 15%, climate-echo 10%, transit 10%, night-and-silence 10%, comic-glimpse 5%). Each mode owns coherent pools so random picks share a world.
+- **Scene clusters for broad modes**: Modes spanning diverse physical spaces (human-trace, transit, night-and-silence) use scene clusters — sub-groupings where every entry is plausible in the same physical space. Composition picks a cluster first, then draws from within it.
+- **Pools by poetic function**: `frames` (where/when), `anchors` (focal subject+action), `sensory` (sound/smell/touch/light), `traces` (human residue), `absences` (what's NOT there).
+- **All concrete, all imageable**: Every element must work for both haiku text and image generation. No abstract nouns ("quiet joy", "climate grief"), no explanatory verbs ("reveals", "teaches", "versus"). Absences must also be imageable — "empty hook on the wall" not "the motivation that was there this morning".
+- **Thematic steering through mode selection**: Choosing "climate-echo" naturally produces climate-adjacent imagery without naming the theme. No abstract metadata reaches the output.
+- **Output format**: 2-5 semicolon-separated concrete clauses. Example: `"highway rest stop, 1am; headlights finding the deer's eyes, then not; engine vibration through the seat"`
+
+When adding entries: be specific not generic ("a parking lot puddle" not "puddle"), include sensory detail, avoid haiku cliche vocabulary ("fleeting", "ephemeral", "serenity"), stay culturally broad. Every entry must pass the imageability test — can you picture it?
 
 ## No Tests
 

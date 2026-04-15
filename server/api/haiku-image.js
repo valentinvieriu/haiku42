@@ -3,7 +3,10 @@ import { decompressHaiku } from '../utils/compression';
 import { getImageProvider } from '../utils/imageProviders';
 
 // Define the providers array at the top of the file
-const providers = ['ollama','flux-schnell','google-imagen','together-free','flux-pro','cloudflare', 'default', 'together','together-free','flux-red-cinema'];
+const providers = ['ollama','flux-schnell','google-imagen','together-free','flux-pro','cloudflare', 'default', 'together','flux-red-cinema'];
+
+// In-memory image cache (dev only)
+const imageCache = process.dev ? new Map() : null;
 
 // Helper function to fetch and stream image
 const fetchAndStreamImage = async (event, url) => {
@@ -33,12 +36,23 @@ export default defineEventHandler(async (event) => {
   const width = parseInt(query.width) || 960;
   const height = parseInt(query.height) || 1440;
 
-  // Get the base URL from the request
-  const baseUrl = `${event.node.req.headers['x-forwarded-proto'] || 'http'}://${event.node.req.headers.host}`;
-
   try {
     const haiku = decompressHaiku(query.id);
     console.log('Image query:', `${haiku.topic}    ${haiku.firstLine}    ${haiku.secondLine}    ${haiku.thirdLine}`);
+
+    const cacheKey = `${query.id}-${width}x${height}`;
+    if (imageCache?.has(cacheKey)) {
+      console.log('[haiku-image] Serving from cache:', cacheKey.slice(0, 10) + '...');
+      const imageData = imageCache.get(cacheKey);
+      event.node.res.setHeader('Cache-Control', 'public, max-age=86400');
+      if (imageData.type === 'url') {
+        return await fetchAndStreamImage(event, imageData.data);
+      }
+      const buffer = Buffer.from(imageData.data, 'base64');
+      event.node.res.setHeader('Content-Type', 'image/jpeg');
+      event.node.res.setHeader('Content-Length', buffer.length);
+      return buffer;
+    }
 
     let imageData;
 
@@ -56,6 +70,9 @@ export default defineEventHandler(async (event) => {
         }
       }
     }
+
+    // Store in dev cache
+    imageCache?.set(cacheKey, imageData);
 
     // Revert cache headers to allow caching for 1 day
     event.node.res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 1 day

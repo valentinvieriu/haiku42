@@ -1,10 +1,9 @@
-import { haikuImagePrompts } from './sharedPrompts.js';
 import { getPromptTemplate, generatePrompt, generateSeed } from './imageProviderUtils.js';
 
 export default class CloudflareAIProvider {
     static async getImage(haiku, env, width, height) {
         console.log('[CloudflareAIProvider] Starting image generation for imagePrompt:', haiku.imagePrompt);
-        const promptTemplate = getPromptTemplate(haiku, haikuImagePrompts);
+        const promptTemplate = getPromptTemplate(haiku);
         const prompt = generatePrompt(promptTemplate, haiku);
         const seed = generateSeed(promptTemplate, haiku);
 

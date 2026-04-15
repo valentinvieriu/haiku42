@@ -1,4 +1,3 @@
-import { haikuImagePrompts } from './sharedPrompts.js';
 import { getPromptTemplate, generatePrompt } from './imageProviderUtils.js';
 
 export default class OllamaImageProvider {
@@ -6,8 +5,9 @@ export default class OllamaImageProvider {
     const baseUrl = env.OLLAMA_BASE_URL || 'http://localhost:11434';
     const model = env.OLLAMA_IMAGE_MODEL || 'x/z-image-turbo:fp8';
 
-    const promptTemplate = getPromptTemplate(haiku, haikuImagePrompts);
+    const promptTemplate = getPromptTemplate(haiku);
     const prompt = generatePrompt(promptTemplate, haiku);
+    console.log('[OllamaImageProvider] Style prompt:', prompt.slice(0, 120) + '...');
 
     try {
       const response = await fetch(`${baseUrl}/api/generate`, {
@@ -18,6 +18,7 @@ export default class OllamaImageProvider {
           prompt,
           stream: false,
         }),
+        signal: AbortSignal.timeout(5 * 60 * 1000),
       });
 
       const data = await response.json();

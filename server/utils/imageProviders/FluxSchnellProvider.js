@@ -1,4 +1,3 @@
-import { haikuImagePrompts } from './sharedPrompts.js';
 import { getPromptTemplate, generatePrompt, generateSeed } from './imageProviderUtils.js';
 
 export default class FluxSchnellProvider {
@@ -7,7 +6,7 @@ export default class FluxSchnellProvider {
       throw new Error('REPLICATE_API_KEY environment variable is not set');
     }
 
-    const promptTemplate = getPromptTemplate(haiku, haikuImagePrompts);
+    const promptTemplate = getPromptTemplate(haiku);
     const prompt = generatePrompt(promptTemplate, haiku);
     const seed = generateSeed(promptTemplate, haiku);
 
