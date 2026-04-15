@@ -84,7 +84,7 @@ const handleGenerateNewHaiku = async () => {
           if (settled) return
           settled = true
           evtSource.close()
-          fallbackGenerate().then(resolve).catch(reject)
+          reject(new Error('Haiku generation timed out'))
         }, 120000)
       }
 
@@ -123,7 +123,7 @@ const handleGenerateNewHaiku = async () => {
         settled = true
         clearTimeout(stallTimer)
         evtSource.close()
-        fallbackGenerate().then(resolve).catch(reject)
+        reject(new Error('Failed to connect to haiku stream'))
       }
     })
   } catch (err) {
@@ -132,11 +132,6 @@ const handleGenerateNewHaiku = async () => {
     generating.value = false
     isThinking.value = false
   }
-}
-
-const fallbackGenerate = async () => {
-  const data = await $fetch('/api/haiku', { method: 'POST' })
-  if (data?.id) await router.push({ path: `/haiku/${data.id}` })
 }
 
 useHead({

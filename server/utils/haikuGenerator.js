@@ -40,18 +40,40 @@ function generateChatRequest(topic) {
             {
                 role: 'system',
                 content: `You write contemporary English haiku from scene seeds.
-The input seed is already concrete and imageable. Do not explain it, moralize it, or translate it into an abstract theme. Stay inside the scene.
 
-Requirements:
-- Write one haiku in exactly 3 lines with 5 / 7 / 5 syllables.
-- Use concrete imagery from the seed and preserve at least 2 specific details.
-- Present the moment directly: specific nouns, minimal adjectives, minimal articles.
-- Show, don't tell: no named emotions, no moral, no metaphor, no simile, no personification, no cliche.
-- Create a subtle turn or juxtaposition; punctuation is optional. Use an em dash only if it genuinely helps.
-- Keep the language natural and contemporary, but do not force slang or references.
-- Create an imagePrompt describing only visible elements of the same scene for an image model. Keep it literal and concise; no art-style words.
+Follow these steps and show your reasoning for each:
 
-Return only valid JSON inside a \`\`\`json code fence with this shape:
+**Step 1 — Select:** Pick the 2 details from the seed that create the most friction — where one image changes or reframes the other. Explain your choice.
+
+**Step 2 — Draft:** Write 2-3 different natural 3-line versions. Don't count syllables yet. Each should sound right spoken aloud. Pick the one with the strongest opening and most natural flow before moving to Step 3.
+
+**Step 3 — Fit meter:** Adjust to exactly 5 / 7 / 5 syllables. If adjusting breaks a line's natural flow, rewrite the whole line — never just delete words to fit.
+
+**Step 4 — Evaluate strictly.** If ANY rule fails, discard and return to Step 2 with a different approach. Do not patch — regenerate.
+
+Hard reject if:
+- Any line sounds unnatural, telegraphic, or assembled backward when read aloud
+- Any line compresses two clauses without grammar glue (e.g., "bright photos scroll", "shake mint still")
+- The poem follows the seed's clause order
+- Vague filler appears ("something," "somewhere," "somehow")
+- The poem reads as caption, summary, or paraphrase of the seed
+- The poem lacks a real turn — it's just description
+- Any line exists mainly to satisfy syllable count
+
+Priority: natural spoken English > vivid opening > real turn > clean 5/7/5.
+If exact meter forces awkward phrasing, discard and try a different angle.
+
+**Step 5 — Image prompt:** Describe only the visible elements of the scene for an image model. Keep it literal and concise; no art-style words.
+
+Line-level rules:
+- Do not compress two clauses into one line to hit syllable count.
+- Do not end a line on a weak filler word.
+- Do not stack nouns without grammar between them.
+- Prefer a simpler poem with clean syntax over an ambitious one with a damaged line.
+
+A good haiku sounds like someone stopped mid-sentence to say: look at that.
+
+After your reasoning, output the final result in JSON inside a \`\`\`json code fence:
 
 \`\`\`json
 {
@@ -67,7 +89,7 @@ Return only valid JSON inside a \`\`\`json code fence with this shape:
                 role: 'user',
                 content: `Scene seed: """${topic}"""
 
-Use the seed as source material, not as a theme to explain. If it contains several clauses, choose the strongest 2-3 details and compress them into one moment.`,
+Show your reasoning for each step, then output the final JSON.`,
             },
         ],
     };
@@ -134,17 +156,38 @@ function sanitizeResponse(response) {
 		if (typeof response !== 'string') {
 			response = JSON.stringify(response);
 		}
-		// Extract JSON from between ```json and ``` markers
-		const jsonMatch = response.match(/```json\n([\s\S]*?)\n```/);
-		if (jsonMatch && jsonMatch[1]) {
-			JSONResponse = JSON.parse(jsonMatch[1]);
-		} else {
-			// Fallback: try parsing the entire response as raw JSON
-			JSONResponse = JSON.parse(response.trim());
+
+		// Try multiple extraction strategies (reasoning text may precede JSON)
+		let parsed = null;
+
+		// 1. Strict: ```json\n...\n```
+		const strictMatch = response.match(/```json\n([\s\S]*?)\n```/);
+		if (strictMatch && strictMatch[1]) {
+			parsed = JSON.parse(strictMatch[1]);
+		}
+
+		// 2. Loose: ```json with any whitespace
+		if (!parsed) {
+			const looseMatch = response.match(/```json\s*([\s\S]*?)\s*```/);
+			if (looseMatch && looseMatch[1]) {
+				parsed = JSON.parse(looseMatch[1]);
+			}
+		}
+
+		// 3. Raw JSON object containing expected keys
+		if (!parsed) {
+			const rawMatch = response.match(/\{[^{}]*"firstLine"\s*:\s*"[^"]*"[\s\S]*?"thirdLine"\s*:\s*"[^"]*"[^{}]*\}/);
+			if (rawMatch) {
+				parsed = JSON.parse(rawMatch[0]);
+			}
+		}
+
+		if (parsed) {
+			JSONResponse = parsed;
 		}
 	} catch (error) {
 		console.warn('Failed to parse JSON from response, using default haiku:', error.message);
-		JSONResponse = defaultHaiku; // Use default haiku if parsing fails
+		JSONResponse = defaultHaiku;
 	}
 
 	// Final check to ensure the response has the expected structure

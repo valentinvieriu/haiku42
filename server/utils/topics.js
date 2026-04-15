@@ -63,7 +63,13 @@ function weightedPick(entries) {
 // clusters, picks one cluster at random. Otherwise returns the mode
 // itself (which already has flat pools).
 function getModePools(mode) {
-  if (mode.scenes) return rand(mode.scenes);
+  if (mode.scenes) {
+    const cluster = rand(mode.scenes);
+    if (mode.turns && !cluster.turns) {
+      return { ...cluster, turns: mode.turns };
+    }
+    return cluster;
+  }
   return mode;
 }
 
@@ -309,6 +315,23 @@ const modes = [
       "the ranger map box, brochures gone by noon",
       "the picnic table shade after the cottonwood came down",
     ],
+    turns: [
+      "the wind changing direction",
+      "a branch cracking somewhere above",
+      "the bird going quiet",
+      "a dog barking once across the valley",
+      "the shadow reaching the bench",
+      "a car door slamming in the parking lot",
+      "the sprinkler timer clicking on",
+      "the hawk folding its wings",
+      "the trail runner passing without looking up",
+      "the last light leaving the treeline",
+      "a fish surfacing, one ring",
+      "the temperature dropping with the cloud",
+      "the gate banging shut behind",
+      "a plane crossing the gap in the clouds",
+      "the heron lifting off",
+    ],
   },
 
   // ── URBAN-NATURE (20%) ──────────────────────────────────────────
@@ -520,6 +543,23 @@ const modes = [
       "the rooftop hive boxes after the landlord changed hands",
       "the puddle in the alley the starlings used every morning",
       "the swallow gap above the roll-up door, sealed with foam",
+    ],
+    turns: [
+      "the bus pulling away from the stop",
+      "a jackhammer starting up the block",
+      "the streetlight blinking on early",
+      "someone kicking a can down the sidewalk",
+      "the fire escape dripping onto the ivy",
+      "a taxi honking, pigeons scattering",
+      "the bodega cat stepping into the sun",
+      "the grate steam shifting direction",
+      "a window slamming shut above",
+      "the crosswalk signal clicking to walk",
+      "the delivery truck backing up, beeping",
+      "a skateboard sound coming closer",
+      "the construction crane swinging overhead",
+      "rain starting on the hot pavement",
+      "the pigeon flock lifting at once",
     ],
   },
 
@@ -1090,6 +1130,23 @@ const modes = [
         ],
       },
     ],
+    turns: [
+      "a name called from the desk",
+      "the automatic door opening for no one",
+      "the intercom, garbled, meaning unclear",
+      "someone standing up to leave mid-wait",
+      "the lights flickering once",
+      "a child let go of the hand",
+      "the number on the screen changing",
+      "a phone ringing behind the closed door",
+      "the copier starting on its own",
+      "someone's alarm going off in their bag",
+      "the elevator arriving empty",
+      "the waiting room TV changing channels",
+      "a clipboard handed back, something circled",
+      "the parking meter expiring",
+      "the receptionist looking up from the screen",
+    ],
   },
 
   // ── DOMESTIC-TURN (15%) ─────────────────────────────────────────
@@ -1404,6 +1461,23 @@ const modes = [
           "the extension ladder spot in the garage, outline in dust",
         ],
       },
+    ],
+    turns: [
+      "the doorbell, once",
+      "a car pulling into the driveway",
+      "the smoke detector chirping — just the battery",
+      "a name called from another room",
+      "the power flickering off, then back",
+      "the front door opening downstairs",
+      "the baby monitor crackling to life",
+      "a text arriving to an empty room",
+      "the furnace cutting off, silence flooding in",
+      "the sprinkler starting outside the open window",
+      "the dog's nails on the floor, then nothing",
+      "the last light turned off",
+      "someone coming home, keys in the lock",
+      "the garage door going up",
+      "the dryer buzzer in the quiet house",
     ],
   },
 
@@ -2761,6 +2835,23 @@ const modes = [
         ],
       },
     ],
+    turns: [
+      "a car door in the driveway, no headlights",
+      "the motion light clicking on outside",
+      "a text notification lighting up the dark room",
+      "the neighbor's dog, one bark, then quiet",
+      "footsteps overhead, then nothing",
+      "the ice maker cycling on",
+      "the baby turning in the crib",
+      "a branch scraping the gutter",
+      "a siren getting louder, then not",
+      "the garage door opening across the street",
+      "someone's phone lighting up on the counter",
+      "a car alarm two blocks away",
+      "the power strip clicking when the AC kicks off",
+      "the house settling, one loud crack",
+      "the bathroom fan someone forgot to turn off",
+    ],
   },
 ];
 
@@ -2770,11 +2861,34 @@ const modes = [
 // always works with a coherent flat set of pools.
 
 const compositionTypes = [
-  { weight: 35, name: "anchored",    build: (p) => [rand(p.frames), rand(p.anchors), rand(p.sensory)] },
-  { weight: 25, name: "juxtaposed",  build: (p) => [rand(p.frames), rand(p.anchors), rand(p.traces)] },
-  { weight: 15, name: "layered",     build: (p) => [rand(p.frames), rand(p.sensory), rand(p.traces), rand(p.absences)] },
-  { weight: 15, name: "absence-led", build: (p) => [rand(p.frames), rand(p.absences), rand(p.sensory)] },
-  { weight: 10, name: "minimal",     build: (p) => [rand(p.frames), rand(p.anchors)] },
+  { weight: 25, name: "anchored",    build: (p) => [rand(p.frames), rand(p.anchors), rand(p.sensory)] },
+  { weight: 20, name: "turned",      build: (p) => [rand(p.frames), rand(p.anchors), rand(p.turns || p.traces)] },
+  { weight: 15, name: "juxtaposed",  build: (p) => [rand(p.frames), rand(p.anchors), rand(p.traces)] },
+  { weight: 15, name: "absence-led", build: (p) => [rand(p.frames), rand(p.absences), rand(p.turns || p.sensory)] },
+  { weight: 10, name: "layered",     build: (p) => [rand(p.frames), rand(p.sensory), rand(p.absences)] },
+  { weight: 10, name: "pivot",       build: (p) => [rand(p.frames), rand(p.turns || p.anchors)] },
+  { weight: 5,  name: "minimal",     build: (p) => [rand(p.frames), rand(p.anchors)] },
+];
+
+// ── Temporal Modifiers ───────────────────────────────────────────────
+// Applied to ~25% of seeds to transform static frames into moments.
+
+const temporalModifiers = [
+  "just before closing",
+  "the moment after",
+  "for the last time",
+  "earlier than usual",
+  "after everyone left",
+  "before anyone arrives",
+  "on the way back",
+  "halfway through",
+  "the morning after",
+  "just as the rain starts",
+  "one hour in",
+  "the second time today",
+  "later than expected",
+  "right before turning away",
+  "almost done",
 ];
 
 // ── Main Export ──────────────────────────────────────────────────────
@@ -2784,6 +2898,18 @@ function getRandomTopic() {
   const pools = getModePools(mode);
   const composition = weightedPick(compositionTypes);
   const parts = composition.build(pools);
+
+  // 25% chance: prepend a temporal modifier to the frame (first element)
+  if (Math.random() < 0.25) {
+    parts[0] = rand(temporalModifiers) + " — " + parts[0];
+  }
+
+  // Shuffle to break frame-first ordering
+  for (let i = parts.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [parts[i], parts[j]] = [parts[j], parts[i]];
+  }
+
   return parts.join("; ");
 }
 

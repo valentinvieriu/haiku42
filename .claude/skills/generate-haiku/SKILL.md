@@ -16,16 +16,36 @@ Generate a contemporary English haiku using the same algorithm and creative cons
    ```
    This uses the exact same weighted mode selection (observation 30%, urban-nature 20%, human-trace 20%, domestic-turn 15%, climate-echo 10%, transit 10%, night-and-silence 10%, absurdity 5%) and composition types (anchored, juxtaposed, layered, absence-led, minimal) as the live app.
 
-2. **Write a haiku** from the scene seed, following these rules exactly:
+2. **Write a haiku** from the scene seed. Follow these steps and **show your reasoning for each step** in the output (this matches the app's LLM prompt exactly):
 
-   - Write one haiku in exactly 3 lines with **5 / 7 / 5 syllables**. Count carefully.
-   - The seed is already concrete and imageable. Do NOT explain it, moralize it, or translate it into an abstract theme. Stay inside the scene.
-   - Use concrete imagery from the seed and preserve at least 2 specific details.
-   - Present the moment directly: specific nouns, minimal adjectives, minimal articles.
-   - Show, don't tell: no named emotions, no moral, no metaphor, no simile, no personification, no cliche.
-   - Create a subtle turn or juxtaposition; punctuation is optional. Use an em dash only if it genuinely helps.
-   - Keep the language natural and contemporary, but do not force slang or references.
-   - Do NOT use haiku cliche vocabulary ("fleeting", "ephemeral", "serenity", "whisper", "dance").
+   A good haiku sounds like someone stopped mid-sentence to say: look at that.
+
+   **Step 1 — Select:** Pick the 2 details from the seed that create the most friction — where one image changes or reframes the other. Explain your choice.
+
+   **Step 2 — Draft:** Write 2-3 different natural 3-line versions. Don't count syllables yet. Each should sound right spoken aloud. Pick the one with the strongest opening and most natural flow before moving to Step 3.
+
+   **Step 3 — Fit meter:** Adjust to exactly 5 / 7 / 5 syllables. If adjusting breaks a line's natural flow, rewrite the whole line — never just delete words to fit.
+
+   **Step 4 — Evaluate strictly.** If ANY rule fails, discard and return to Step 2 with a different approach. Do not patch — regenerate.
+
+   Hard reject if:
+   - Any line sounds unnatural, telegraphic, or assembled backward when read aloud
+   - Any line compresses two clauses without grammar glue (e.g., "bright photos scroll", "shake mint still")
+   - The poem follows the seed's clause order
+   - Vague filler appears ("something," "somewhere," "somehow")
+   - The poem reads as caption, summary, or paraphrase of the seed
+   - The poem lacks a real turn — it's just description
+   - Any line exists mainly to satisfy syllable count
+
+   Priority: natural spoken English > vivid opening > real turn > clean 5/7/5.
+   If exact meter forces awkward phrasing, discard and try a different angle.
+
+   **Line-level rules:**
+   - Do not compress two clauses into one line to hit syllable count.
+   - Do not end a line on a weak filler word.
+   - Do not stack nouns without grammar between them.
+   - Prefer a simpler poem with clean syntax over an ambitious one with a damaged line.
+   - No haiku cliche vocabulary ("fleeting", "ephemeral", "serenity", "whisper", "dance").
 
 3. **Verify syllable count** using the bundled CMU dictionary counter:
    ```

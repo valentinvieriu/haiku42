@@ -1,62 +1,30 @@
-import { generateHaiku } from '../utils/haikuGenerator';
-import { compressHaiku, decompressHaiku } from '../utils/compression';
-
-// Define the models array at the top of the file
-const models = ['qwen3.5:122b-a10b-q4_K_M','qwen3.5:27b-mxfp8','gemma4:e2b-it-q8_0',];
+import { decompressHaiku } from '../utils/compression';
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
-  const { cloudflare } = event.context;
 
-  // Handle GET requests (fetching existing haiku)
-  if (event.node.req.method === 'GET' && query.id) {
-    try {
-      const haiku = decompressHaiku(query.id);
-
-      // Set cache headers
-      event.node.res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 1 day
-
-      // Return haiku
-      return haiku;
-    } catch (error) {
-      console.error('Error processing haiku ID:', error);
-
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Invalid haiku data',
-        message: 'The haiku data could not be processed.',
-      });
-    }
+  if (!query.id) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing haiku ID',
+      message: 'A haiku ID is required.',
+    });
   }
 
-  // Handle POST requests (generating new haiku)
-  if (event.node.req.method === 'POST') {
-    try {
-      const haiku = await generateHaiku(cloudflare.env, query, models);
+  try {
+    const haiku = decompressHaiku(query.id);
 
-      if (!haiku) {
-        throw new Error('Generated haiku is undefined');
-      }
+    // Set cache headers
+    event.node.res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 1 day
 
-      // Compress the haiku data
-      const haikuId = compressHaiku(haiku) ?? 'default-haiku-id';
+    return haiku;
+  } catch (error) {
+    console.error('Error processing haiku ID:', error);
 
-      // Return only the id for redirection
-      return { id: haikuId };
-    } catch (error) {
-      console.error('Error generating haiku:', error);
-      throw createError({
-        statusCode: 500,
-        statusMessage: 'Error generating haiku',
-        message: error.message ?? 'Unknown error',
-      });
-    }
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Invalid haiku data',
+      message: 'The haiku data could not be processed.',
+    });
   }
-
-  // If neither GET with id nor POST, return method not allowed
-  throw createError({
-    statusCode: 405,
-    statusMessage: 'Method Not Allowed',
-    message: 'Only GET with id and POST methods are allowed.',
-  });
 });

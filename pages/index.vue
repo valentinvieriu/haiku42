@@ -24,9 +24,8 @@ const generateWithStream = () => {
       stallTimer = setTimeout(() => {
         if (settled) return
         settled = true
-        console.warn('SSE stalled, falling back to POST')
         evtSource.close()
-        fallbackGenerate().then(resolve).catch(reject)
+        reject(new Error('Haiku generation timed out'))
       }, 120000)
     }
 
@@ -48,6 +47,8 @@ const generateWithStream = () => {
           thinkingText.value += data.text
           break
         case 'content':
+          isThinking.value = true
+          thinkingText.value += data.text
           break
         case 'complete':
           if (settled) return
@@ -74,19 +75,9 @@ const generateWithStream = () => {
       settled = true
       clearTimeout(stallTimer)
       evtSource.close()
-      console.warn('SSE error, falling back to POST')
-      fallbackGenerate().then(resolve).catch(reject)
+      reject(new Error('Failed to connect to haiku stream'))
     }
   })
-}
-
-const fallbackGenerate = async () => {
-  const data = await $fetch('/api/haiku', { method: 'POST' })
-  if (data?.id) {
-    await router.push({ path: `/haiku/${data.id}` })
-  } else {
-    throw new Error('Failed to generate new haiku')
-  }
 }
 
 const generateAndRedirect = async () => {

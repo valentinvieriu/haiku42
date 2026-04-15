@@ -7,9 +7,9 @@
       </div>
       <div
         ref="scrollContainer"
-        class="max-h-40 overflow-y-auto text-xs text-gray-400 font-mono leading-relaxed px-3 py-2 bg-gray-50 rounded border border-gray-200"
+        class="max-h-80 overflow-y-auto text-sm text-gray-500 font-mono leading-relaxed px-4 py-3 bg-gray-50 rounded border border-gray-200 whitespace-pre-wrap"
       >
-        {{ displayText }}
+        {{ cleanText }}
       </div>
     </div>
   </transition>
@@ -25,9 +25,23 @@ const props = defineProps({
 
 const scrollContainer = ref(null)
 
+function stripMarkdown(text) {
+  return text
+    .replace(/#{1,6}\s*/g, '')          // ### headers
+    .replace(/\*\*([^*]+)\*\*/g, '$1')  // **bold**
+    .replace(/\*([^*]+)\*/g, '$1')      // *italic*
+    .replace(/`([^`]+)`/g, '$1')        // `code`
+    .replace(/^[-*]\s+/gm, '• ')        // bullet lists
+    .replace(/\n{3,}/g, '\n\n')         // collapse excess newlines
+}
+
 const displayText = computed(() => {
-  if (props.text.length <= 500) return props.text
-  return '...' + props.text.slice(-500)
+  if (props.text.length <= 1500) return props.text
+  return '...' + props.text.slice(-1500)
+})
+
+const cleanText = computed(() => {
+  return stripMarkdown(displayText.value)
 })
 
 watch(() => props.text, async () => {
