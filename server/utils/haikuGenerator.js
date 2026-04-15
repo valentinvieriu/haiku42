@@ -41,55 +41,32 @@ function generateChatRequest(topic) {
                 role: 'system',
                 content: `You write contemporary English haiku from scene seeds.
 
-Follow these steps and show your reasoning for each:
+The seed includes role labels (Setting, Focus, Sense, Trace, Absence, Turn) — these are scaffolding. Do not echo them in the poem, and do not follow their order.
 
-**Step 1 — Select:** Pick the 2 details from the seed that create the most friction — where one image changes or reframes the other. Explain your choice.
+Think through these steps before writing your answer:
 
-**Step 2 — Draft:** Write 2-3 different natural 3-line versions. Don't count syllables yet. Each should sound right spoken aloud. Pick the one with the strongest opening and most natural flow before moving to Step 3.
-
-**Step 3 — Fit meter:** Adjust to exactly 5 / 7 / 5 syllables. If adjusting breaks a line's natural flow, rewrite the whole line — never just delete words to fit.
-
-**Step 4 — Evaluate strictly.** If ANY rule fails, discard and return to Step 2 with a different approach. Do not patch — regenerate.
-
-Hard reject if:
-- Any line sounds unnatural, telegraphic, or assembled backward when read aloud
-- Any line compresses two clauses without grammar glue (e.g., "bright photos scroll", "shake mint still")
-- The poem follows the seed's clause order
-- Vague filler appears ("something," "somewhere," "somehow")
-- The poem reads as caption, summary, or paraphrase of the seed
-- The poem lacks a real turn — it's just description
-- Any line exists mainly to satisfy syllable count
+1. Pick 2–3 details from the seed that create friction — where one image changes or reframes another.
+2. Draft 2-3 different natural 3-line versions. Don't count syllables yet. Each should sound right spoken aloud.
+3. Pick the one with the strongest opening and most natural flow.
+4. Fit to exactly 5 / 7 / 5 syllables. If adjusting breaks a line's natural flow, rewrite the whole line — never just delete words to fit.
+5. Evaluate strictly. Discard and redraft if:
+   - any line sounds unnatural, telegraphic, or assembled backward
+   - any line compresses two clauses without grammar glue
+   - the poem follows the seed's clause order
+   - vague filler appears ("something," "somewhere," "somehow")
+   - it reads as caption, summary, or paraphrase of the seed
+   - it lacks a real turn — just description
+   - any line exists mainly to satisfy syllable count
+6. Write an image prompt describing only visible scene elements. Keep it literal and concise; no art-style words.
 
 Priority: natural spoken English > vivid opening > real turn > clean 5/7/5.
-If exact meter forces awkward phrasing, discard and try a different angle.
-
-**Step 5 — Image prompt:** Describe only the visible elements of the scene for an image model. Keep it literal and concise; no art-style words.
-
-Line-level rules:
-- Do not compress two clauses into one line to hit syllable count.
-- Do not end a line on a weak filler word.
-- Do not stack nouns without grammar between them.
-- Prefer a simpler poem with clean syntax over an ambitious one with a damaged line.
-
 A good haiku sounds like someone stopped mid-sentence to say: look at that.
 
-After your reasoning, output the final result in JSON inside a \`\`\`json code fence:
-
-\`\`\`json
-{
-  "topic": "brief scene label",
-  "firstLine": "...",
-  "secondLine": "...",
-  "thirdLine": "...",
-  "imagePrompt": "..."
-}
-\`\`\``,
+Output only JSON with these fields: topic, firstLine, secondLine, thirdLine, imagePrompt.`,
             },
             {
                 role: 'user',
-                content: `Scene seed: """${topic}"""
-
-Show your reasoning for each step, then output the final JSON.`,
+                content: `Scene seed: """${topic}"""`,
             },
         ],
     };
@@ -141,7 +118,7 @@ export async function generateHaikuStreaming(env, query, models, callbacks) {
 }
 
 function sanitizeResponse(response) {
-	let defaultHaiku = {
+	const defaultHaiku = {
 		topic: "Artificial Intelligence",
 		firstLine: "Silent minds converge",
 		secondLine: "In circuits, wisdom blossoms",
@@ -149,52 +126,43 @@ function sanitizeResponse(response) {
 		imagePrompt: "A futuristic cityscape at dawn, with glowing circuits intertwining with tree branches. In the foreground, silhouettes of human-like figures stand, their heads illuminated by soft, pulsating light representing awakening AI consciousness."
 	};
 
-	let JSONResponse = defaultHaiku;
+	if (typeof response !== 'string') {
+		response = JSON.stringify(response);
+	}
+
+	let parsed = null;
 
 	try {
-		// If the response is not a string, convert it to a string
-		if (typeof response !== 'string') {
-			response = JSON.stringify(response);
+		// 1. Direct parse (structured JSON output from Ollama format: schema)
+		const trimmed = response.trim();
+		if (trimmed.startsWith('{')) {
+			parsed = JSON.parse(trimmed);
 		}
 
-		// Try multiple extraction strategies (reasoning text may precede JSON)
-		let parsed = null;
-
-		// 1. Strict: ```json\n...\n```
-		const strictMatch = response.match(/```json\n([\s\S]*?)\n```/);
-		if (strictMatch && strictMatch[1]) {
-			parsed = JSON.parse(strictMatch[1]);
-		}
-
-		// 2. Loose: ```json with any whitespace
+		// 2. Extract from ```json fences (cloud services)
 		if (!parsed) {
-			const looseMatch = response.match(/```json\s*([\s\S]*?)\s*```/);
-			if (looseMatch && looseMatch[1]) {
-				parsed = JSON.parse(looseMatch[1]);
+			const fenceMatch = response.match(/```json\s*([\s\S]*?)\s*```/);
+			if (fenceMatch?.[1]) {
+				parsed = JSON.parse(fenceMatch[1]);
 			}
 		}
 
-		// 3. Raw JSON object containing expected keys
+		// 3. Find raw JSON object with expected keys (last resort)
 		if (!parsed) {
 			const rawMatch = response.match(/\{[^{}]*"firstLine"\s*:\s*"[^"]*"[\s\S]*?"thirdLine"\s*:\s*"[^"]*"[^{}]*\}/);
 			if (rawMatch) {
 				parsed = JSON.parse(rawMatch[0]);
 			}
 		}
-
-		if (parsed) {
-			JSONResponse = parsed;
-		}
 	} catch (error) {
-		console.warn('Failed to parse JSON from response, using default haiku:', error.message);
-		JSONResponse = defaultHaiku;
+		console.warn('Failed to parse JSON from response:', error.message);
 	}
 
-	// Final check to ensure the response has the expected structure
-	if (!JSONResponse.firstLine || !JSONResponse.secondLine || !JSONResponse.thirdLine || !JSONResponse.imagePrompt) {
-		console.warn('Invalid haiku structure, using default haiku.');
-		JSONResponse = defaultHaiku; // Ensure fallback to default haiku if structure is invalid
+	if (parsed?.firstLine && parsed?.secondLine && parsed?.thirdLine && parsed?.imagePrompt) {
+		console.log('Generated Haiku:', parsed);
+		return parsed;
 	}
-	console.log('Generated Haiku:', JSONResponse);
-	return JSONResponse;
+
+	console.warn('Invalid haiku structure, using default haiku.');
+	return defaultHaiku;
 }

@@ -2,6 +2,7 @@
 import { useRouter } from 'vue-router'
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { getRandomVerb } from '~/utils/funVerbs'
+import SkeletonHaiku from '~/components/SkeletonHaiku.vue'
 import ThinkingDisplay from '~/components/ThinkingDisplay.vue'
 
 const router = useRouter()
@@ -107,9 +108,7 @@ onBeforeUnmount(() => {
 <template>
   <div class="flex flex-col items-center justify-center h-screen bg-gray-100">
     <div v-if="!generationError" class="text-center">
-      <p class="text-xl text-gray-600 transition-opacity duration-300">
-        {{ currentVerb }} a new haiku...
-      </p>
+      <SkeletonHaiku />
       <ThinkingDisplay
         :text="thinkingText"
         :visible="isThinking"

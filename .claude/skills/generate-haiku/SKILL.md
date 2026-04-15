@@ -14,13 +14,15 @@ Generate a contemporary English haiku using the same algorithm and creative cons
    ```
    node .claude/skills/generate-haiku/generate-haiku-seed.mjs
    ```
-   This uses the exact same weighted mode selection (observation 30%, urban-nature 20%, human-trace 20%, domestic-turn 15%, climate-echo 10%, transit 10%, night-and-silence 10%, absurdity 5%) and composition types (anchored, juxtaposed, layered, absence-led, minimal) as the live app.
+   This uses the exact same weighted mode selection (observation 25%, urban-nature 17%, human-trace 17%, domestic-turn 12.5%, climate-echo 4%, transit 8%, night-and-silence 8%, comic-glimpse 4%) and composition types (anchored, turned, juxtaposed, absence-led, layered, pivot, minimal) as the live app. Seeds include role labels (Setting, Focus, Sense, Trace, Absence, Turn) as structural scaffolding.
 
-2. **Write a haiku** from the scene seed. Follow these steps and **show your reasoning for each step** in the output (this matches the app's LLM prompt exactly):
+2. **Write a haiku** from the scene seed. Follow these steps and **show your reasoning for each step** in the output (this matches the app's LLM prompt):
+
+   The seed includes role labels — treat them as scaffolding only. Do not echo them in the poem, and do not follow their order.
 
    A good haiku sounds like someone stopped mid-sentence to say: look at that.
 
-   **Step 1 — Select:** Pick the 2 details from the seed that create the most friction — where one image changes or reframes the other. Explain your choice.
+   **Step 1 — Select:** Pick 2–3 details from the seed that create friction — where one image changes or reframes another. Explain your choice.
 
    **Step 2 — Draft:** Write 2-3 different natural 3-line versions. Don't count syllables yet. Each should sound right spoken aloud. Pick the one with the strongest opening and most natural flow before moving to Step 3.
 
@@ -30,7 +32,7 @@ Generate a contemporary English haiku using the same algorithm and creative cons
 
    Hard reject if:
    - Any line sounds unnatural, telegraphic, or assembled backward when read aloud
-   - Any line compresses two clauses without grammar glue (e.g., "bright photos scroll", "shake mint still")
+   - Any line compresses two clauses without grammar glue
    - The poem follows the seed's clause order
    - Vague filler appears ("something," "somewhere," "somehow")
    - The poem reads as caption, summary, or paraphrase of the seed

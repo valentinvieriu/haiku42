@@ -33,22 +33,27 @@ export default class OllamaService {
   }
 
   async *runStream(chat) {
-    const isQwen = this.modelName.startsWith('qwen');
-
-    // Calibration results (2026-04-15):
-    // - Thinking doesn't improve syllable accuracy for either model
-    // - Qwen 3.5 thinking >120s even at "low" — unusable
-    // - Gemma4 "low" thinking ~5s with simple prompts but >60s with full haiku prompt
-    // - Best approach: reasoning "none" for speed, streaming still prevents timeouts
-    // - Gemma no-think: ~1s, Qwen no-think: ~7s
+    // Use native thinking mode — reasoning happens in separate thinking tokens,
+    // content stream outputs only JSON. Thinking tokens stream to the UI.
     const body = JSON.stringify({
       model: this.modelName,
       messages: chat.messages,
       stream: true,
-      reasoning_effort: 'none',
+      reasoning_effort: 'low',
       max_tokens: 2048,
       temperature: 0.7,
       top_p: 0.95,
+      format: {
+        type: 'object',
+        properties: {
+          topic: { type: 'string', description: 'brief scene label' },
+          firstLine: { type: 'string', description: 'first line, 5 syllables' },
+          secondLine: { type: 'string', description: 'second line, 7 syllables' },
+          thirdLine: { type: 'string', description: 'third line, 5 syllables' },
+          imagePrompt: { type: 'string', description: 'visible scene elements only, literal and concise' },
+        },
+        required: ['topic', 'firstLine', 'secondLine', 'thirdLine', 'imagePrompt'],
+      },
     });
 
     const response = await fetch(this.apiUrl, {

@@ -2861,13 +2861,13 @@ const modes = [
 // always works with a coherent flat set of pools.
 
 const compositionTypes = [
-  { weight: 25, name: "anchored",    build: (p) => [rand(p.frames), rand(p.anchors), rand(p.sensory)] },
-  { weight: 20, name: "turned",      build: (p) => [rand(p.frames), rand(p.anchors), rand(p.turns || p.traces)] },
-  { weight: 15, name: "juxtaposed",  build: (p) => [rand(p.frames), rand(p.anchors), rand(p.traces)] },
-  { weight: 15, name: "absence-led", build: (p) => [rand(p.frames), rand(p.absences), rand(p.turns || p.sensory)] },
-  { weight: 10, name: "layered",     build: (p) => [rand(p.frames), rand(p.sensory), rand(p.absences)] },
-  { weight: 10, name: "pivot",       build: (p) => [rand(p.frames), rand(p.turns || p.anchors)] },
-  { weight: 5,  name: "minimal",     build: (p) => [rand(p.frames), rand(p.anchors)] },
+  { weight: 28, name: "anchored",    build: (p) => [{ role: "Setting", text: rand(p.frames) }, { role: "Focus", text: rand(p.anchors) }, { role: "Sense", text: rand(p.sensory) }] },
+  { weight: 24, name: "turned",      build: (p) => [{ role: "Setting", text: rand(p.frames) }, { role: "Focus", text: rand(p.anchors) }, { role: "Turn", text: rand(p.turns || p.traces) }] },
+  { weight: 15, name: "juxtaposed",  build: (p) => [{ role: "Setting", text: rand(p.frames) }, { role: "Focus", text: rand(p.anchors) }, { role: "Trace", text: rand(p.traces) }] },
+  { weight: 15, name: "absence-led", build: (p) => [{ role: "Setting", text: rand(p.frames) }, { role: "Absence", text: rand(p.absences) }, { role: "Turn", text: rand(p.turns || p.sensory) }] },
+  { weight: 10, name: "layered",     build: (p) => [{ role: "Setting", text: rand(p.frames) }, { role: "Sense", text: rand(p.sensory) }, { role: "Absence", text: rand(p.absences) }] },
+  { weight: 5,  name: "pivot",       build: (p) => [{ role: "Setting", text: rand(p.frames) }, { role: "Turn", text: rand(p.turns || p.anchors) }] },
+  { weight: 3,  name: "minimal",     build: (p) => [{ role: "Setting", text: rand(p.frames) }, { role: "Focus", text: rand(p.anchors) }] },
 ];
 
 // ── Temporal Modifiers ───────────────────────────────────────────────
@@ -2875,20 +2875,20 @@ const compositionTypes = [
 
 const temporalModifiers = [
   "just before closing",
-  "the moment after",
-  "for the last time",
+  "just after the door closed",
+  "the last day of the season",
   "earlier than usual",
   "after everyone left",
   "before anyone arrives",
   "on the way back",
-  "halfway through",
+  "mid-shift",
   "the morning after",
   "just as the rain starts",
   "one hour in",
   "the second time today",
-  "later than expected",
+  "past midnight",
   "right before turning away",
-  "almost done",
+  "near the bottom of the cup",
 ];
 
 // ── Main Export ──────────────────────────────────────────────────────
@@ -2899,18 +2899,12 @@ function getRandomTopic() {
   const composition = weightedPick(compositionTypes);
   const parts = composition.build(pools);
 
-  // 25% chance: prepend a temporal modifier to the frame (first element)
+  // 25% chance: prepend a temporal modifier to the setting
   if (Math.random() < 0.25) {
-    parts[0] = rand(temporalModifiers) + " — " + parts[0];
+    parts[0].text = rand(temporalModifiers) + " — " + parts[0].text;
   }
 
-  // Shuffle to break frame-first ordering
-  for (let i = parts.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [parts[i], parts[j]] = [parts[j], parts[i]];
-  }
-
-  return parts.join("; ");
+  return parts.map(p => `${p.role}: ${p.text}`).join("; ");
 }
 
 export default getRandomTopic;

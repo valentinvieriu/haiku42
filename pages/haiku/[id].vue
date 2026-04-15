@@ -97,6 +97,7 @@ const handleGenerateNewHaiku = async () => {
 
         switch (data.type) {
           case 'thinking':
+          case 'content':
             isThinking.value = true
             thinkingText.value += data.text
             break
