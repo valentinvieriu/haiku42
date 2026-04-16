@@ -139,6 +139,11 @@ const modes = [
       "canal towpath at dawn",
       "culvert mouth in the weeds",
       "fire road along the ridge",
+      "boat ramp parking lot, geese taking over the painted lines",
+      "water treatment outfall trail, mist rising in the cold",
+      "old fire tower spur, locked gate, ravens overhead",
+      "beaver pond overlook, mosquito cloud in the alder shade",
+      "river gravel bar at dawn, fog below the knees",
     ],
     anchors: [
       "crow landing on a wire",
@@ -194,6 +199,11 @@ const modes = [
       "salamander under the wet plank",
       "rabbit frozen in the grass",
       "frog egg mass at the pond edge",
+      "muskrat carrying reeds across the canal mouth",
+      "otter slide polished into the muddy bank",
+      "sandhill crane stepping out of the marsh grass",
+      "vole trail threading the frost on the meadow edge",
+      "trout holding still in the seam below the rocks",
     ],
     sensory: [
       "wet earth smell after thunder",
@@ -244,6 +254,11 @@ const modes = [
       "cold metal rail under the palm",
       "river mist on the cheeks",
       "snowmelt cold through the sock",
+      "sweet rot of cottonwood buds in warm rain",
+      "trail dust sticking to sunscreen on the forearms",
+      "cold zipper pull against the lower lip in wind",
+      "pine pollen film on the pond skin near shore",
+      "sunburn heat still rising from the neck at dusk",
     ],
     traces: [
       "initials carved into the bench",
@@ -289,6 +304,11 @@ const modes = [
       "torn map corner in the kiosk",
       "bent fishing hook in the sand",
       "branch tied back with twine",
+      "phone tripod footprint pressed into the wet overlook soil",
+      "orange peel spirals drying on the dock cleat",
+      "trail crew chalk mark on a rock, half washed away",
+      "sun-bleached map pin still stuck in the kiosk cork",
+      "broken sunglass arm beside the trail register",
     ],
     absences: [
       "the bird that was just singing",
@@ -329,6 +349,11 @@ const modes = [
       "dock cleat with no rope looped around it",
       "branch scar where the nest hung",
       "empty feeder pole in the grass",
+      "the crossing log gone from the creek, only wet cuts in the bank",
+      "the wind sock at the boat launch, torn down to one strip",
+      "the gravel bar where kids skipped stones, under deep water now",
+      "the nesting box door hanging open, no swallows this season",
+      "the old rope at the swimming hole, stump and knot scars only",
     ],
     turns: [
       "the wind changing direction",
@@ -405,6 +430,11 @@ const modes = [
       "rain garden beside the parking lot",
       "culvert mouth under the access road",
       "retaining wall with fern seams",
+      "school parking lot bioswale, rainwater still standing at sunset",
+      "under the elevated train, volunteer plum tree in the fence corner",
+      "bus turnaround loop, milkweed in the cracked curb seam",
+      "clinic loading ramp, rainwater channeling through sedge clumps",
+      "supermarket lot edge, volunteer sunflowers by the cart return",
     ],
     anchors: [
       "pigeon nesting in the exit sign",
@@ -454,6 +484,11 @@ const modes = [
       "roots lifting the curb",
       "salamander in the storm drain",
       "bees in the rosemary planter",
+      "crows nesting in the letters of the parking garage sign",
+      "tomato vine spilling from a fifth-floor fire escape bucket",
+      "sparrow carrying french fry crumbs into the awning vent",
+      "mink slipping through the drainage channel behind the warehouse",
+      "honeybee swarm settled on the traffic signal mast",
     ],
     sensory: [
       "petrichor mixing with exhaust",
@@ -500,6 +535,11 @@ const modes = [
       "steam from a manhole grate",
       "cool air from the culvert mouth",
       "river mud under the bridge",
+      "hot brake smell from the delivery van and mint from the tree pit",
+      "sprinkler overspray misting the bike lane in full sun",
+      "freezer truck condenser heat blasting across the crosswalk",
+      "rainwater metallic taste under the railroad bridge",
+      "night irrigation hiss from the median flower beds",
     ],
     traces: [
       "bread crumbs in a careful line on the wall",
@@ -541,6 +581,11 @@ const modes = [
       "rain barrel under the downspout",
       "drip hose along the curb strip",
       "hand trowel left in the planter",
+      "milk crate shade frame over a new street tree",
+      "zip-tied spoon as a birdbath in the median planter",
+      "hand-lettered sign on cardboard: leave the bee weeds",
+      "rain-chain made from old keys beside the alley planter",
+      "painted rock border around the curbside herb patch",
     ],
     absences: [
       "the tree that used to shade this bench — stump only",
@@ -576,6 +621,11 @@ const modes = [
       "empty tree pit after the cut",
       "rain garden dry after the trench work",
       "nest cup under the bare awning",
+      "the vine trellis removed, anchor hooks still in the brick",
+      "the curbside pollinator sign post with no sign left on it",
+      "the swallow nest shelf bracket with no mud cup this year",
+      "the volunteer watering jug at the tree pit, gone by noon",
+      "the ivy corner at the retaining wall scraped to bare concrete",
     ],
     turns: [
       "the bus pulling away from the stop",
@@ -633,6 +683,7 @@ const modes = [
           "imaging center locker room, paper slippers in a stack",
           "pediatric clinic hall at shift change",
           "lab intake desk under the clock",
+          "county vaccine clinic hallway, floor arrows half-peeled",
         ],
         anchors: [
           "nurse adjusting the blanket without waking anyone",
@@ -657,6 +708,7 @@ const modes = [
           "clerk flattening a wrinkled insurance card under the glass",
           "clerk stamping the form with a rubber stamp",
           "tech wheeling a cart of sealed specimens",
+          "security guard untwisting a visitor badge lanyard for someone shaking",
         ],
         sensory: [
           "hand sanitizer sting",
@@ -681,6 +733,7 @@ const modes = [
           "microwave soup from the staff room leaking into the hallway",
           "copy room toner warming the air",
           "heavy door seal thumping shut",
+          "chair vinyl sticking to the backs of the knees",
         ],
         traces: [
           "dog-eared page in the waiting room magazine",
@@ -704,6 +757,7 @@ const modes = [
           "insurance card photocopy left face down in the tray",
           "rolled ticket under the chair leg",
           "strip of blue tape on the floor",
+          "intake clipboard with the old logo stickered over",
         ],
         absences: [
           "the chair at the table nobody sits in",
@@ -724,6 +778,8 @@ const modes = [
           "the volunteer at the information desk, coat still on the hook",
           "the second receptionist station dark",
           "the lobby fish tank without bubbles",
+          "the extra blood pressure cuff hook, velcro strap still hanging",
+          "the walker parking bay tape marks with no walkers in line",
         ],
       },
       // Cluster 2: Service and retail — laundromats, diners, shops, libraries
@@ -1285,6 +1341,7 @@ const modes = [
           "kitchen island, cutting board and a half-peeled onion",
           "entry bench, boots lined toe to heel",
           "stove top, pan still warm under the lid",
+          "balcony planter shelf, basil gone to seed",
         ],
         anchors: [
           "steam from the rice cooker fogging the window",
@@ -1315,6 +1372,7 @@ const modes = [
           "steam lifting off the pot lid",
           "toaster lever staying down",
           "ice tray cracking in the freezer",
+          "range hood light flickering over the simmering pot",
         ],
         sensory: [
           "lemon peel and dish soap",
@@ -1366,6 +1424,7 @@ const modes = [
           "bread crumbs in the grout line",
           "grease halo around the stove burner",
           "flour dust on the counter edge",
+          "pizza coupon magnet layered over older takeout numbers",
         ],
         absences: [
           "hook where the leash used to hang",
@@ -1387,6 +1446,8 @@ const modes = [
           "the second chair pushed in and empty",
           "the bottle opener missing from the junk drawer",
           "the half-full spice rack with one gap",
+          "the fruit bowl spot on the counter, ring of dust around it",
+          "the second lunchbox hook by the pantry, label still taped on",
         ],
       },
       // Cluster 2: Bedroom, bathroom, and hallway — night, sleep,
@@ -1680,6 +1741,11 @@ const modes = [
       "river mouth at king tide, parking lot cones out",
       "orchard row under hail netting",
       "county road with a fresh washout",
+      "high school track under smoke haze, lane lines barely visible",
+      "dock pilings in king tide water, parking meter posts half submerged",
+      "county fairground cooling tent, asphalt still radiating at dusk",
+      "substation yard in heat haze, warning flags snapping",
+      "farm pond aerator running through an unseasonal warm night",
     ],
     anchors: [
       "blossoms opening before the bees arrive",
@@ -1729,6 +1795,11 @@ const modes = [
       "milkweed leaves curled at the edges",
       "ice cubes of hail in the gutter",
       "a single apple, sunburned on the branch",
+      "pumpkins setting in July heat, vines still thirsty",
+      "storm siren test while the sky stays clear and yellow",
+      "blue crab trap pulled with mostly jellyfish inside",
+      "cedar bark peeled by heat on the south-facing slope",
+      "schoolyard maple dropping leaves in late August",
     ],
     sensory: [
       "air so dry the lips crack",
@@ -1771,6 +1842,11 @@ const modes = [
       "copper taste after wildfire rain",
       "green pond smell after three hot days",
       "wet ash smell in the rain barrel",
+      "air conditioner condensate dripping into dust by noon",
+      "salt wind carrying marsh mud through the parking lot",
+      "char smoke trapped under morning inversion in the valley",
+      "warm seawater stink around the low-tide rocks in spring",
+      "plastic greenhouse heat rolling out at sunrise",
     ],
     traces: [
       "high-water mark on the bridge piling",
@@ -1801,6 +1877,11 @@ const modes = [
       "flood gauge sticker on the school gym door",
       "sandbags drying in the driveway",
       "flood gauge painted on the pump house",
+      "cool roof grant sticker on the rowhouse downspout",
+      "shade cloth stretched over the school blacktop fence",
+      "heat advisory poster taped over last month's flood notice",
+      "rain barrel overflow hose routed to a new trench",
+      "fire-smart landscaping sign staked in gravel instead of lawn",
     ],
     absences: [
       "the snowline that used to be visible from here",
@@ -1837,6 +1918,11 @@ const modes = [
       "dock ladder with no water under it",
       "vacant nesting platform on the pylon",
       "irrigation ditch without a trickle",
+      "the public splash pad schedule board, season shortened again",
+      "the bait shop minnow tank line, dry above the hose",
+      "the sled hill grass already green in mid-January",
+      "the fall migration count board with two species crossed off",
+      "the marsh boardwalk section removed after repeated king tides",
     ],
   },
 
@@ -1895,6 +1981,11 @@ const modes = [
       "bus stop under a broken schedule board",
       "library copier room with a paper jam",
       "movie theater lobby after credits",
+      "grocery delivery pickup shelf, bags alphabetized, one upside down",
+      "office hot-desk zone, everyone guarding one outlet",
+      "airport rideshare lot, everyone holding up the same phone screen",
+      "big-box garden aisle in January, inflatable flamingos on clearance",
+      "apartment mailroom with five identical unclaimed umbrella stands",
     ],
     anchors: [
       "someone talking to the self-checkout machine",
@@ -1945,6 +2036,11 @@ const modes = [
       "barista spelling the name wrong twice",
       "someone stuck under a parking gate arm",
       "dog sitting in the shopping cart like a passenger",
+      "someone scanning the same QR code from three different angles",
+      "automatic soap dispenser launching soap onto a sleeve",
+      "dog refusing to get out of the self-driving cart corral",
+      "someone bowing at the automatic door that opened too late",
+      "smart speaker pulsing blue while no one is in the room",
     ],
     sensory: [
       "the beep of the scanner that won't scan",
@@ -1984,6 +2080,9 @@ const modes = [
       "cold fluorescent hum above the freezer door",
       "wet umbrella dripping into a metal tray",
       "the click of a receipt tearing",
+      "self-checkout voice saying unexpected item while the scale is empty",
+      "scanner beep echoing from three kiosks at once",
+      "cold blast from the produce cooler at the worst possible moment",
     ],
     traces: [
       "passive-aggressive note on the office fridge",
@@ -2022,6 +2121,9 @@ const modes = [
       "finger smears on the glass door",
       "pizza box warped by steam",
       "scuffed toe mark on the elevator wall",
+      "charging cable tied in a knot around a cafe table leg",
+      "receipt with a smiley face and no total printed",
+      "cart wheel squeal trail through spilled seltzer",
     ],
     absences: [
       "the other sock, last seen in the dryer",
@@ -2057,6 +2159,9 @@ const modes = [
       "the other glove in the coat pocket",
       "the one screw that rolled under the fridge",
       "the bike helmet missing from the hook",
+      "the favorite tote bag, hanging on the doorknob at home",
+      "the old phone in the drawer, charging port up",
+      "the seat near the outlet taken by a coat and no person",
     ],
   },
 
@@ -2100,6 +2205,8 @@ const modes = [
           "rental EV at 6am, charger screen asking again",
           "toll plaza lane, no attendant in the booth",
           "charger bay at dawn, cable hanging loose",
+          "county line weigh station bypass lane, sunrise in the mirrors",
+          "flood detour lane, temporary signal blinking red",
         ],
         anchors: [
           "telephone poles passing one by one",
@@ -2129,6 +2236,8 @@ const modes = [
           "truck mirror throwing sunrise back across the lane",
           "gas price sign with one dead digit",
           "sunrise catching the bug splatter on the glass",
+          "truck stop squeegee frozen to the bucket rim",
+          "sun glare flashing off a cracked windshield chip",
         ],
         sensory: [
           "engine vibration through the seat",
@@ -2159,6 +2268,8 @@ const modes = [
           "gas pump handle cold with dew",
           "bridge deck thumping under the wheels",
           "road salt crust on the floor mat",
+          "sun visor mirror warmth on the knuckles at dawn",
+          "heater fan carrying french fry salt from the paper bag",
         ],
         traces: [
           "names scratched into the seat back",
@@ -2209,6 +2320,8 @@ const modes = [
           "the closed motel office where the bathroom key used to hang",
           "the bridge light out on the far span",
           "the road after the washout",
+          "the rest stop picnic tables, chained off for repairs",
+          "the shoulder pullout where the emergency call box used to stand",
         ],
       },
       // Cluster 2: Rail and subway — trains, platforms, underground
@@ -2234,6 +2347,8 @@ const modes = [
           "commuter rail bike car, straps knocking lightly",
           "station stairwell after the last train",
           "tunnel platform with wet footprints",
+          "elevated platform over the freight yard, wind cutting through",
+          "subway mezzanine, one staircase closed behind yellow tape",
         ],
         anchors: [
           "freight train passing, car after car after car",
@@ -2256,6 +2371,8 @@ const modes = [
           "someone folding the paper ticket smaller with each delay",
           "train headlights swelling in the tunnel",
           "another train sliding past on the far side",
+          "platform digital clock skipping a minute ahead",
+          "train map LED flickering between two station names",
         ],
         sensory: [
           "diesel smell at the platform",
@@ -2278,6 +2395,8 @@ const modes = [
           "subway brake dust on the tongue",
           "warm air from the tunnel mouth",
           "window glass vibrating against the temple",
+          "heater vent blowing dry air at ankle height",
+          "damp wool sleeve cooling against the window frame",
         ],
         traces: [
           "a forgotten paperback in the seat pocket",
@@ -2315,6 +2434,8 @@ const modes = [
           "the train door by car six, taped off again",
           "the platform staff room dark behind glass",
           "the station cafe with shutters down",
+          "the last local train line on the map, stickered over",
+          "the staffed ticket window, blinds down since spring",
         ],
       },
       // Cluster 3: Airports and flights — terminals, gates, cabins, customs
@@ -2336,6 +2457,8 @@ const modes = [
           "arrivals curb in the rain, neon reflecting off luggage",
           "security lane at 5am, bins stacked high",
           "baggage carousel under the flight board",
+          "airport tram platform, doors opening to no one boarding",
+          "gate carpet corner taped down near the charging pillar",
         ],
         anchors: [
           "the shadow of the plane crossing a parking lot",
@@ -2354,6 +2477,8 @@ const modes = [
           "baggage carousel starting up with nobody at it yet",
           "a cart of abandoned shoes by security",
           "carousel flap lifting for the next bag",
+          "gate monitor switching to final call with half the seats still full",
+          "crew member counting standby slips under the podium lamp",
         ],
         sensory: [
           "jet bridge cold between the terminal and the plane",
@@ -2373,6 +2498,8 @@ const modes = [
           "cold jet bridge metal through the carry-on handle",
           "carpet swallowing footsteps",
           "suitcase wheels clacking on tile",
+          "airplane blanket static catching on the sleeve",
+          "jet bridge rubber seal smell lingering on the coat",
         ],
         traces: [
           "boarding pass used as a bookmark",
@@ -2408,6 +2535,8 @@ const modes = [
           "the seat near the outlet, jacket there, owner nowhere",
           "the bag that never came off the carousel",
           "the gate outlet with a free socket",
+          "the checked stroller at oversize pickup, tag still clipped to the counter",
+          "the water fountain past security, wrapped for maintenance",
         ],
       },
       // Cluster 4: Ferries and water — docks, crossings, bridges on foot
@@ -2429,6 +2558,8 @@ const modes = [
           "harbor footbridge in fog, shoes ringing on metal grating",
           "harbor terminal in cold rain",
           "lock gate with water climbing",
+          "ferry slip in freezing rain, deck lights reflecting on black water",
+          "harbor queue lane, bike helmets dripping on the rail",
         ],
         anchors: [
           "the ferry wake spreading behind, seagulls following",
@@ -2446,6 +2577,8 @@ const modes = [
           "the ferry horn rolling across the dark water twice",
           "deckhand coiling wet rope",
           "rope fender bumping the hull",
+          "deckhand flashlight beam on the wet ramp bolts",
+          "orange deck cone sliding with each wake slap",
         ],
         sensory: [
           "salt spray on the ferry deck",
@@ -2463,6 +2596,8 @@ const modes = [
           "wet aluminum bench under the thighs",
           "engine thrum through the deck",
           "boot soles squeaking on painted steel",
+          "harbor wind pushing diesel into the ferry stairwell",
+          "wet glove cuff collecting salt at the wrist",
         ],
         traces: [
           "gum on the ferry railing, layers of it",
@@ -2493,6 +2628,8 @@ const modes = [
           "the gangway rail where the rope fender used to hang",
           "the next boat already gone",
           "the old ticket office window",
+          "the ferry bike rack row with one lock still clipped",
+          "the last evening crossing posted, then taped over",
         ],
       },
       // Cluster 5: Micro-transit and new mobility — rideshares, e-scooters,
@@ -2517,6 +2654,8 @@ const modes = [
           "bike-share map kiosk, touchscreen damp with fog",
           "rideshare curb in the rain",
           "loading zone with hazard lights on",
+          "bike lane detour around a food delivery queue",
+          "micro-mobility parking pad painted over old taxi markings",
         ],
         anchors: [
           "e-scooter tipping over on the sidewalk, nobody near it",
@@ -2536,6 +2675,8 @@ const modes = [
           "rideshare trunk opening to three identical black suitcases",
           "hand reaching for the wrong car door",
           "charger cable stretched under the cone",
+          "delivery app map rerouting as the rider misses the turn",
+          "shared bike app timer dipping under one minute at the dock",
         ],
         sensory: [
           "e-scooter whine going uphill",
@@ -2555,6 +2696,8 @@ const modes = [
           "battery pack heat through the coat pocket",
           "cold grip tape under thin gloves",
           "puddle splash against the ankle",
+          "phone speaker navigation clipping in and out under the overpass",
+          "helmet strap chafe under a damp collar",
         ],
         traces: [
           "QR code on the scooter, half scraped off",
@@ -2588,6 +2731,8 @@ const modes = [
           "the bike your app reserved, dock light already green for someone else",
           "the open dock with no bikes left",
           "the sidewalk clear of parked scooters",
+          "the designated pickup bay with no painted number left",
+          "the bike-share kiosk shade where the map used to be",
         ],
       },
     ],
@@ -2626,6 +2771,8 @@ const modes = [
           "stairs landing at 3am, hand on the banister",
           "mudroom, wet boots on the tray",
           "nursery, monitor glow on the dresser",
+          "hallway by the linen closet, motion sensor barely awake",
+          "stair landing at midnight, one step that always creaks",
         ],
         anchors: [
           "refrigerator clicking off",
@@ -2654,6 +2801,8 @@ const modes = [
           "rainwater slipping from the gutter onto the sill",
           "oven clock glowing 12:14",
           "dish rack bead of water dropping",
+          "hall thermostat backlight waking when no one passes",
+          "ice tray knocking once as the freezer fan kicks on",
         ],
         sensory: [
           "the tick of the house cooling",
@@ -2678,6 +2827,8 @@ const modes = [
           "cold spoon against the lip from the sink rack",
           "tile cold through bare feet",
           "blanket edge rough on the chin",
+          "cool draft under the bedroom door at ankle height",
+          "faint detergent heat from the dryer vent outside",
         ],
         traces: [
           "book open on the couch, reader asleep upstairs",
@@ -2723,6 +2874,7 @@ const modes = [
           "the second glass beside the sink, put away",
           "the key bowl by the door empty",
           "the porch light over the steps out",
+          "the hallway clock battery dead at 1:12",
         ],
       },
       // Cluster 2: Away at night — hotels, hospitals, diners, laundromats,
@@ -2746,6 +2898,8 @@ const modes = [
           "ER family room, phone chargers braided on the floor",
           "motel parking lot, ice machine at the end of the hall",
           "hospital family lounge, vending machine buzzing",
+          "airport shuttle stop after midnight, heat lamp over empty seats",
+          "hospital chapel alcove, votive shelf dark",
         ],
         anchors: [
           "a door closing somewhere in the building",
@@ -2765,6 +2919,7 @@ const modes = [
           "night clerk sliding the window open without standing up",
           "ice machine thumping behind the wall",
           "hospital cart wheel squeaking down the hall",
+          "night porter resetting the lobby clock with a pen tip",
         ],
         sensory: [
           "the stale warmth of a room closed all day",
@@ -2782,6 +2937,7 @@ const modes = [
           "burnt coffee sweetening on the burner plate",
           "motel carpet damp under socks",
           "vending machine fan breathing hot dust",
+          "hall ice machine fan pushing cold air over warm carpet",
         ],
         traces: [
           "wet umbrella propped against the wall, still dripping",
@@ -2815,6 +2971,7 @@ const modes = [
           "the diner pie case, one label lit, no pie behind it",
           "the dark front desk behind the glass",
           "the light from the next room off",
+          "the breakfast room coffee urn, timer light dark",
         ],
       },
       // Cluster 3: Outdoor night — backyards, porches, fields, parking lots
@@ -2851,6 +3008,8 @@ const modes = [
           "subdivision retention pond, frogs starting up",
           "ball field after the lights shut off",
           "public pool deck after closing, chairs stacked",
+          "suburban basketball court at midnight, one hoop net missing",
+          "parking lot median after rain, sprinkler heads still hissing",
         ],
         anchors: [
           "the moon behind cloud, then not",
@@ -2887,6 +3046,7 @@ const modes = [
           "sprinkler mist catching the streetlamp and vanishing",
           "motion light snapping on at the shed",
           "one window in the block going black",
+          "porch sprinkler arc sweeping the same empty sidewalk",
         ],
         sensory: [
           "cold grass under bare feet",
@@ -2914,6 +3074,7 @@ const modes = [
           "citronella from a porch two houses down",
           "wet grass under the soles",
           "damp metal railing in the hand",
+          "fresh-cut grass cooling into the night damp",
         ],
         traces: [
           "porch light left on for someone not home yet",
@@ -2961,6 +3122,7 @@ const modes = [
           "the hammock between the two maples, hooks bare",
           "the swing set still and empty",
           "the porch chair beside the door empty",
+          "the basketball echo from the park, stopped all at once",
         ],
       },
       // Cluster 3: Screen glow and digital night — phones in bed, notifications,
@@ -2991,6 +3153,8 @@ const modes = [
           "parking lot security booth monitor wall, one camera snowing",
           "bedside table, phone on low battery",
           "security booth, camera wall in blue glow",
+          "hall table at 2am, laptop asleep, smartwatch charging",
+          "bathroom doorway glow from a charging toothbrush base",
         ],
         anchors: [
           "the phone screen lighting the underside of the face",
@@ -3017,6 +3181,8 @@ const modes = [
           "smartwatch face lighting up to an empty message preview",
           "router lights cycling after a reboot",
           "battery icon dropping to 1%",
+          "smart thermostat app refreshing while the house stays still",
+          "delivery tracker frozen at one stop away for an hour",
         ],
         sensory: [
           "blue light on the eyelids after setting the phone face-down",
@@ -3043,6 +3209,7 @@ const modes = [
           "charging brick warm against the sheet corner",
           "charger brick warm under the blanket",
           "standby light bright in the corner",
+          "touchscreen click from typing with cold thumbs",
         ],
         traces: [
           "phone on the charger, screen cracked in one corner, still bright",
@@ -3069,6 +3236,8 @@ const modes = [
           "login code copied onto the receipt from dinner",
           "two-factor code written on the back of an envelope",
           "screen protector lifting at one corner",
+          "night mode schedule written on a sticky note by the charger",
+          "browser tab pinned in the corner, red badge dot still on it",
         ],
         absences: [
           "the dark of the room that isn't quite dark anymore",
