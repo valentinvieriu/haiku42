@@ -77,7 +77,6 @@ To manage environment variables, you can add a `.env` file in the root directory
 ```env
 ANTHROPIC_API_KEY=your_anthropic_key
 OPENAI_API_KEY=your_openai_key
-GROQ_API_KEY=your_groq_key
 ```
 
 These keys should also be configured for production in the deployment environment settings.

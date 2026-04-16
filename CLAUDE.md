@@ -48,7 +48,6 @@ server/utils/aiServices/
   chains.js              # Named fallback chains (streaming, cloud)
   AnthropicProvider.js   # Anthropic Claude API; exports ANTHROPIC_MODELS catalogue
   OpenAIProvider.js      # OpenAI API; exports OPENAI_MODELS catalogue
-  GroqProvider.js        # Groq API (Llama, Qwen, DeepSeek, Mistral); exports GROQ_MODELS
   GoogleProvider.js      # Google Gemini OpenAI-compat (Gemma 4, Gemini 3.1); exports GOOGLE_MODELS
   OllamaProvider.js      # Local Ollama API (OpenAI-compatible); exports OLLAMA_MODELS
   CloudflareProvider.js  # Cloudflare Workers AI (Mistral fallback); exports CLOUDFLARE_MODELS
@@ -60,9 +59,6 @@ server/utils/imageProviders/
   prompts.js             # Style templates + deterministic prompt/seed from haiku hash
   LexicaProvider.js      # Lexica.art image search
   OllamaProvider.js      # Local Ollama diffusion models
-  CloudflareProvider.js  # Cloudflare Workers AI (FLUX Schnell)
-  ReplicateProvider.js   # Replicate API; presets: FLUX Schnell, FLUX Pro, Imagen 3, FLUX Red Cinema
-  TogetherProvider.js    # Together.ai; presets: FLUX Schnell, FLUX Schnell Free
   StaticProvider.js      # Terminal fallback — static URL
 ```
 
@@ -74,8 +70,8 @@ Each provider file owns its model/preset catalogue as a frozen `*_MODELS` (or `*
 
 Both AI text and image generation use sequential fallback — try providers in order, use the first that succeeds:
 
-- **Haiku generation:** Ollama (local) -> Groq models (Llama/Qwen) -> Claude -> GPT-4 -> Cloudflare Workers AI
-- **Image generation:** Ollama (local) -> Replicate/Together/Cloudflare cloud providers -> static fallback
+- **Haiku generation:** Ollama (local) -> Google (Gemma/Gemini) -> Claude -> GPT-4 -> Cloudflare Workers AI
+- **Image generation:** Lexica -> Ollama (local) -> static fallback
 
 ### Stateless URL Sharing
 
@@ -97,12 +93,9 @@ OLLAMA_IMAGE_MODEL    # Ollama image model (default: x/z-image-turbo:fp8)
 
 Cloud providers (`.dev.vars` or Cloudflare dashboard):
 ```
-GROQ_API_KEY          # Groq API
 ANTHROPIC_API_KEY     # Claude API
 OPENAI_API_KEY        # OpenAI API
 GEMINI_API_KEY        # Google Gemini API (Gemma 4, Gemini 3.1)
-REPLICATE_API_KEY     # Replicate (Flux, Imagen image providers)
-TOGETHER_API_KEY      # Together.ai image provider
 ```
 
 Optional/unused:

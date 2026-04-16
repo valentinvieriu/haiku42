@@ -1,6 +1,5 @@
 import AnthropicProvider  from './AnthropicProvider.js';
 import OpenAIProvider     from './OpenAIProvider.js';
-import GroqProvider       from './GroqProvider.js';
 import GoogleProvider     from './GoogleProvider.js';
 import OllamaProvider     from './OllamaProvider.js';
 import CloudflareProvider from './CloudflareProvider.js';
@@ -8,7 +7,6 @@ import CloudflareProvider from './CloudflareProvider.js';
 const PROVIDERS = [
   AnthropicProvider,
   OpenAIProvider,
-  GroqProvider,
   GoogleProvider,
   OllamaProvider,
   CloudflareProvider,

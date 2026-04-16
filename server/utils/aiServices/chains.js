@@ -1,6 +1,5 @@
 import { ANTHROPIC_MODELS }   from './AnthropicProvider.js';
 import { OPENAI_MODELS }      from './OpenAIProvider.js';
-import { GROQ_MODELS }        from './GroqProvider.js';
 import { GOOGLE_MODELS }      from './GoogleProvider.js';
 import { OLLAMA_MODELS }      from './OllamaProvider.js';
 import { CLOUDFLARE_MODELS }  from './CloudflareProvider.js';
@@ -16,8 +15,9 @@ import { CLOUDFLARE_MODELS }  from './CloudflareProvider.js';
 export const chains = Object.freeze({
   // Active streaming endpoint — order matters (preferred → fallback).
   streaming: [
-    GOOGLE_MODELS.GEMINI_3_1_FLASH_LITE,
+    OLLAMA_MODELS.QWEN_3_6_35B,
     GOOGLE_MODELS.GEMMA_4_26B_A4B,
+    GOOGLE_MODELS.GEMINI_3_1_FLASH_LITE,
     OLLAMA_MODELS.GEMMA_4_26B_A4B,
     OLLAMA_MODELS.QWEN_3_5_122B,
     OLLAMA_MODELS.GEMMA_4_E2B,
@@ -34,15 +34,6 @@ export const chains = Object.freeze({
     GOOGLE_MODELS.GEMINI_3_1_FLASH_LITE,
     GOOGLE_MODELS.GEMMA_4_31B,
     GOOGLE_MODELS.GEMMA_4_26B_A4B,
-    GROQ_MODELS.LLAMA_3_3_70B,
-    GROQ_MODELS.LLAMA_3_1_70B,
-    GROQ_MODELS.LLAMA_3_1_8B,
-    GROQ_MODELS.DEEPSEEK_R1_LLAMA_70B,
-    GROQ_MODELS.DEEPSEEK_R1_QWEN_32B,
-    GROQ_MODELS.QWEN_QWQ_32B,
-    GROQ_MODELS.QWEN_2_5_32B,
-    GROQ_MODELS.MISTRAL_SABA_24B,
-    GROQ_MODELS.LLAMA_4_SCOUT,
     CLOUDFLARE_MODELS.MISTRAL_7B,
   ],
 });

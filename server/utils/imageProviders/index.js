@@ -1,17 +1,11 @@
-import LexicaProvider     from './LexicaProvider.js';
-import StaticProvider     from './StaticProvider.js';
-import CloudflareProvider from './CloudflareProvider.js';
-import OllamaProvider     from './OllamaProvider.js';
-import TogetherProvider   from './TogetherProvider.js';
-import ReplicateProvider  from './ReplicateProvider.js';
+import LexicaProvider  from './LexicaProvider.js';
+import StaticProvider  from './StaticProvider.js';
+import OllamaProvider  from './OllamaProvider.js';
 
 const PROVIDERS = [
   LexicaProvider,
   StaticProvider,
-  CloudflareProvider,
   OllamaProvider,
-  TogetherProvider,
-  ReplicateProvider,
 ];
 
 const MODEL_TO_PROVIDER = new Map(
