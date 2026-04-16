@@ -10,6 +10,31 @@ export const OLLAMA_MODELS = Object.freeze({
   GEMMA_4_31B_MXFP8: 'gemma4:31b-mxfp8',
 });
 
+// Qwen 3.x thinking-mode general-task preset from the official model cards.
+// repeat_penalty pinned to 1.0 to override Ollama's default 1.1 (Qwen's own
+// guidance) and let presence_penalty do the anti-repetition work.
+const QWEN_SAMPLING = Object.freeze({
+  temperature: 1.0,
+  top_p: 0.95,
+  top_k: 20,
+  min_p: 0,
+  presence_penalty: 1.5,
+  repeat_penalty: 1.0,
+  reasoning_effort: 'low',
+});
+
+const DEFAULT_SAMPLING = Object.freeze({
+  temperature: 0.7,
+  top_p: 0.95,
+  reasoning_effort: 'low',
+});
+
+const SAMPLING_CONFIG = Object.freeze({
+  [OLLAMA_MODELS.QWEN_3_6_35B]: QWEN_SAMPLING,
+  [OLLAMA_MODELS.QWEN_3_5_122B]: QWEN_SAMPLING,
+  [OLLAMA_MODELS.QWEN_3_5_27B]: QWEN_SAMPLING,
+});
+
 export default class OllamaProvider {
   static providerName = 'ollama';
   static models = Object.values(OLLAMA_MODELS);
@@ -21,12 +46,16 @@ export default class OllamaProvider {
     this.apiUrl = `${baseUrl}/v1/chat/completions`;
   }
 
+  #sampling() {
+    return SAMPLING_CONFIG[this.model] ?? DEFAULT_SAMPLING;
+  }
+
   async run(chat) {
     const body = JSON.stringify({
       model: this.model,
       messages: chat.messages,
       stream: false,
-      temperature: 0.7,
+      ...this.#sampling(),
     });
 
     try {
@@ -52,12 +81,8 @@ export default class OllamaProvider {
       model: this.model,
       messages: chat.messages,
       stream: true,
-      reasoning_effort: 'low',
       max_tokens: 8192,
-      temperature: 0.7,
-      top_p: 0.95,
-      frequency_penalty: 0.6,
-      presence_penalty: 0.3,
+      ...this.#sampling(),
       format: {
         type: 'object',
         properties: {
