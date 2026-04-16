@@ -1,5 +1,13 @@
-export default class ClaudeService {
-  constructor(env, model = 'claude-3-5-sonnet-20240620') {
+export const ANTHROPIC_MODELS = Object.freeze({
+  CLAUDE_3_7_SONNET: 'claude-3-7-sonnet-20250219',
+  CLAUDE_3_5_SONNET: 'claude-3-5-sonnet-20241022',
+});
+
+export default class AnthropicProvider {
+  static providerName = 'anthropic';
+  static models = Object.values(ANTHROPIC_MODELS);
+
+  constructor(env, model = ANTHROPIC_MODELS.CLAUDE_3_7_SONNET) {
     this.env = env;
     this.model = model;
     this.apiUrl = 'https://api.anthropic.com/v1/messages';
@@ -30,7 +38,7 @@ export default class ClaudeService {
       console.log(`${this.model} Response:`, data);
       return data?.content[0]?.text;
     } catch (error) {
-      console.error(`Error in ClaudeService.run: ${error.message}`);
+      console.error(`Error in AnthropicProvider.run: ${error.message}`);
       throw error;
     }
   }

@@ -1,9 +1,24 @@
 import { parseOpenAIStream } from './streamParser.js';
 
-export default class GroqLlama3Service {
-  constructor(env, modelName) {
+export const GROQ_MODELS = Object.freeze({
+  LLAMA_3_3_70B: 'llama-3.3-70b-versatile',
+  LLAMA_3_1_70B: 'llama-3.1-70b-versatile',
+  LLAMA_3_1_8B: 'llama-3.1-8b-instant',
+  DEEPSEEK_R1_LLAMA_70B: 'deepseek-r1-distill-llama-70b',
+  DEEPSEEK_R1_QWEN_32B: 'deepseek-r1-distill-qwen-32b',
+  QWEN_QWQ_32B: 'qwen-qwq-32b',
+  QWEN_2_5_32B: 'qwen-2.5-32b',
+  MISTRAL_SABA_24B: 'mistral-saba-24b',
+  LLAMA_4_SCOUT: 'meta-llama/llama-4-scout-17b-16e-instruct',
+});
+
+export default class GroqProvider {
+  static providerName = 'groq';
+  static models = Object.values(GROQ_MODELS);
+
+  constructor(env, model = GROQ_MODELS.LLAMA_3_3_70B) {
     this.env = env;
-    this.modelName = modelName;
+    this.model = model;
     this.apiUrl = 'https://api.groq.com/openai/v1/chat/completions';
   }
 
@@ -13,7 +28,7 @@ export default class GroqLlama3Service {
       Authorization: `Bearer ${this.env.GROQ_API_KEY}`,
     };
     const body = JSON.stringify({
-      model: this.modelName,
+      model: this.model,
       messages: chat.messages,
     //   response_format: { type: 'json_object' },
       stream: false,
@@ -30,10 +45,10 @@ export default class GroqLlama3Service {
         body,
       });
       const data = await response.json();
-      console.log('GroqLlama3Service Response:', data);
+      console.log('GroqProvider Response:', data);
       return data?.choices[0]?.message?.content;
     } catch (error) {
-      console.error(`Error in GroqLlama3Service.run: ${error.message}`);
+      console.error(`Error in GroqProvider.run: ${error.message}`);
       throw error;
     }
   }
@@ -44,7 +59,7 @@ export default class GroqLlama3Service {
       Authorization: `Bearer ${this.env.GROQ_API_KEY}`,
     };
     const body = JSON.stringify({
-      model: this.modelName,
+      model: this.model,
       messages: chat.messages,
       stream: true,
       n: 1,

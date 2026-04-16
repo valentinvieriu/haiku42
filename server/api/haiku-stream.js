@@ -1,8 +1,7 @@
 import { createEventStream } from 'h3';
 import { generateHaikuStreaming } from '../utils/haikuGenerator';
 import { compressHaiku } from '../utils/compression';
-
-const models = ['gemma4:26b-a4b-it-q8_0','qwen3.5:122b-a10b-q4_K_M','gemma4:e2b-it-q8_0','qwen3.5:27b-mxfp8',  ];
+import { chains } from '../utils/aiServices';
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
@@ -14,7 +13,7 @@ export default defineEventHandler(async (event) => {
   // before the potentially slow model starts loading
   eventStream.push({ data: JSON.stringify({ type: 'connected' }) });
 
-  generateHaikuStreaming(cloudflare.env, query, models, {
+  generateHaikuStreaming(cloudflare.env, query, chains.streaming, {
     onThinking: async (text) => {
       await eventStream.push({ data: JSON.stringify({ type: 'thinking', text }) });
     },

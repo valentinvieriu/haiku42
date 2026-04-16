@@ -1,9 +1,6 @@
 import { sendStream } from 'h3';
 import { decompressHaiku } from '../utils/compression';
-import { getImageProvider } from '../utils/imageProviders';
-
-// Define the providers array at the top of the file
-const providers = ['lexica','ollama','flux-schnell','google-imagen','together-free','flux-pro','cloudflare', 'default', 'together','flux-red-cinema'];
+import { getImageProvider, chains } from '../utils/imageProviders';
 
 // In-memory image cache (dev only)
 const imageCache = process.dev ? new Map() : null;
@@ -55,17 +52,18 @@ export default defineEventHandler(async (event) => {
     }
 
     let imageData;
+    const candidates = chains.default;
 
-    for (const providerName of providers) {
-      const ImageProvider = getImageProvider(providerName);
+    for (const candidate of candidates) {
+      const provider = getImageProvider(candidate, event.context.cloudflare.env);
       try {
-        console.log(`[haiku-image] Attempting to generate image with ${providerName} provider for haiku: ${query.id.slice(0, 10)}...`);
-        imageData = await ImageProvider.getImage(haiku, event.context.cloudflare.env, width, height);
-        console.log(`[haiku-image] Image generated successfully with ${providerName} provider for haiku: ${query.id.slice(0, 10)}...`);
+        console.log(`[haiku-image] Attempting to generate image with ${candidate} for haiku: ${query.id.slice(0, 10)}...`);
+        imageData = await provider.getImage(haiku, width, height);
+        console.log(`[haiku-image] Image generated successfully with ${candidate} for haiku: ${query.id.slice(0, 10)}...`);
         break; // Exit the loop if image generation is successful
       } catch (error) {
-        console.error(`[haiku-image] Failed to generate image with ${providerName} provider:`, error.message);
-        if (providerName === providers[providers.length - 1]) {
+        console.error(`[haiku-image] Failed to generate image with ${candidate}:`, error.message);
+        if (candidate === candidates[candidates.length - 1]) {
           throw error; // If the last provider fails, throw the error
         }
       }

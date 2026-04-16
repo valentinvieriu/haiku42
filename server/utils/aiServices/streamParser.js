@@ -70,43 +70,62 @@ export async function* parseOpenAIStream(response) {
   }
 }
 
+// Models bracket their reasoning with different tag families. We treat each
+// pair symmetrically: anything between an opener and its matching closer is
+// thinking. (Qwen uses <think>; Gemma 4 uses <thought>.)
+const THINK_TAG_PAIRS = [
+  { open: '<think>', close: '</think>' },
+  { open: '<thought>', close: '</thought>' },
+];
+
+function findEarliest(text, needles) {
+  let best = { idx: -1, needle: null };
+  for (const needle of needles) {
+    const idx = text.indexOf(needle);
+    if (idx !== -1 && (best.idx === -1 || idx < best.idx)) {
+      best = { idx, needle };
+    }
+  }
+  return best;
+}
+
 /**
- * Splits a content chunk around <think>/<​/think> boundaries.
- * Returns an array of events with optional state transitions.
+ * Splits a content chunk around <think>…</think> or <thought>…</thought>
+ * boundaries. Returns an array of events with optional state transitions.
  */
 function classifyContent(content, insideThink) {
   const events = [];
   let remaining = content;
   let currentlyThinking = insideThink;
+  const openTags = THINK_TAG_PAIRS.map((p) => p.open);
+  const closeTags = THINK_TAG_PAIRS.map((p) => p.close);
 
   while (remaining.length > 0) {
     if (currentlyThinking) {
-      const closeIdx = remaining.indexOf('</think>');
+      // Match whichever close tag appears first — we only have one
+      // outstanding thinking block at a time, so the earliest closer wins.
+      const { idx: closeIdx, needle: closeTag } = findEarliest(remaining, closeTags);
       if (closeIdx === -1) {
-        // All remaining text is thinking
         events.push({ type: 'thinking', text: remaining });
         remaining = '';
       } else {
-        // Text before </think> is thinking, rest is content
         const thinkText = remaining.slice(0, closeIdx);
         if (thinkText) events.push({ type: 'thinking', text: thinkText });
         events.push({ newState: false });
         currentlyThinking = false;
-        remaining = remaining.slice(closeIdx + '</think>'.length);
+        remaining = remaining.slice(closeIdx + closeTag.length);
       }
     } else {
-      const openIdx = remaining.indexOf('<think>');
+      const { idx: openIdx, needle: openTag } = findEarliest(remaining, openTags);
       if (openIdx === -1) {
-        // All remaining text is content
         events.push({ type: 'content', text: remaining });
         remaining = '';
       } else {
-        // Text before <think> is content, then switch to thinking
         const contentText = remaining.slice(0, openIdx);
         if (contentText) events.push({ type: 'content', text: contentText });
         events.push({ newState: true });
         currentlyThinking = true;
-        remaining = remaining.slice(openIdx + '<think>'.length);
+        remaining = remaining.slice(openIdx + openTag.length);
       }
     }
   }

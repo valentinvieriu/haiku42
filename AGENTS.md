@@ -44,28 +44,28 @@ server/utils/
   compression.js         # LZ-String compress/decompress for URL sharing
 
 server/utils/aiServices/
-  index.js               # Factory: getAIService(model, env) -> service
-  ClaudeService.js       # Anthropic Codex API
-  GPT4Service.js         # OpenAI API
-  GroqLlama3Service.js   # Groq API (Llama, Qwen, DeepSeek models)
-  OllamaService.js       # Local Ollama API (OpenAI-compatible, no auth)
-  DefaultCloudflareAIService.js  # Cloudflare Workers AI (Mistral fallback)
+  index.js               # Registry: getAIService(model, env) -> provider instance
+  chains.js              # Named fallback chains (streaming, cloud)
+  AnthropicProvider.js   # Anthropic Claude API; exports ANTHROPIC_MODELS catalogue
+  OpenAIProvider.js      # OpenAI API; exports OPENAI_MODELS catalogue
+  GroqProvider.js        # Groq API (Llama, Qwen, DeepSeek, Mistral); exports GROQ_MODELS
+  OllamaProvider.js      # Local Ollama API (OpenAI-compatible); exports OLLAMA_MODELS
+  CloudflareProvider.js  # Cloudflare Workers AI (Mistral fallback); exports CLOUDFLARE_MODELS
+  streamParser.js        # Shared SSE parser for OpenAI-compatible streams
 
 server/utils/imageProviders/
-  index.js               # Factory: getImageProvider(name) -> provider
-  sharedPrompts.js       # 18 aesthetic prompt templates
-  imageProviderUtils.js  # Deterministic prompt/seed generation from haiku hash
-  CloudflareAIProvider.js    # Cloudflare Workers AI (FLUX Schnell)
-  FluxSchnellProvider.js     # Replicate FLUX.1 Schnell
-  FluxProProvider.js         # Replicate FLUX.1 Pro
-  FluxRedCinemaProvider.js   # Replicate cinema-style
-  TogetherProvider.js        # Together.ai (paid)
-  TogetherFreeProvider.js    # Together.ai (free)
-  GoogleImagen3Provider.js   # Google Imagen 3 via Replicate
-  OllamaImageProvider.js     # Local Ollama diffusion models
-  LexicaProvider.js          # Lexica.art image search
-  DefaultProvider.js         # Static fallback image
+  index.js               # Registry: getImageProvider(id, env) -> provider instance
+  chains.js              # Named fallback chains (default)
+  prompts.js             # Style templates + deterministic prompt/seed from haiku hash
+  LexicaProvider.js      # Lexica.art image search
+  OllamaProvider.js      # Local Ollama diffusion models
+  CloudflareProvider.js  # Cloudflare Workers AI (FLUX Schnell)
+  ReplicateProvider.js   # Replicate API; presets: FLUX Schnell, FLUX Pro, Imagen 3, FLUX Red Cinema
+  TogetherProvider.js    # Together.ai; presets: FLUX Schnell, FLUX Schnell Free
+  StaticProvider.js      # Terminal fallback — static URL
 ```
+
+Each provider file owns its model/preset catalogue as a frozen `*_MODELS` (or `*_PRESETS`) export. Chain definitions in `chains.js` reference these constants by name, so model strings live in exactly one place per provider.
 
 ## Architecture
 
@@ -73,17 +73,18 @@ server/utils/imageProviders/
 
 Both AI text and image generation use sequential fallback — try providers in order, use the first that succeeds:
 
-- **Haiku generation:** Ollama (local) -> Groq models (Llama/Qwen) -> Codex -> GPT-4 -> Cloudflare Workers AI
+- **Haiku generation:** Ollama (local) -> Groq models (Llama/Qwen) -> Anthropic Claude -> OpenAI -> Cloudflare Workers AI
 - **Image generation:** Ollama (local) -> Replicate/Together/Cloudflare cloud providers -> static fallback
 
 ### Stateless URL Sharing
 
 Haikus are not stored in a database. The entire haiku object is JSON-compressed via LZ-String and encoded as the URL parameter (`/haiku/{compressed-id}`). Same haiku always produces the same image (deterministic seeding from content hash).
 
-### Service Interfaces
+### Provider Interfaces
 
-All AI services implement: `run(chatMessages) -> string`
-All image providers implement: `getImage(haiku, env, width, height) -> {type, data}`
+All AI providers (text) implement: `run(chatMessages) -> string`. Optional: `runStream(chatMessages) -> AsyncIterable<{type, text}>` for streaming.
+All image providers implement: `getImage(haiku, width, height) -> {type, data}` (env is in the constructor).
+Each provider class exposes `static models` (its catalogue) and `static providerName` (short label).
 
 ## Environment Variables
 
@@ -96,7 +97,7 @@ OLLAMA_IMAGE_MODEL    # Ollama image model (default: x/z-image-turbo:fp8)
 Cloud providers (`.dev.vars` or Cloudflare dashboard):
 ```
 GROQ_API_KEY          # Groq API
-ANTHROPIC_API_KEY     # Codex API
+ANTHROPIC_API_KEY     # Claude API
 OPENAI_API_KEY        # OpenAI API
 REPLICATE_API_KEY     # Replicate (Flux, Imagen image providers)
 TOGETHER_API_KEY      # Together.ai image provider

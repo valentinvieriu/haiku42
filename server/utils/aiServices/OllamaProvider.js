@@ -1,16 +1,28 @@
 import { parseOpenAIStream } from './streamParser.js';
 
-export default class OllamaService {
-  constructor(env, modelName) {
+export const OLLAMA_MODELS = Object.freeze({
+  GEMMA_4_26B_A4B: 'gemma4:26b-a4b-it-q8_0',
+  QWEN_3_5_122B: 'qwen3.5:122b-a10b-q4_K_M',
+  GEMMA_4_E2B: 'gemma4:e2b-it-q8_0',
+  QWEN_3_5_27B: 'qwen3.5:27b-mxfp8',
+  GEMMA_4_26B_MXFP8: 'gemma4:26b-mxfp8',
+  GEMMA_4_31B_MXFP8: 'gemma4:31b-mxfp8',
+});
+
+export default class OllamaProvider {
+  static providerName = 'ollama';
+  static models = Object.values(OLLAMA_MODELS);
+
+  constructor(env, model = OLLAMA_MODELS.GEMMA_4_26B_A4B) {
     this.env = env;
-    this.modelName = modelName;
+    this.model = model;
     const baseUrl = env.OLLAMA_BASE_URL || 'http://localhost:11434';
     this.apiUrl = `${baseUrl}/v1/chat/completions`;
   }
 
   async run(chat) {
     const body = JSON.stringify({
-      model: this.modelName,
+      model: this.model,
       messages: chat.messages,
       stream: false,
       temperature: 0.7,
@@ -24,10 +36,10 @@ export default class OllamaService {
         signal: AbortSignal.timeout(10 * 60 * 1000),
       });
       const data = await response.json();
-      console.log('OllamaService Response:', data);
+      console.log('OllamaProvider Response:', data);
       return data?.choices?.[0]?.message?.content;
     } catch (error) {
-      console.error(`Error in OllamaService.run: ${error.message}`);
+      console.error(`Error in OllamaProvider.run: ${error.message}`);
       throw error;
     }
   }
@@ -36,7 +48,7 @@ export default class OllamaService {
     // Use native thinking mode — reasoning happens in separate thinking tokens,
     // content stream outputs only JSON. Thinking tokens stream to the UI.
     const body = JSON.stringify({
-      model: this.modelName,
+      model: this.model,
       messages: chat.messages,
       stream: true,
       reasoning_effort: 'low',

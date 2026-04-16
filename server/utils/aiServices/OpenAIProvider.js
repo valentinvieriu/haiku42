@@ -1,5 +1,14 @@
-export default class GPT4Service {
-  constructor(env, model) {
+export const OPENAI_MODELS = Object.freeze({
+  GPT_4_5_PREVIEW: 'gpt-4.5-preview',
+  GPT_4O: 'gpt-4o',
+  GPT_4O_MINI: 'gpt-4o-mini',
+});
+
+export default class OpenAIProvider {
+  static providerName = 'openai';
+  static models = Object.values(OPENAI_MODELS);
+
+  constructor(env, model = OPENAI_MODELS.GPT_4_5_PREVIEW) {
     this.env = env;
     this.model = model;
     this.apiUrl = 'https://api.openai.com/v1/chat/completions';
@@ -32,7 +41,7 @@ export default class GPT4Service {
       console.log(`${this.model} Response:`, data);
       return data?.choices?.[0]?.message?.content ?? '';
     } catch (error) {
-      console.error(`Error in GPT4Service.run: ${error.message}`);
+      console.error(`Error in OpenAIProvider.run: ${error.message}`);
       throw error;
     }
   }
