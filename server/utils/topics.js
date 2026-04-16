@@ -2040,7 +2040,7 @@ const modes = [
       "automatic soap dispenser launching soap onto a sleeve",
       "dog refusing to get out of the self-driving cart corral",
       "someone bowing at the automatic door that opened too late",
-      "voice assistant answering a question nobody asked out loud",
+      "smart speaker pulsing blue while no one is in the room",
     ],
     sensory: [
       "the beep of the scanner that won't scan",
@@ -2159,8 +2159,8 @@ const modes = [
       "the other glove in the coat pocket",
       "the one screw that rolled under the fridge",
       "the bike helmet missing from the hook",
-      "the one tote bag that always fits everything, at home by the door",
-      "the app login remembered on the old phone, not this one",
+      "the favorite tote bag, hanging on the doorknob at home",
+      "the old phone in the drawer, charging port up",
       "the seat near the outlet taken by a coat and no person",
     ],
   },
@@ -3237,7 +3237,7 @@ const modes = [
           "two-factor code written on the back of an envelope",
           "screen protector lifting at one corner",
           "night mode schedule written on a sticky note by the charger",
-          "browser tab pinned since last week, still unread",
+          "browser tab pinned in the corner, red badge dot still on it",
         ],
         absences: [
           "the dark of the room that isn't quite dark anymore",
