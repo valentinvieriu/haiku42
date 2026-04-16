@@ -26,7 +26,7 @@ export default class LexicaProvider {
         model: this.model,
         searchMode: 'images',
       }),
-      timeout: 1000,
+      timeout: 8000,
     };
 
     try {

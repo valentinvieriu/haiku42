@@ -26,6 +26,28 @@ const THINKING_CONFIG = Object.freeze({
 // ```json``` answer.
 const MAX_TOKENS = 8192;
 
+// The OpenAI-compatible Gemini endpoint exposes temperature/top_p, but rejects
+// top_k even though the live model metadata reports a default topK=64. Keep
+// the model-side topK default and tune only the controls this endpoint accepts.
+//
+// These settings come from direct haiku-prompt sweeps against the live API:
+// Gemma 26B improved with a warmer/tighter decode, while Gemma 31B stayed on
+// the safer default because its latency spiked sharply when pushed hotter.
+const SAMPLING_CONFIG = Object.freeze({
+  [GOOGLE_MODELS.GEMMA_4_26B_A4B]: Object.freeze({
+    temperature: 1.1,
+    top_p: 0.9,
+  }),
+  [GOOGLE_MODELS.GEMMA_4_31B]: Object.freeze({
+    temperature: 1.0,
+    top_p: 0.95,
+  }),
+  [GOOGLE_MODELS.GEMINI_3_1_FLASH_LITE]: Object.freeze({
+    temperature: 1.0,
+    top_p: 0.95,
+  }),
+});
+
 export default class GoogleProvider {
   static providerName = 'google';
   static models = Object.values(GOOGLE_MODELS);
@@ -44,13 +66,14 @@ export default class GoogleProvider {
   }
 
   #body(messages, { stream }) {
+    const sampling = SAMPLING_CONFIG[this.model] ?? SAMPLING_CONFIG[GOOGLE_MODELS.GEMMA_4_26B_A4B];
+
     return JSON.stringify({
       model: this.model,
       messages,
       stream,
       n: 1,
-      temperature: 0.7,
-      top_p: 0.95,
+      ...sampling,
       max_tokens: MAX_TOKENS,
       ...THINKING_CONFIG,
     });
