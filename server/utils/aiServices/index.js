@@ -9,6 +9,7 @@ export function getAIService(model, env) {
     case 'gemma4:e2b-it-q8_0':
     case 'gemma4:26b-mxfp8':
     case 'qwen3.5:27b-mxfp8':
+    case 'gemma4:26b-a4b-it-q8_0':
     case 'gemma4:31b-mxfp8':
     case 'qwen3.5:122b-a10b-q4_K_M':
       return new OllamaService(env, model);

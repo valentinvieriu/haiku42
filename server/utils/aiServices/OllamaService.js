@@ -40,9 +40,11 @@ export default class OllamaService {
       messages: chat.messages,
       stream: true,
       reasoning_effort: 'low',
-      max_tokens: 2048,
+      max_tokens: 8192,
       temperature: 0.7,
       top_p: 0.95,
+      frequency_penalty: 0.6,
+      presence_penalty: 0.3,
       format: {
         type: 'object',
         properties: {

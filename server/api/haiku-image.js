@@ -3,7 +3,7 @@ import { decompressHaiku } from '../utils/compression';
 import { getImageProvider } from '../utils/imageProviders';
 
 // Define the providers array at the top of the file
-const providers = ['ollama','flux-schnell','google-imagen','together-free','flux-pro','cloudflare', 'default', 'together','flux-red-cinema'];
+const providers = ['lexica','ollama','flux-schnell','google-imagen','together-free','flux-pro','cloudflare', 'default', 'together','flux-red-cinema'];
 
 // In-memory image cache (dev only)
 const imageCache = process.dev ? new Map() : null;

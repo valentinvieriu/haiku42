@@ -36,22 +36,71 @@ Anyone seeking a brief creative pause — poetry enthusiasts, design-minded user
 ### Haiku Generation
 
 - All haikus follow the traditional **5-7-5 syllable** structure
-- Topics are contemporary and diverse, spanning 20+ categories:
-  - Nature and seasons
-  - Technology and digital life
-  - Urban life
-  - Human emotions and relationships
-  - Climate and environment
-  - Mindfulness and solitude
-  - Food and cuisine
-  - Work and economy
-  - Art and creativity
-  - Identity and self
-  - Space and cosmos
-  - Global issues
-  - And more
-- Topics are selected via weighted randomization for thematic variety
 - Tone is reflective and evocative — modern sensibility with poetic restraint
+- The LLM never receives an abstract topic ("loneliness", "technology"). It receives a **scene seed** — a role-labeled, semicolon-separated string of 2–5 concrete, imageable clauses describing a micro-moment. The LLM inhabits the scene and writes the haiku from inside it.
+- The same seed feeds both the haiku and the image generation, so poem and image share a single world.
+
+#### Why scene seeds, not topics
+
+Abstract topics produce topic sentences. Concrete sensory clauses force the poem into a specific place, time, and body. Meaning emerges from juxtaposition of concrete elements rather than from explanatory verbs ("reveals", "teaches", "versus") or abstract nouns ("climate grief", "digital anxiety").
+
+**Imageability rule:** every visible element must be specific enough for both a language model and an image model to picture it — including absences ("empty hook on the wall", not "the motivation that was there this morning").
+
+#### Modes (families of moments)
+
+Seeds are drawn from one of 8 modes, chosen by weighted random selection. Mode selection itself provides thematic steering without naming the theme.
+
+| Mode | Weight | Character |
+| --- | --- | --- |
+| observation | 30 | outdoor stillness, nature watched closely |
+| urban-nature | 20 | city edges where nature persists |
+| human-trace | 20 | evidence someone was here (institutional, service, civic spaces) |
+| domestic-turn | 15 | interior moments in home and intimate spaces |
+| climate-echo | 10 | climate-adjacent imagery without preaching |
+| transit | 10 | moving between places |
+| night-and-silence | 10 | after-hours, dark, quiet |
+| comic-glimpse | 5 | small absurdities |
+
+#### Scene clusters (coherence within a mode)
+
+Modes whose moments span very different physical spaces (**human-trace**, **domestic-turn**, **transit**, **night-and-silence**) are split into sub-clusters. Every entry in a cluster is plausible in the same physical space (e.g. "institutional interiors" vs. "backyard porches"). Composition first picks a cluster, then draws within it — so a single seed never mixes a hospital hallway with a ski lodge.
+
+#### Pools (organized by poetic function, not subject)
+
+Each mode/cluster exposes entries in pools defined by what the element does in the poem:
+
+- **frames** — where and when (`bus stop at dusk`, `hospital hallway at shift change`)
+- **anchors** — focal subject + action, what the eye lands on (`crow landing on a wire`, `janitor mopping around the sleeping man`)
+- **sensory** — sound, smell, touch, light (`wet earth smell after thunder`, `the fluorescent hum`)
+- **traces** — human residue, evidence someone was here (`cigarette butt in the flower planter`)
+- **absences** — what's NOT there, negative space / *ma* (`empty hook on the wall`, `stoplight cycling with no cars`)
+- **turns** — a small shift or reveal (present on some modes; falls back to traces/sensory/anchors when absent)
+
+#### Composition templates
+
+Once a mode's pools are resolved, one of 7 composition templates is chosen by weighted random to assemble the seed. Templates define both the number of parts and which pools they come from. Most seeds are 3 elements — grounded but not overloaded.
+
+| Template | Weight | Shape |
+| --- | --- | --- |
+| anchored | 28 | Setting + Focus + Sense |
+| turned | 24 | Setting + Focus + Turn |
+| juxtaposed | 15 | Setting + Focus + Trace |
+| absence-led | 15 | Setting + Absence + Turn |
+| layered | 10 | Setting + Sense + Absence |
+| pivot | 5 | Setting + Turn *(2 parts)* |
+| minimal | 3 | Setting + Focus *(2 parts)* |
+
+#### Temporal modifier
+
+25% of seeds prepend a time-phrase to the setting ("past midnight — park bench after rain", "just before closing — pharmacy counter"). This turns a static frame into a moment in progress.
+
+#### Output format
+
+Role-labeled clauses joined by `"; "`. Example:
+
+```
+Setting: rest stop off the highway; Focus: crow landing on a wire; Sense: wet earth smell after thunder
+```
 
 ### Image Generation
 

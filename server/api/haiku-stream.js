@@ -2,7 +2,7 @@ import { createEventStream } from 'h3';
 import { generateHaikuStreaming } from '../utils/haikuGenerator';
 import { compressHaiku } from '../utils/compression';
 
-const models = ['qwen3.5:122b-a10b-q4_K_M','gemma4:e2b-it-q8_0','qwen3.5:27b-mxfp8',  ];
+const models = ['gemma4:26b-a4b-it-q8_0','qwen3.5:122b-a10b-q4_K_M','gemma4:e2b-it-q8_0','qwen3.5:27b-mxfp8',  ];
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
