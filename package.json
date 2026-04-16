@@ -10,7 +10,8 @@
     "postinstall": "nuxt prepare",
     "deploy": "npm run build && wrangler pages deploy",
     "cf-typegen": "wrangler types",
-    "generate-topics": "node scripts/generate-topics.js"
+    "generate-topics": "node scripts/generate-topics.js",
+    "analyze-topics": "node scripts/analyze-haiku-seeds.mjs"
   },
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.12.2",
