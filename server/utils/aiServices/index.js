@@ -1,32 +1,16 @@
-import AnthropicProvider  from './AnthropicProvider.js';
-import OpenAIProvider     from './OpenAIProvider.js';
-import GoogleProvider     from './GoogleProvider.js';
-import OllamaProvider     from './OllamaProvider.js';
-import CloudflareProvider from './CloudflareProvider.js';
+import GoogleProvider from './GoogleProvider.js';
+import OllamaProvider from './OllamaProvider.js';
 
-const PROVIDERS = [
-  AnthropicProvider,
-  OpenAIProvider,
-  GoogleProvider,
-  OllamaProvider,
-  CloudflareProvider,
-];
+const PROVIDERS = [GoogleProvider, OllamaProvider];
 
 const MODEL_TO_PROVIDER = new Map(
   PROVIDERS.flatMap((P) => P.models.map((m) => [m, P]))
 );
 
-// Legacy logical name → real model id. Currently only `cf-mistral`.
-const MODEL_ALIASES = Object.freeze({
-  'cf-mistral': '@cf/mistral/mistral-7b-instruct-v0.1',
-});
-
 export function getAIService(model, env) {
-  const resolved = MODEL_ALIASES[model] ?? model;
-  const Provider = MODEL_TO_PROVIDER.get(resolved);
-  // Preserve current default-fallthrough: unknown strings → Cloudflare with its own default.
-  if (!Provider) return new CloudflareProvider(env);
-  return new Provider(env, resolved);
+  const Provider = MODEL_TO_PROVIDER.get(model);
+  if (!Provider) throw new Error(`Unknown AI model: ${model}`);
+  return new Provider(env, model);
 }
 
 export { chains } from './chains.js';

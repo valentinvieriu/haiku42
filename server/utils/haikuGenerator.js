@@ -1,39 +1,6 @@
 import getRandomTopic from './topics'
 import { getAIService } from './aiServices/index.js';
 
-export async function generateHaiku(env, query, models) {
-  const topic = getRandomTopic()
-
-  let response = null;
-  let error = null;
-
-  for (const model of models) {
-    try {
-      // Select API based on the model parameter
-      const aiService = getAIService(model, env)
-
-      const chat = generateChatRequest(topic)
-
-      console.log('Topic: ', topic, '\nModel: ', model)
-
-      response = await aiService.run(chat)
-      if (response) {
-        break; // If we get a valid response, exit the loop
-      }
-    } catch (err) {
-      console.error(`Error with model ${model}:`, err.message)
-      error = err
-    }
-  }
-
-  if (!response) {
-    throw error || new Error('All AI services failed to generate a response')
-  }
-
-  const sanitizedResponse = sanitizeResponse(response)
-  return { ...sanitizedResponse, topic } ?? defaultHaiku;  // Include the topic in the returned object
-}
-
 function generateChatRequest(topic) {
     return {
         messages: [
@@ -50,7 +17,7 @@ The haiku and imagePrompt work together:
 - the imagePrompt carries the visible scene, composition, and physical clarity
 - because the imagePrompt can hold literal context, the haiku does not need to name every important object or setting detail
 
-Think before answering, but keep the reasoning brief and convergent.
+Think through the process below before answering. Walk through every step — don't compress or skip any. Keep the reasoning structured and convergent.
 Stop as soon as one valid haiku is found.
 
 Process:
@@ -58,17 +25,24 @@ Process:
 2. Draft exactly 2 natural 3-line versions before counting syllables:
    - one clear and observational
    - one with a sharper cut or leap
-3. Choose 1 draft only and abandon the other completely.
+3. Choose 1 draft only and abandon the other completely. Name which and why in one sentence.
 4. Fit only the chosen draft to exactly 5 / 7 / 5 syllables.
-   Rewrite whole lines when needed. Count syllables silently and only for the chosen draft.
-5. Do one final check, then stop.
+   Rewrite whole lines when needed. Count syllables for the chosen draft and show the counts.
+5. Do one final check (syllables, cliche, line-3 opens outward), then stop.
+
+Reasoning shape:
+- hidden pressure
+- Draft A
+- Draft B
+- chosen draft + reason
+- final check
 
 Do not:
 - revisit discarded lines
 - compare more than those 2 drafts
-- repeatedly recount syllables
 - map one line to one seed label
 - end by simply repeating the seed's obvious turn, object, or action
+- expand the reasoning beyond that shape
 
 Guidelines for the haiku:
 - concrete imagery, natural spoken English
@@ -95,7 +69,7 @@ Output only JSON with these fields: topic, firstLine, secondLine, thirdLine, ima
     };
 }
 
-export async function generateHaikuStreaming(env, query, models, callbacks) {
+export async function generateHaikuStreaming(env, models, callbacks) {
   const topic = getRandomTopic();
   let error = null;
 
@@ -106,31 +80,27 @@ export async function generateHaikuStreaming(env, query, models, callbacks) {
 
       console.log('Streaming — Topic:', topic, '\nModel:', model);
 
+      let raw = '';
       if (typeof aiService.runStream === 'function') {
-        let accumulated = '';
         for await (const event of aiService.runStream(chat)) {
           if (event.type === 'thinking') {
             await callbacks.onThinking(event.text);
           } else if (event.type === 'content') {
-            accumulated += event.text;
+            raw += event.text;
             await callbacks.onContent(event.text);
           }
         }
-
-        if (accumulated) {
-          const haiku = sanitizeResponse(accumulated);
-          await callbacks.onComplete({ ...haiku, topic });
-          return;
-        }
       } else {
-        // Fallback to blocking run() for services without streaming
-        const response = await aiService.run(chat);
-        if (response) {
-          const haiku = sanitizeResponse(response);
-          await callbacks.onComplete({ ...haiku, topic });
-          return;
-        }
+        raw = (await aiService.run(chat)) ?? '';
       }
+
+      const haiku = sanitizeResponse(raw);
+      if (haiku) {
+        await callbacks.onComplete({ ...haiku, topic });
+        return;
+      }
+
+      console.warn(`Model ${model} returned unparseable content; falling through to next model.`);
     } catch (err) {
       console.error(`Streaming error with model ${model}:`, err.message);
       error = err;
@@ -140,42 +110,29 @@ export async function generateHaikuStreaming(env, query, models, callbacks) {
   await callbacks.onError(error || new Error('All AI services failed to generate a response'));
 }
 
+// Returns a parsed haiku object, or null when the response can't be coerced.
+// Null signals the caller to fall through to the next model rather than
+// silently completing with a default.
 function sanitizeResponse(response) {
-	const defaultHaiku = {
-		topic: "Artificial Intelligence",
-		firstLine: "Silent minds converge",
-		secondLine: "In circuits, wisdom blossoms",
-		thirdLine: "A new dawn awakes",
-		imagePrompt: "A futuristic cityscape at dawn, with glowing circuits intertwining with tree branches. In the foreground, silhouettes of human-like figures stand, their heads illuminated by soft, pulsating light representing awakening AI consciousness."
-	};
-
-	if (typeof response !== 'string') {
-		response = JSON.stringify(response);
-	}
+	if (!response) return null;
+	if (typeof response !== 'string') response = JSON.stringify(response);
 
 	let parsed = null;
 
 	try {
-		// 1. Direct parse (structured JSON output from Ollama format: schema)
 		const trimmed = response.trim();
 		if (trimmed.startsWith('{')) {
 			parsed = JSON.parse(trimmed);
 		}
 
-		// 2. Extract from ```json fences (cloud services)
 		if (!parsed) {
 			const fenceMatch = response.match(/```json\s*([\s\S]*?)\s*```/);
-			if (fenceMatch?.[1]) {
-				parsed = JSON.parse(fenceMatch[1]);
-			}
+			if (fenceMatch?.[1]) parsed = JSON.parse(fenceMatch[1]);
 		}
 
-		// 3. Find raw JSON object with expected keys (last resort)
 		if (!parsed) {
 			const rawMatch = response.match(/\{[^{}]*"firstLine"\s*:\s*"[^"]*"[\s\S]*?"thirdLine"\s*:\s*"[^"]*"[^{}]*\}/);
-			if (rawMatch) {
-				parsed = JSON.parse(rawMatch[0]);
-			}
+			if (rawMatch) parsed = JSON.parse(rawMatch[0]);
 		}
 	} catch (error) {
 		console.warn('Failed to parse JSON from response:', error.message);
@@ -186,6 +143,5 @@ function sanitizeResponse(response) {
 		return parsed;
 	}
 
-	console.warn('Invalid haiku structure, using default haiku.');
-	return defaultHaiku;
+	return null;
 }

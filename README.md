@@ -75,8 +75,8 @@ Configuration can be managed through the `nuxt.config.ts` file and environment v
 To manage environment variables, you can add a `.env` file in the root directory. Make sure not to share or commit this file to the repository to ensure security best practices:
 
 ```env
-ANTHROPIC_API_KEY=your_anthropic_key
-OPENAI_API_KEY=your_openai_key
+GEMINI_API_KEY=your_gemini_key
+OLLAMA_BASE_URL=http://localhost:11434
 ```
 
 These keys should also be configured for production in the deployment environment settings.

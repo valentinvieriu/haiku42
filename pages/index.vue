@@ -48,8 +48,8 @@ const generateWithStream = () => {
           thinkingText.value += data.text
           break
         case 'content':
+          // Content is the final JSON answer — don't display it as thinking.
           isThinking.value = true
-          thinkingText.value += data.text
           break
         case 'complete':
           if (settled) return

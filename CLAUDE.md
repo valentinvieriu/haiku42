@@ -8,7 +8,7 @@ AI-powered haiku generator with matching background images. Generates contempora
 
 - **Framework:** Nuxt 3 (Vue 3 + Nitro server)
 - **Styling:** TailwindCSS
-- **Deployment:** Cloudflare Pages (with Workers AI binding)
+- **Deployment:** Cloudflare Pages
 - **Node:** 22.10.0
 
 ## Commands
@@ -45,13 +45,9 @@ server/utils/
 
 server/utils/aiServices/
   index.js               # Registry: getAIService(model, env) -> provider instance
-  chains.js              # Named fallback chains (streaming, cloud)
-  AnthropicProvider.js   # Anthropic Claude API; exports ANTHROPIC_MODELS catalogue
-  OpenAIProvider.js      # OpenAI API; exports OPENAI_MODELS catalogue
-  GoogleProvider.js      # Google Gemini OpenAI-compat (Gemma 4, Gemini 3.1); exports GOOGLE_MODELS
-  OllamaProvider.js      # Local Ollama API (OpenAI-compatible); exports OLLAMA_MODELS
-  CloudflareProvider.js  # Cloudflare Workers AI (Mistral fallback); exports CLOUDFLARE_MODELS
-  streamParser.js        # Shared SSE parser for OpenAI-compatible streams
+  chains.js              # Named fallback chain (streaming)
+  GoogleProvider.js      # Native Gemini API (Gemma 4); exports GOOGLE_MODELS
+  OllamaProvider.js      # Native Ollama /api/chat; exports OLLAMA_MODELS
 
 server/utils/imageProviders/
   index.js               # Registry: getImageProvider(id, env) -> provider instance
@@ -70,7 +66,7 @@ Each provider file owns its model/preset catalogue as a frozen `*_MODELS` (or `*
 
 Both AI text and image generation use sequential fallback — try providers in order, use the first that succeeds:
 
-- **Haiku generation:** Ollama (local) -> Google (Gemma/Gemini) -> Claude -> GPT-4 -> Cloudflare Workers AI
+- **Haiku generation:** Google (Gemma) -> Ollama (local)
 - **Image generation:** Lexica -> Ollama (local) -> static fallback
 
 ### Stateless URL Sharing
@@ -91,11 +87,9 @@ OLLAMA_BASE_URL       # Ollama server URL (default: http://localhost:11434)
 OLLAMA_IMAGE_MODEL    # Ollama image model (default: x/z-image-turbo:fp8)
 ```
 
-Cloud providers (`.dev.vars` or Cloudflare dashboard):
+Cloud provider (`.dev.vars` or Cloudflare dashboard):
 ```
-ANTHROPIC_API_KEY     # Claude API
-OPENAI_API_KEY        # OpenAI API
-GEMINI_API_KEY        # Google Gemini API (Gemma 4, Gemini 3.1)
+GEMINI_API_KEY        # Google Gemini API (used for Gemma 4)
 ```
 
 Optional/unused:

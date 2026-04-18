@@ -10,8 +10,8 @@ export const chains = Object.freeze({
   // Active default chain. STATIC_PRESETS.DEFAULT is the terminal fallback
   // and always succeeds, so it must remain last.
   default: [
-    OLLAMA_IMAGE_MODELS.Z_IMAGE_TURBO,
     LEXICA_MODELS.APERTURE_V3_5,
+    OLLAMA_IMAGE_MODELS.Z_IMAGE_TURBO,
     STATIC_PRESETS.DEFAULT, // terminal fallback — always succeeds
   ],
 });
