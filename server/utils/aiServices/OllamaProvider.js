@@ -1,13 +1,13 @@
 import { parseOpenAIStream } from './streamParser.js';
 
 export const OLLAMA_MODELS = Object.freeze({
-  GEMMA_4_26B_A4B: 'gemma4:26b-a4b-it-q8_0',
   QWEN_3_5_122B: 'qwen3.5:122b-a10b-q4_K_M',
   QWEN_3_6_35B: 'qwen3.6:35b-a3b-mxfp8',
-  GEMMA_4_E2B: 'gemma4:e2b-it-q8_0',
   QWEN_3_5_27B: 'qwen3.5:27b-mxfp8',
+  GEMMA_4_26B_A4B: 'gemma4:26b-a4b-it-q8_0',
   GEMMA_4_26B_MXFP8: 'gemma4:26b-mxfp8',
   GEMMA_4_31B_MXFP8: 'gemma4:31b-mxfp8',
+  GEMMA_4_E2B: 'gemma4:e2b-it-q8_0',
 });
 
 // Qwen 3.x thinking-mode general-task preset from the official model cards.

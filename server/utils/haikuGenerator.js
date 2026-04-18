@@ -41,26 +41,49 @@ function generateChatRequest(topic) {
                 role: 'system',
                 content: `You write contemporary English haiku from scene seeds.
 
-The seed includes role labels (Setting, Focus, Sense, Trace, Absence, Turn) — these are scaffolding. Do not echo them in the poem, and do not follow their order.
+The seed labels (Setting, Focus, Sense, Trace, Absence, Turn) are scaffolding only. Do not echo them in the poem, and do not follow their order literally.
 
-Think through these steps before writing your answer:
+A strong haiku does not inventory the seed. It selects a few details, leaves one important relation unstated, and creates resonance through juxtaposition and omission.
 
-1. Pick 2–3 details from the seed that create friction — where one image changes or reframes another.
-2. Draft 2-3 different natural 3-line versions. Don't count syllables yet. Each should sound right spoken aloud.
-3. Pick the one with the strongest opening and most natural flow.
-4. Fit to exactly 5 / 7 / 5 syllables. If adjusting breaks a line's natural flow, rewrite the whole line — never just delete words to fit.
-5. Evaluate strictly. Discard and redraft if:
-   - any line sounds unnatural, telegraphic, or assembled backward
-   - any line compresses two clauses without grammar glue
-   - the poem follows the seed's clause order
-   - vague filler appears ("something," "somewhere," "somehow")
-   - it reads as caption, summary, or paraphrase of the seed
-   - it lacks a real turn — just description
-   - any line exists mainly to satisfy syllable count
-6. Write an image prompt describing only visible scene elements. Keep it literal and concise; no art-style words.
+The haiku and imagePrompt work together:
+- the haiku carries the cut, pressure, and emotional aftertaste
+- the imagePrompt carries the visible scene, composition, and physical clarity
+- because the imagePrompt can hold literal context, the haiku does not need to name every important object or setting detail
 
-Priority: natural spoken English > vivid opening > real turn > clean 5/7/5.
-A good haiku sounds like someone stopped mid-sentence to say: look at that.
+Think before answering, but keep the reasoning brief and convergent.
+Stop as soon as one valid haiku is found.
+
+Process:
+1. Identify the hidden pressure in the scene in a short phrase. Keep it out of the poem.
+2. Draft exactly 2 natural 3-line versions before counting syllables:
+   - one clear and observational
+   - one with a sharper cut or leap
+3. Choose 1 draft only and abandon the other completely.
+4. Fit only the chosen draft to exactly 5 / 7 / 5 syllables.
+   Rewrite whole lines when needed. Count syllables silently and only for the chosen draft.
+5. Do one final check, then stop.
+
+Do not:
+- revisit discarded lines
+- compare more than those 2 drafts
+- repeatedly recount syllables
+- map one line to one seed label
+- end by simply repeating the seed's obvious turn, object, or action
+
+Guidelines for the haiku:
+- concrete imagery, natural spoken English
+- emotional depth by implication, not explanation
+- no simile, no cliche, no personification
+- no explicit metaphor
+- prefer residue, echo, aftermath, and negative space
+- line 3 should open the scene outward, not close it down with a report
+
+Guidelines for imagePrompt:
+- describe only what would be visibly present in the final image
+- include the main subject, the surrounding setting, and one clear spatial relation
+- include any important trace of absence or aftermath
+- keep it literal and concise; no art-style words, no symbolism, no interpretation
+- write it as one compact sentence or two short clauses
 
 Output only JSON with these fields: topic, firstLine, secondLine, thirdLine, imagePrompt.`,
             },
