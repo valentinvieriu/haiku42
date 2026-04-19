@@ -53,8 +53,15 @@ const JSON_SCHEMA = Object.freeze({
 // Gemma doesn't emit native thought parts, so elicit reasoning via the tag
 // convention it was trained on and let the inline splitter route it.
 const GEMMA_THINKING_SCAFFOLD =
-  'Before the JSON answer, emit your full reasoning pass wrapped in <thought>…</thought> tags. ' +
-  'Walk through every step of the reasoning shape — don\'t compress or skip any.';
+  'Wrap all reasoning inside a single <thought>…</thought> block, then emit only the JSON. ' +
+  'Close </thought> as soon as the final check passes — no further drafts, recounts, or revisions.';
+
+// Server-side enforcement of the prompt's "no reopen-reasoning cues" rule.
+// Gemini honours stopSequences even inside thinking-tagged content, so a
+// wandering Gemma gets cut off before it burns the shared token budget.
+const GEMMA_STOP_SEQUENCES = Object.freeze(['Actually,', 'Wait,', "Let's try"]);
+
+const REQUEST_TIMEOUT_MS = 10 * 60 * 1000;
 
 const BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
 
@@ -131,6 +138,8 @@ export default class GoogleProvider {
     }
     if (features.thinkingConfig) {
       generationConfig.thinkingConfig = { includeThoughts: true, thinkingLevel: 'high' };
+    } else {
+      generationConfig.stopSequences = [...GEMMA_STOP_SEQUENCES];
     }
 
     return JSON.stringify({
@@ -141,23 +150,19 @@ export default class GoogleProvider {
   }
 
   async run(chat) {
-    try {
-      const response = await fetch(this.#endpoint(false), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: this.#body(chat.messages),
-      });
-      const data = await response.json();
-      console.log(`${this.model} Response:`, data);
-      const parts = data?.candidates?.[0]?.content?.parts ?? [];
-      return parts
-        .filter((p) => p.thought !== true)
-        .map((p) => p.text ?? '')
-        .join('');
-    } catch (error) {
-      console.error(`Error in GoogleProvider.run: ${error.message}`);
-      throw error;
-    }
+    const response = await fetch(this.#endpoint(false), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: this.#body(chat.messages),
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+    });
+    const data = await response.json();
+    console.log(`${this.model} Response:`, data);
+    const parts = data?.candidates?.[0]?.content?.parts ?? [];
+    return parts
+      .filter((p) => p.thought !== true)
+      .map((p) => p.text ?? '')
+      .join('');
   }
 
   async *runStream(chat) {
@@ -165,6 +170,7 @@ export default class GoogleProvider {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: this.#body(chat.messages),
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });
 
     if (!response.ok) {
@@ -242,7 +248,7 @@ async function* parseGeminiStream(response, { useTagFallback }) {
       }
     }
   } finally {
-    reader.releaseLock();
+    reader.cancel().catch(() => {});
   }
 }
 

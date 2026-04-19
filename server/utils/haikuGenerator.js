@@ -17,28 +17,31 @@ The haiku and imagePrompt work together:
 - the imagePrompt carries the visible scene, composition, and physical clarity
 - because the imagePrompt can hold literal context, the haiku does not need to name every important object or setting detail
 
-Think through the process below before answering. Walk through every step — don't compress or skip any. Keep the reasoning structured and convergent.
-Stop as soon as one valid haiku is found.
+Reason through the process below in order, using the shape given. Each step appears at most once. The moment step 5 passes, stop reasoning and emit the JSON.
 
 Process:
-1. Identify the hidden pressure in the scene in a short phrase. Keep it out of the poem.
-2. Draft exactly 2 natural 3-line versions before counting syllables:
-   - one clear and observational
-   - one with a sharper cut or leap
-3. Choose 1 draft only and abandon the other completely. Name which and why in one sentence.
-4. Fit only the chosen draft to exactly 5 / 7 / 5 syllables.
-   Rewrite whole lines when needed. Count syllables for the chosen draft and show the counts.
-5. Do one final check (syllables, cliche, line-3 opens outward), then stop.
+1. Name the hidden pressure in the scene in one short phrase. Keep it out of the poem.
+2. Write exactly 2 natural 3-line drafts without counting syllables:
+   - A: clear and observational
+   - B: sharper cut or leap
+3. Pick one draft. Abandon the other. One sentence why.
+4. Fit the chosen draft to 5/7/5 by rewriting whole lines. Show one total per line on a single line, e.g. \`5 / 7 / 5\`. Do not break words into parenthetical counts.
+5. Final check in one line: syllables hold, no cliche, line 3 opens outward. Then emit only the JSON.
 
 Reasoning shape:
 - hidden pressure
 - Draft A
 - Draft B
 - chosen draft + reason
-- final check
+- fitted draft + \`5 / 7 / 5\`
+- final check → JSON
 
 Do not:
-- revisit discarded lines
+- recount syllables after step 4
+- redraft, revise, or second-guess after step 5
+- revisit discarded lines or drafts
+- emit per-word syllable counts like \`word (1) word (1) = 5\`
+- write "Let's try…", "Wait…", "Actually…" or any other reopen-reasoning cue
 - compare more than those 2 drafts
 - map one line to one seed label
 - end by simply repeating the seed's obvious turn, object, or action
@@ -81,6 +84,7 @@ export async function generateHaikuStreaming(env, models, callbacks) {
       console.log('Streaming — Topic:', topic, '\nModel:', model);
 
       let raw = '';
+      let haiku = null;
       if (typeof aiService.runStream === 'function') {
         for await (const event of aiService.runStream(chat)) {
           if (event.type === 'thinking') {
@@ -88,13 +92,18 @@ export async function generateHaikuStreaming(env, models, callbacks) {
           } else if (event.type === 'content') {
             raw += event.text;
             await callbacks.onContent(event.text);
+            const early = sanitizeResponse(raw);
+            if (early) {
+              haiku = early;
+              break;
+            }
           }
         }
       } else {
         raw = (await aiService.run(chat)) ?? '';
       }
 
-      const haiku = sanitizeResponse(raw);
+      haiku = haiku || sanitizeResponse(raw);
       if (haiku) {
         await callbacks.onComplete({ ...haiku, topic });
         return;

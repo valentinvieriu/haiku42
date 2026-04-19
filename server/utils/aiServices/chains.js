@@ -12,8 +12,8 @@ import { OLLAMA_MODELS } from './OllamaProvider.js';
 export const chains = Object.freeze({
   // Active streaming endpoint — order matters (preferred → fallback).
   streaming: [
-    OLLAMA_MODELS.GEMMA_4_26B_A4B,
     GOOGLE_MODELS.GEMMA_4_26B_A4B,
+    OLLAMA_MODELS.GEMMA_4_26B_A4B,
     GOOGLE_MODELS.GEMMA_4_31B,
     OLLAMA_MODELS.QWEN_3_6_35B,
     OLLAMA_MODELS.QWEN_3_5_122B,

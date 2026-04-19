@@ -89,20 +89,15 @@ export default class OllamaProvider {
       options: this.#options(),
     });
 
-    try {
-      const response = await fetch(this.apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body,
-        signal: AbortSignal.timeout(10 * 60 * 1000),
-      });
-      const data = await response.json();
-      console.log('OllamaProvider Response:', data);
-      return data?.message?.content;
-    } catch (error) {
-      console.error(`Error in OllamaProvider.run: ${error.message}`);
-      throw error;
-    }
+    const response = await fetch(this.apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body,
+      signal: AbortSignal.timeout(10 * 60 * 1000),
+    });
+    const data = await response.json();
+    console.log('OllamaProvider Response:', data);
+    return data?.message?.content;
   }
 
   async *runStream(chat) {
@@ -186,6 +181,6 @@ async function* parseNdjsonStream(response) {
       }
     }
   } finally {
-    reader.releaseLock();
+    reader.cancel().catch(() => {});
   }
 }
